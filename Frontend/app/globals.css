@@ -1,0 +1,65 @@
+@import "tailwindcss" layer(base);
+
+:root {
+  /* Color Palette */
+  --background: #ffffff;
+  --foreground: #e8e8e8;
+  --primary: #dddddd;
+  --secondary: #bfbfbf;
+  --green: #48a111;
+  --star: #f2b50b;
+  --text: #171717;
+
+  /* Fonts */
+  --font-nunito: "Nunito", sans-serif;
+  --font-belleza: "Belleza", cursive;
+  --font-logo: "Style Script", cursive;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-green: var(--green);
+  --color-star: var(--star);
+  --color-text: var(--text);
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+html {
+  width: 100%;
+  max-width: 100dvw;
+  height: 100dvh;
+  background: var(--background);
+  color: var(--text);
+  font-family: var(--font-nunito), sans-serif;
+  box-sizing: border-box;
+}
+
+.header-font {
+  font-family: var(--font-belleza), sans-serif;
+}
+
+#logo {
+  font-family: var(--font-logo), monospace;
+  font-weight: bold;
+}
+
+.smooth-transition {
+  transition: ease-in-out;
+  transition-duration: 0.25s;
+}
+
+.single-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}

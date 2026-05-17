@@ -1,0 +1,46 @@
+package com.Ecommerce.ProductService.DTOs.Response;
+
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+
+@Builder
+@Getter
+public class RestApiResponse<T> {
+  private Integer statusCode;
+  private Boolean success;
+  private T data;
+  private String message;
+  private LocalDateTime timestamp;
+
+  public static <T> RestApiResponse<T> success(Integer statusCode, T data, String message) {
+    return RestApiResponse.<T>builder()
+        .statusCode(statusCode)
+        .success(true)
+        .data(data)
+        .message(message)
+        .timestamp(LocalDateTime.now())
+        .build();
+  }
+
+  public static RestApiResponse<Void> success(Integer statusCode, String message) {
+    return RestApiResponse.<Void>builder()
+        .statusCode(statusCode)
+        .success(true)
+        .data(null)
+        .message(message)
+        .timestamp(LocalDateTime.now())
+        .build();
+  }
+
+  public static RestApiResponse<Void> error(Integer statusCode, String message) {
+    return RestApiResponse.<Void>builder()
+        .statusCode(statusCode)
+        .success(true)
+        .data(null)
+        .message(message)
+        .timestamp(LocalDateTime.now())
+        .build();
+  }
+}

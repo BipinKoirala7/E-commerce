@@ -1,0 +1,45 @@
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ecommerce}
+    driver-class: org.postgresql.Driver
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    hikari:
+      connection-init-sql: SET TimeZone='UTC'
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format-sql: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL:true}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+
+logging:
+  level:
+    com:
+      Ecommerce:
+        ProductService: DEBUG
+
+management:
+  tracing:
+    enabled: ${MANAGEMENT_TRACING_ENABLED:true}
+  metrics:
+    export:
+      otlp:
+        enabled: ${MANAGEMENT_METRICS_EXPORT_OTLP_ENABLED:true}
+  otlp:
+    metrics:
+      export:
+        enabled: ${MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED:true}
+  opentelemetry:
+    resource-attribute:
+      service.name: ${spring.application.name:product-service}
+    tracing:
+      export:
+        otlp:
+          endpoint: ${MANAGEMENT_OPEN_TELEMETRY_TRACING_ENDPOINT:http://localhost:4318/v1/traces}

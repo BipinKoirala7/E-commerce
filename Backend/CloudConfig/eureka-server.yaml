@@ -1,0 +1,33 @@
+server:
+  port: ${SERVER_PORT:8761}
+
+spring:
+  application:
+    name: eureka-server
+
+management:
+  tracing:
+    enabled: ${MANAGEMENT_TRACING_ENABLED:true}
+  metrics:
+    export:
+      otlp:
+        enabled: ${MANAGEMENT_METRICS_EXPORT_OTLP_ENABLED:true}
+  otlp:
+    metrics:
+      export:
+        url: ${MANAGEMENT_OTLP_METRICS_EXPORT_URL:http://localhost:4318/v1/metrics}
+        enabled: ${MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED:true}
+  opentelemetry:
+    resource-attribute:
+      service.name: ${spring.application.name:eureka-server}
+    tracing:
+      export:
+        otlp:
+          endpoint: ${MANAGEMENT_OPEN_TELEMETRY_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
+
+eureka:
+  instance:
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:localhost}
+  server:
+    enable-self-preservation: ${EUREKA_SERVER_ENABLE_SELF_PRESERVATION:false}
+    wait-time-in-ms-when-sync-empty: 0

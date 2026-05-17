@@ -1,0 +1,74 @@
+server:
+  forward-headers-strategy: FRAMEWORK
+  port: ${SERVER_PORT:8081}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ecommerce}
+    driver-class: org.postgresql.Driver
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    hikari:
+      connection-init-sql: SET TimeZone='UTC'
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format-sql: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL:true}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - profile
+              - email
+            redirect-uri: ${GOOGLE_REDIRECT_URI}
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+app:
+  cors:
+    enabled: ${APP_CORS_ENABLED:true}
+    allowed-origin-patterns: ${APP_CORS_ORIGIN_PATTERNS:http://localhost:*}
+    allowed-methods: ${APP_CORS_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+    allowed-headers: ${APP_CORS_ALLOWED_HEADERS:*}
+    allow-credentials: ${APP_CORS_CREDENTIALS:true}
+    exposed-headers: ${APP_CORS_EXPOSED_HEADERS:Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Credentials}
+    max-age: ${APP_CORS_MAX_AGE:3600}
+  frontend:
+    url: ${APP_FRONTEND_URL:http://localhost:4000}
+  cookie:
+    secure: ${APP_COOKIE_SECURE:false}
+    refreshToken:
+      path: ${APP_COOKIE_REFRESH_TOKEN_PATH:/api}
+      expiration: ${APP_COOKIE_REFRESH_TOKEN_EXPIRATION:259200}
+    accessToken:
+      path: ${APP_COOKIE_ACCESS_TOKEN_PATH:/}
+      expiration: ${APP_COOKIE_ACCESS_TOKEN_EXPIRATION:3600}
+  jwt:
+    refreshTokenExpiration: 259200
+    accessTokenExpiration: 3600
+
+logging:
+  level:
+    com:
+      Ecommerce:
+        UserService: DEBUG
+
+management:
+  tracing:
+    export:
+      zipkin:
+        endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/v2/span}
+        enabled: ${ZIPKIN_ENABLE:true}

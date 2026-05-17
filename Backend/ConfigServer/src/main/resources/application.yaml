@@ -1,0 +1,37 @@
+server:
+  port: ${SERVER_PORT:8888}
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${SPRING_CLOUD_CONFIG_SERVER_GIT_URI}
+          default-label: ${GITHUB_DEFAULT_BRANCH:main}
+          username: ${GITHUB_AUTH_USERNAME}
+          password: ${GITHUB_AUTH_PASSWORD_TOKEN}
+          force-pull: true
+          clone-on-start: ${SPRING_CLOUD_CONFIG_SERVER_GIT_CLONE_ON_START:false}
+
+management:
+  tracing:
+    export:
+      enabled: ${MANAGEMENT_TRACING_EXPORT_ENABLED:true}
+  metrics:
+    export:
+      otlp:
+        enabled: ${MANAGEMENT_METRICS_EXPORT_OTLP_ENABLED:true}
+  otlp:
+    metrics:
+      export:
+        enabled: ${MANAGEMENT_OTLP_METRICS_EXPORT_ENABLED:true}
+  opentelemetry:
+    resource-attribute:
+      service:
+        name: ${spring.application.name:config-server}
+    tracing:
+      export:
+        otlp:
+          endpoint: ${MANAGEMENT_OPEN_TELEMETRY_TRACING_ENDPOINT:http://localhost:4318/v1/traces}

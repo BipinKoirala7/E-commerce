@@ -1,0 +1,52 @@
+spring:
+  cloud:
+    config:
+      enabled: ${SPRING_CLOUD_CONFIG_ENABLED:true}
+      fail-fast: ${SPRING_CLOUD_CONFIG_FAIL_FAST:true}
+      retry:
+        initial-interval: ${SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVEL:2000}
+        max-attempts: ${SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS:5}
+
+app:
+  jwt:
+    issuer: api.ecommerce.com
+    audience: ecommerce.com
+  gateway:
+    secret: ${APP_GATEWAY_SECRET}
+  service:
+    secret: ${APP_SERVICE_SECRET}
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 45000
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+      type:
+        descriptor:
+          sql:
+            BasicBinder: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  tracing:
+    sampling:
+      probability: 1.0
+
+eureka:
+  client:
+    register-with-eureka: ${EUREKA_CLIENT_REGISTER_WITH_EUREKA:true}
+    fetch-registry: ${EUREKA_CLIENT_FETCH_REGISTRY:true}
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
