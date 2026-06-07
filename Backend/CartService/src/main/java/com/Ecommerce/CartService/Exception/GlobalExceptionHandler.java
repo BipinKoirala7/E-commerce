@@ -10,6 +10,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.DataAccessException;
@@ -22,12 +23,16 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.ResourceAccessException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+  private ObjectMapper objectMapper;
 
   @ExceptionHandler(ProductAlreadyInWishlistException.class)
   public ResponseEntity<RestApiResponse<Void>> handleProductAlreadyInWishlistException(@NonNull ProductAlreadyInWishlistException e) {
@@ -276,16 +281,21 @@ public class GlobalExceptionHandler {
   private @NonNull String extractErrorMessage(@NonNull FeignException e, HttpStatus status) {
     String contentUTF8 = e.contentUTF8();
 
-    // Try to extract the response body from a downstream service
     if (contentUTF8 != null && !contentUTF8.isBlank()) {
-      // Truncate if too long
-      if (contentUTF8.length() > 200) {
-        return contentUTF8.substring(0, 200) + "...";
+      try{
+        JsonNode node = objectMapper.readTree(contentUTF8);
+        JsonNode messageNode = node.get("message");
+
+        if (messageNode.isMissingNode() && !messageNode.isNull()) {
+          return messageNode.asString();
+        }
+      } catch (Exception ex) {
+        log.warn("Failed to parse error message from FeignException response body");
+        log.warn("Response body: {}", contentUTF8);
+        log.warn("Parsing exception: {}", ex.getMessage());
       }
-      return contentUTF8;
     }
 
-    // Fallback to status-specific messages
     return switch (status) {
       case BAD_REQUEST -> e.getMessage() != null ? e.getMessage() : "Bad request";
       case UNAUTHORIZED -> e.getMessage() != null ? e.getMessage() : "Authentication failed. Please log in again!";
