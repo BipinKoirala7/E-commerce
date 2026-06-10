@@ -226,7 +226,6 @@ CloudConfig/
 - **RabbitMQ** - Message broker (used by User Service for AMQP)
 
 ### Search & Analytics
-- **Elasticsearch** - Full-text search (Product Service)
 - **Prometheus** - Metrics collection
 - **Zipkin** - Distributed tracing (available at `http://localhost:9411`)
 - **OpenTelemetry (OTLP)** - Observability (metrics & traces at `http://localhost:4318`)
@@ -495,7 +494,6 @@ Backend/
 | Mapping       | MapStruct      | 1.5.5.Final             |
 | ORM           | Hibernate/JPA  | Via Spring Data         |
 | Payment       | Stripe         | 32.0.0                  |
-| Search        | Elasticsearch  | 7+                      |
 | Messaging     | RabbitMQ       | 3.8+                    |
 | Tracing       | Brave/Zipkin   | Spring Boot integrated  |
 | Observability | OpenTelemetry  | Spring Boot integrated  |
@@ -553,5 +551,4 @@ implemented or have placeholder code. The README will be updated as the project 
 - Additional error handling and edge cases
 - More comprehensive unit and integration tests
 - DockerFile for running the app in one go
-- Elasticsearch integration for product search
 
