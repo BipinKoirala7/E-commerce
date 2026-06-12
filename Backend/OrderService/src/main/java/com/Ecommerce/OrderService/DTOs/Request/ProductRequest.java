@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @Builder
 public class ProductRequest {
-  private UUID orderId;
+  private String orderNumber;
   private List<OrderItemResponseDTO> orderItems;
   private String currency;
 }

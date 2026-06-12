@@ -6,10 +6,7 @@ import com.Ecommerce.OrderService.DTOs.Request.OrderCreateDTO;
 import com.Ecommerce.OrderService.DTOs.Request.OrderItemCreateDTO;
 import com.Ecommerce.OrderService.DTOs.Request.OrderUpdateDTO;
 import com.Ecommerce.OrderService.DTOs.Response.*;
-import com.Ecommerce.OrderService.Exception.EmptyProductsOrderCreationException;
-import com.Ecommerce.OrderService.Exception.InValidOrderUpdate;
-import com.Ecommerce.OrderService.Exception.OrderNotFound;
-import com.Ecommerce.OrderService.Exception.ZeroItemQuantityInOrderException;
+import com.Ecommerce.OrderService.Exception.*;
 import com.Ecommerce.OrderService.Mapper.OrderMapper;
 import com.Ecommerce.OrderService.Model.Order;
 import com.Ecommerce.OrderService.Model.OrderItem;
@@ -105,33 +102,22 @@ public class OrderService {
 
     if(orderUpdateDTO.getOrderStatus() == null){
       log.warn("Order Update Failed - Order Status is null");
-      throw new IllegalArgumentException("Order Status is null");
+      throw new InValidOrderUpdate("Order Status is null");
     }
 
-    Order order = orderRepository.findByIdAndUserId(orderId, SecurityUtils.getCurrentUserId())
-        .orElseThrow(() -> {
-          log.warn("Order Update Failed - Order not found");
-          return new OrderNotFound("Order with given id not found");
-        });
+    if(orderUpdateDTO.getOrderStatus() == OrderStatus.CONFIRMED){
+      log.warn("Order Update Failed - Order Status cannot be CONFIRMED");
+      throw new UnVerifiedSourceException("No Authority to perform this operation");  // This gives 500 but something else might be correct HTTP Code.
+    }
+
+    Order order = getOrderById(orderId);
 
     switch (order.getOrderStatus()) {
       case PENDING -> {
         if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)){
           order.setOrderStatus(OrderStatus.CANCELLED);
-        } else if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CONFIRMED)){
-          order.setOrderStatus(OrderStatus.CONFIRMED);
         } else {
           throw new InValidOrderUpdate("Order is not confirmed yet");
-        }
-      }
-      case CONFIRMED -> {
-        //  We have to make sure the payment has been before confirming it
-        if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)){
-          order.setOrderStatus(OrderStatus.CANCELLED);
-        } else if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.PROCESSING)) {
-          order.setOrderStatus(OrderStatus.PROCESSING);
-        } else {
-          throw new InValidOrderUpdate("Order is not processed yet");
         }
       }
       case PROCESSING -> {
@@ -157,9 +143,16 @@ public class OrderService {
     log.info("Order Update Success");
   }
 
-  public void updateOrderStatus(UUID orderId){
-    log.info("Update Order Status");
-    orderRepository.updateOrderStatus(OrderStatus.DELIVERED, orderId, SecurityUtils.getCurrentUserId());
+  public void confirmOrder(@NotNull UUID orderId, @NonNull UUID userId) {
+    log.info("Confirming Order");
+
+    Order order = orderRepository.findByIdAndUserId(orderId, userId).orElseThrow(() -> new  OrderNotFound("Order with given id not found"));
+    if(order.getOrderStatus().equals(OrderStatus.PENDING)) {
+      order.setOrderStatus(OrderStatus.CONFIRMED);
+      orderRepository.save(order);
+    } else  {
+      throw new InValidOrderUpdate("Order is not confirmed yet");
+    }
   }
 
   private Map<UUID, ProductSummary> fetchBatchProduct(Set<UUID> productIdsSet){
@@ -220,6 +213,13 @@ public class OrderService {
       throw new OrderNotFound("Order doesn't exist");
     }
     log.info("Order Deletion Success");
+  }
+
+  private Order getOrderById(@NotNull UUID orderId) {
+    log.info("Getting Order");
+    return orderRepository
+        .findByIdAndUserId(orderId, SecurityUtils.getCurrentUserId())
+        .orElseThrow(() -> new  OrderNotFound("Order with given id not found"));
   }
 
   public List<OrderItemResponseDTO> getOrderItemsOfOrder(UUID orderId){

@@ -20,6 +20,10 @@ public class Payment {
 
   @NotNull
   @Column(nullable = false)
+  private UUID userId;
+
+  @NotNull
+  @Column(nullable = false)
   private UUID orderId;
 
   @NotNull
@@ -45,7 +49,7 @@ public class Payment {
 
   @NotNull
   @Column(nullable = false, precision = 10, scale = 2)
-  private BigDecimal totalPrice;
+  private BigDecimal totalAmount;
 
   @CreationTimestamp
   @Column(nullable = false)

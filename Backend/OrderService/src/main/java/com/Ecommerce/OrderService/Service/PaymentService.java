@@ -2,20 +2,24 @@ package com.Ecommerce.OrderService.Service;
 
 import cn.hutool.core.lang.Snowflake;
 import com.Ecommerce.OrderService.Config.StripeConfig;
+import com.Ecommerce.OrderService.DTOs.Request.OrderUpdateDTO;
 import com.Ecommerce.OrderService.DTOs.Request.PaymentCreateDTO;
 import com.Ecommerce.OrderService.DTOs.Request.ProductRequest;
 import com.Ecommerce.OrderService.DTOs.Response.OrderItemResponseDTO;
 import com.Ecommerce.OrderService.DTOs.Response.StripeResponse;
 import com.Ecommerce.OrderService.Exception.OrderNotFound;
 import com.Ecommerce.OrderService.Mapper.PaymentMapper;
+import com.Ecommerce.OrderService.Model.OrderStatus;
 import com.Ecommerce.OrderService.Model.Payment;
 import com.Ecommerce.OrderService.Model.PaymentStatus;
 import com.Ecommerce.OrderService.Repository.PaymentRepository;
+import com.Ecommerce.OrderService.Security.SecurityUtils;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
@@ -54,16 +58,17 @@ public class PaymentService {
 
     List<OrderItemResponseDTO> orderItems = orderService.getOrderItemsOfOrder(orderId);
     ProductRequest productRequest = ProductRequest.builder()
-        .orderId(orderId)
+        .orderNumber(orderService.getOrder(orderId).getOrderNumber())
         .currency("USD")
         .orderItems(orderItems)
         .build();
 
     StripeResponse response = stripeService.checkOut(productRequest);
     Payment newPayment = paymentMapper.toPaymentEntity(paymentCreateDTO);
+    newPayment.setUserId(SecurityUtils.getCurrentUserId());
     newPayment.setPaymentStatus(PaymentStatus.PENDING);
     newPayment.setOrderId(orderId);
-    newPayment.setTotalPrice(orderService.getOrder(orderId).getTotalPrice());
+    newPayment.setTotalAmount(orderService.getOrder(orderId).getTotalPrice());
     newPayment.setPaymentNumber(snowflake.nextIdStr());
     newPayment.setStripeSessionId(response.getSessionId());
 
@@ -78,19 +83,22 @@ public class PaymentService {
         .findByStripeSessionId(session.getId())
         .orElseThrow(() -> new RuntimeException("Payment not found for session."));
 
+    log.debug("Payment for session {}", payment);
+
     payment.setStripePaymentIntentId(session.getPaymentIntent());
     payment.setPaymentStatus(PaymentStatus.COMPLETED);
 
     log.debug("Existing payment fetched and updated");
 
     paymentRepository.save(payment);
-    orderService.updateOrderStatus(payment.getOrderId());
+    orderService.confirmOrder(payment.getOrderId(), payment.getUserId());
   }
 
   @Transactional
   public void handleWebhook(String payload, String signHead) throws SignatureVerificationException {
     log.info("Handle Webhook was called");
     Event event = Webhook.constructEvent(payload, signHead, stripeConfig.getWebhookSecretKey());
+    log.info("Event type: {}", event.getType());
 
     if(StripeConfig.checkOutSessionCompleted.equals(event.getType())){
       log.info("Handle Webhook Info - Session Completed");
@@ -107,7 +115,7 @@ public class PaymentService {
     }
   }
 
-  public StripeResponse getSessionStatus(String sessionId) throws StripeException {
+  public StripeResponse getSessionStatus(@NotNull String sessionId) throws StripeException {
     Session session = Session.retrieve(sessionId);
     String paymentStatus = session.getPaymentStatus();
 

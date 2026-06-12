@@ -38,8 +38,8 @@ public class StripeService {
     SessionCreateParams sessionCreateParams = SessionCreateParams.builder()
         .setMode(SessionCreateParams.Mode.PAYMENT)
         .addAllLineItem(lineItems)
-        .setSuccessUrl("http://localhost:4000/order/" + productRequest.getOrderId() + "/checkout/success")
-        .setCancelUrl("http://localhost:8080/order/" + productRequest.getOrderId() + "/checkout/error")
+        .setSuccessUrl("http://localhost:4000/order/" + productRequest.getOrderNumber() + "/checkout/success")
+        .setCancelUrl("http://localhost:8080/order/" + productRequest.getOrderNumber() + "/checkout/error")
         .build();
 
     Session session;
