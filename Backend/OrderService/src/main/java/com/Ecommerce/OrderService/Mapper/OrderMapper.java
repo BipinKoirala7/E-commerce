@@ -24,17 +24,7 @@ public interface OrderMapper {
   OrderListResponseDTO toListResponseDTO(Order order);
 
   @Mapping(target = "orderItems", ignore = true)
-//  @Mapping(target = "orderStatus", constant = "PENDING")
   Order toOrderEntity(OrderCreateDTO orderCreateDTO);
   OrderItem toOrderItemEntity(OrderItemCreateDTO orderItemCreateDTO);
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "userId", ignore = true)
-  @Mapping(target = "orderNumber", ignore = true)
-  @Mapping(target = "email", ignore = true)
-  @Mapping(target = "orderItems", ignore = true)
-  @Mapping(target = "orderStatus", ignore = true)
-  @Mapping(target = "createdAt", ignore = true)
-  @Mapping(target = "updatedAt", ignore = true)
-  void fromUpdateEntityToOrderEntity(Order updatedOrder, @MappingTarget Order order);
 }

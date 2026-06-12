@@ -19,6 +19,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
+  @ExceptionHandler(InValidOrderUpdate.class)
+  public ResponseEntity<RestApiResponse<Void>> handleInValidOrderUpdateException(@NonNull InValidOrderUpdate e) {
+    log.warn("Invalid Order Exception Occurred");
+    log.warn("Exception Message: {}", e.getMessage());
+
+    return ResponseEntity
+        .status(HttpStatus.CONFLICT)
+        .body(RestApiResponse.error(HttpStatus.CONFLICT.value(), e.getMessage()));
+  }
+
   @ExceptionHandler(ZeroItemQuantityInOrderException.class)
   public ResponseEntity<RestApiResponse<Void>> handleTokenAuthenticationException(@NonNull ZeroItemQuantityInOrderException e) {
     log.warn("Zero Item Quantity In Order Excpetion Occurred");

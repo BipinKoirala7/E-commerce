@@ -7,6 +7,7 @@ import com.Ecommerce.OrderService.DTOs.Request.OrderItemCreateDTO;
 import com.Ecommerce.OrderService.DTOs.Request.OrderUpdateDTO;
 import com.Ecommerce.OrderService.DTOs.Response.*;
 import com.Ecommerce.OrderService.Exception.EmptyProductsOrderCreationException;
+import com.Ecommerce.OrderService.Exception.InValidOrderUpdate;
 import com.Ecommerce.OrderService.Exception.OrderNotFound;
 import com.Ecommerce.OrderService.Exception.ZeroItemQuantityInOrderException;
 import com.Ecommerce.OrderService.Mapper.OrderMapper;
@@ -102,22 +103,55 @@ public class OrderService {
   public void updateOrder(@NotNull UUID orderId, @NonNull OrderUpdateDTO orderUpdateDTO) {
     log.info("Order Update");
 
-    validateOrderItems(orderUpdateDTO.getOrderItems());
+    if(orderUpdateDTO.getOrderStatus() == null){
+      log.warn("Order Update Failed - Order Status is null");
+      throw new IllegalArgumentException("Order Status is null");
+    }
 
     Order order = orderRepository.findByIdAndUserId(orderId, SecurityUtils.getCurrentUserId())
         .orElseThrow(() -> {
-          log.warn("Order Update Failed - Existing Order with given id not found");
-          return new OrderNotFound("Order not found");
+          log.warn("Order Update Failed - Order not found");
+          return new OrderNotFound("Order with given id not found");
         });
-    log.debug("Order Update Info - Existing Order is fetched");
 
-    order.getOrderItems().clear();
-    orderRepository.saveAndFlush(order);
+    switch (order.getOrderStatus()) {
+      case PENDING -> {
+        if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)){
+          order.setOrderStatus(OrderStatus.CANCELLED);
+        } else if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CONFIRMED)){
+          order.setOrderStatus(OrderStatus.CONFIRMED);
+        } else {
+          throw new InValidOrderUpdate("Order is not confirmed yet");
+        }
+      }
+      case CONFIRMED -> {
+        //  We have to make sure the payment has been before confirming it
+        if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)){
+          order.setOrderStatus(OrderStatus.CANCELLED);
+        } else if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.PROCESSING)) {
+          order.setOrderStatus(OrderStatus.PROCESSING);
+        } else {
+          throw new InValidOrderUpdate("Order is not processed yet");
+        }
+      }
+      case PROCESSING -> {
+        if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)){
+          order.setOrderStatus(OrderStatus.CANCELLED);
+        } else if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.DELIVERED)) {
+          order.setOrderStatus(OrderStatus.DELIVERED);
+        } else {
+          throw new InValidOrderUpdate("Order is not delivered");
+        }
+      }
+      case DELIVERED -> {
+        if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)) {
+          throw new InValidOrderUpdate("You can't cancel order at this stage");
+        }
+      }
+      case CANCELLED -> throw new  InValidOrderUpdate("Order cannot be updated as it's cancelled");
+      default -> throw new  InValidOrderUpdate("Order status is unknown");
 
-    Set<UUID> productIdsSet = orderUpdateDTO.getOrderItems().stream().map(OrderItemCreateDTO::getProductId).collect(Collectors.toSet());
-    Map<UUID, ProductSummary> productSummaryMap = fetchBatchProduct(productIdsSet);
-    Order newOrderInstance = createOrderInstance(orderUpdateDTO.toCreateDTO(), productSummaryMap);
-    orderMapper.fromUpdateEntityToOrderEntity(newOrderInstance, order);
+    }
 
     orderRepository.save(order);
     log.info("Order Update Success");
