@@ -33,7 +33,6 @@ public class GatewayRoutesConfig {
   private static final String USER_SERVICE = "user-service";
   private static final String PRODUCT_SERVICE = "product-service";
   private static final String ORDER_SERVICE = "order-service";
-  private static final String CART_SERVICE = "cart-service";
 
   // Paths
   private static final String USER_PATH = "/user/**";
@@ -77,9 +76,9 @@ public class GatewayRoutesConfig {
   }
 
   private @NonNull RouterFunction<ServerResponse> cartServiceRoutes() {
-    return gatewayRouter(CART_SERVICE, CART_PATH)
-        .and(gatewayRouter(CART_SERVICE, CART_ITEM_PATH))
-        .and(gatewayRouter(CART_SERVICE, WISHLIST_PATH));
+    return gatewayRouter(ORDER_SERVICE, CART_PATH)
+        .and(gatewayRouter(ORDER_SERVICE, CART_ITEM_PATH))
+        .and(gatewayRouter(ORDER_SERVICE, WISHLIST_PATH));
   }
 
   private @NonNull RouterFunction<ServerResponse> gatewayRouter(String serviceName, String servicePath) {

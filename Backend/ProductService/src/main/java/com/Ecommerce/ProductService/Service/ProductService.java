@@ -96,7 +96,7 @@ public class ProductService {
     Product product = productRepository
         .findById(productId)
         .orElseThrow(() -> {
-          log.warn("Fetching Product Summary Info - Product with given ID not found");
+          log.warn("Fetching Product Summary Failed - Product with given ID not found");
           return new ProductNotFoundException("Product Not Found");
         });
 

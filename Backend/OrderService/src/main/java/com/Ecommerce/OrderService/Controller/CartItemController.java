@@ -1,9 +1,9 @@
-package com.Ecommerce.CartService.Controller;
+package com.Ecommerce.OrderService.Controller;
 
-import com.Ecommerce.CartService.DTOs.Request.CartItemUpdateDTO;
-import com.Ecommerce.CartService.DTOs.Response.CartItemResponseDTO;
-import com.Ecommerce.CartService.DTOs.Response.RestApiResponse;
-import com.Ecommerce.CartService.Service.CartItemService;
+import com.Ecommerce.OrderService.DTOs.Request.CartItemUpdateDTO;
+import com.Ecommerce.OrderService.DTOs.Response.CartItemResponseDTO;
+import com.Ecommerce.OrderService.Service.CartItemService;
+import com.Ecommerce.OrderService.DTOs.Response.RestApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

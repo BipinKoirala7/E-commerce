@@ -1,6 +1,5 @@
 package com.Ecommerce.CartService.Security;
 
-import com.Ecommerce.CartService.Exception.TokenAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 

@@ -3,7 +3,6 @@ package com.Ecommerce.CartService.Filters;
 import com.Ecommerce.CartService.DTOs.Response.RestApiResponse;
 import com.Ecommerce.CartService.Exception.EmptyTokenException;
 import com.Ecommerce.CartService.Exception.InValidTokenException;
-import com.Ecommerce.CartService.Exception.UnVerifiedSourceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

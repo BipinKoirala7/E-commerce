@@ -1,6 +1,6 @@
-package com.Ecommerce.CartService.Repository;
+package com.Ecommerce.OrderService.Repository;
 
-import com.Ecommerce.CartService.Model.CartItem;
+import com.Ecommerce.OrderService.Model.CartItem;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

@@ -1,6 +1,5 @@
 package com.Ecommerce.CartService.Filters;
 
-import com.Ecommerce.CartService.Exception.UnVerifiedSourceException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

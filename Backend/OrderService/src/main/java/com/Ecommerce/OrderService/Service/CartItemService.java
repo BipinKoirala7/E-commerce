@@ -1,15 +1,15 @@
-package com.Ecommerce.CartService.Service;
+package com.Ecommerce.OrderService.Service;
 
-import com.Ecommerce.CartService.Client.ProductServiceClient;
-import com.Ecommerce.CartService.DTOs.Request.CartItemUpdateDTO;
-import com.Ecommerce.CartService.DTOs.Response.CartItemResponseDTO;
-import com.Ecommerce.CartService.DTOs.Response.ProductSummary;
-import com.Ecommerce.CartService.DTOs.Response.RestApiResponse;
-import com.Ecommerce.CartService.Exception.CartItemNotFound;
-import com.Ecommerce.CartService.Mapper.CartItemMapper;
-import com.Ecommerce.CartService.Model.CartItem;
-import com.Ecommerce.CartService.Repository.CartItemRepository;
-import com.Ecommerce.CartService.Security.SecurityUtils;
+import com.Ecommerce.OrderService.Client.ProductServiceClient;
+import com.Ecommerce.OrderService.DTOs.Request.CartItemUpdateDTO;
+import com.Ecommerce.OrderService.DTOs.Response.CartItemResponseDTO;
+import com.Ecommerce.OrderService.DTOs.Response.ProductSummary;
+import com.Ecommerce.OrderService.DTOs.Response.RestApiResponse;
+import com.Ecommerce.OrderService.Exception.CartItemNotFound;
+import com.Ecommerce.OrderService.Mapper.CartItemMapper;
+import com.Ecommerce.OrderService.Model.CartItem;
+import com.Ecommerce.OrderService.Repository.CartItemRepository;
+import com.Ecommerce.OrderService.Security.SecurityUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +67,7 @@ public class CartItemService {
 
     List<CartItem> cartItems = cartItemRepository.findByUserId(SecurityUtils.getCurrentUserId());
     log.info("Cart Items Retrieval Success");
+    log.info("Cart Items Retrieval Info: {}", cartItems.toString());
 
     return cartItems.stream().map(cartItem -> {
       RestApiResponse<ProductSummary> apiResponse = productServiceClient.getProductSummary(cartItem.getProductId());
