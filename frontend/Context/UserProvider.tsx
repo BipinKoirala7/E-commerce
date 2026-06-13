@@ -28,6 +28,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     fetcher,
   );
 
+  console.log("SWR Status:", { isLoading, data, error });
+
   const info = useMemo(() => {
     return { data: data ? data.data : null, isLoading, error };
   }, [data, isLoading, error]);
@@ -35,7 +37,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   if (isLoading)
     return (
       <div className="min-h-60 opacity-50 text-1xl flex items-center justify-center">
-        Loading...
+        Loading it...
       </div>
     );
 

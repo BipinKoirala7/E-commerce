@@ -1,11 +1,8 @@
 import { capitalize } from "@/lib/lib";
-import { useSearchParamsStore } from "@/store/zustand";
 import { Category } from "@/types";
 import toast from "react-hot-toast";
 
 function FilterOptions() {
-  const searchParamsStore = useSearchParamsStore();
-
   return (
     <div className="flex flex-col gap-2">
       <p className="text-3xl header-font">Filter</p>

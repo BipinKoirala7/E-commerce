@@ -1,10 +1,7 @@
 import { capitalize } from "@/lib/lib";
-import { useSearchParamsStore } from "@/store/zustand";
 import { SortDirection } from "@/types";
 
 function SortByOptions() {
-  const searchParamsStore = useSearchParamsStore();
-
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-col gap-2">
@@ -17,8 +14,8 @@ function SortByOptions() {
                   type="radio"
                   name="sort"
                   id={direction}
-                  checked={searchParamsStore.direction === direction}
-                  onChange={() => searchParamsStore.setDirection(direction)}
+                  // checked={searchParamsStore.direction === direction}
+                  // onChange={() => searchParamsStore.setDirection(direction)}
                   value={direction}
                 />
                 <label htmlFor={direction} className=" cursor-pointer">

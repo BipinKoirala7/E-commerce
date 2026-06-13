@@ -12,6 +12,17 @@ const api = axios.create({
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
+api.interceptors.request.use((config) => {
+  console.log("BASE URL:", config.baseURL);
+  console.log("URL:", config.url);
+
+  const fullUrl = `${config.baseURL}${config.url}`;
+
+  console.log("FULL URL:", fullUrl);
+
+  return config;
+});
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {

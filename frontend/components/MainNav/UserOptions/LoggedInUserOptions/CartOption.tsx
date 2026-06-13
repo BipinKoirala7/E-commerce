@@ -1,22 +1,33 @@
-import { useState } from "react";
-import { PiShoppingCartSimple } from "react-icons/pi";
+"use client";
 
-import IconButton from "@/components/ui/IconButton";
-import Modal from "@/components/ui/Modal";
+import { useState } from "react";
+import { ShoppingCart } from "lucide-react";
+
 import NavCartList from "@/components/Cart/NavCartList/NavCartList";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 function CartOption() {
-  const [show, setShow] = useState(false);
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className="relative">
-      <IconButton
-        onClick={() => setShow(!show)}
-        icon={<PiShoppingCartSimple className="w-6 h-6" />}
-      />
-      <Modal show={show} className="w-full min-w-100 max-w-100 min-h-30 h-full">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <Button
+        size="icon"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-label="Toggle cart"
+      >
+        <ShoppingCart className="w-5 h-5" />
+      </Button>
+
+      <DialogContent
+        showCloseButton={false}
+        className="w-full min-w-100 max-w-100 min-h-30 h-full"
+      >
         <NavCartList />
-      </Modal>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

@@ -1,23 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import Modal from "../../ui/Modal";
-import IconWithNameButton from "../../ui/IconWithNameButton";
-import { TbSortAscending } from "react-icons/tb";
+import { Dialog } from "@/components/ui/dialog";
 import SortByOptions from "./SortByOptions";
+import { Button } from "@/components/ui/button";
 
 function SortBy() {
   const [show, setShow] = useState(false);
   return (
     <div className="relative">
-      <IconWithNameButton
-        icon={<TbSortAscending className="text-2xl aspect-square" />}
+      <Button
+        // icon={<TbSortAscending className="text-2xl aspect-square" />}
         name="Sort By"
         onClick={() => setShow(!show)}
       />
-      <Modal show={show} className="w-full min-w-40 max-w-80">
+      <Dialog open={show} onOpenChange={() => setShow(!show)}>
         <SortByOptions />
-      </Modal>
+      </Dialog>
     </div>
   );
 }

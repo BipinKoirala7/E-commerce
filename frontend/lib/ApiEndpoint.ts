@@ -1,5 +1,5 @@
 export enum ApiEndpoint {
-  BASE_URL = "http://localhost:4000/api",
+  BASE_URL = "http://localhost:8080/api/v1",
 
   // Auth Actions
   LOGIN = "/auth/login",
@@ -10,7 +10,6 @@ export enum ApiEndpoint {
   // Resource Routes
   GET_USER = "/user", // logged in user
   GET_CART = "/cart-item",
-  GET_WISHLIST = "/wishlist",
   GET_ORDER = "/order",
   GET_PRODUCT = "/product",
 }
