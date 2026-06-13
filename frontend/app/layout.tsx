@@ -2,10 +2,18 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nunito_Sans, Montserrat } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Toaster } from "react-hot-toast";
 
-const montserratHeading = Montserrat({subsets:['latin'],variable:'--font-heading'});
+import UserProvider from "@/Context/UserProvider";
+import Footer from "@/components/Footer/Footer";
+import MainNav from "@/components/MainNav/MainNav";
 
-const nunitoSans = Nunito_Sans({subsets:['latin'],variable:'--font-sans'});
+const montserratHeading = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
+
+const nunitoSans = Nunito_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +38,28 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", nunitoSans.variable, montserratHeading.variable)}
+      className={cn(
+        "h-full",
+        "antialiased",
+        geistSans.variable,
+        geistMono.variable,
+        "font-sans",
+        nunitoSans.variable,
+        montserratHeading.variable,
+      )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <UserProvider>
+          <main className="w-full min-h-screen h-full flex flex-col">
+            <MainNav />
+            <div className="w-full flex-1 text-text flex justify-center">
+              {children}
+            </div>
+          </main>
+          <Footer />
+          <Toaster />
+        </UserProvider>
+      </body>
     </html>
   );
 }
