@@ -81,6 +81,27 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --color-b: #ffffff; /* was --background */
+  --color-f: #e8e8e8; /* was --foreground */
+  --color-p: #dddddd; /* was --primary */
+  --color-s: #bfbfbf; /* was --secondary */
+  --color-star: #f2b50b;
+  --color-t: #171717;
+
+  --font-logo: "Style Script", cursive;
+}
+
+@theme {
+  --color-b: var(--color-b);
+  --color-f: var(--color-f);
+  --color-p: var(--color-p);
+  --color-s: var(--color-s);
+  --color-green1: var(--color-chart-3);
+  --color-green2: var(--color-chart-4);
+  --color-green3: var(--color-chart-5);
+  --color-star: var(--color-star);
+  --color-t: var(--color-t);
 }
 
 .dark {
@@ -138,4 +159,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
+}
+
+#logo {
+  font-family: var(--font-logo), monospace;
+  font-weight: bold;
 }

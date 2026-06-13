@@ -1,14 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { NavButton } from "@/components/ui/NavButton";
 
 function NotLoggedInUserOptions() {
   return (
     <div className="flex gap-2">
-      <Button
-      // route="/auth/login" name="Login"
-      />
-      <Button
-      // route="/auth/register" name="Sign Up"
-      />
+      <NavButton route="/auth/login" name="Login" />
+      <NavButton route="/auth/register" name="Sign Up" />
     </div>
   );
 }

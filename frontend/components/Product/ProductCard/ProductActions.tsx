@@ -23,8 +23,8 @@ function ProductActions({ product, show }: ProductInfoProps) {
         style={{ opacity, right: rightPos }}
         className="absolute top-[2.08%] flex flex-col gap-2"
       >
-        <Button variant="secondary" size="icon">
-          <CirclePlus className="w-5 h-5" />
+        <Button size="icon" className="h-8 w-8 [&_svg]:size-10">
+          <CirclePlus />
         </Button>
       </motion.div>
     </>

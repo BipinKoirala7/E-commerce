@@ -10,18 +10,15 @@ const api = axios.create({
   },
 });
 
-const fetcher = (url: string) => api.get(url).then((res) => res.data);
-
-api.interceptors.request.use((config) => {
-  console.log("BASE URL:", config.baseURL);
-  console.log("URL:", config.url);
-
-  const fullUrl = `${config.baseURL}${config.url}`;
-
-  console.log("FULL URL:", fullUrl);
-
-  return config;
-});
+const fetcher = async (url: string) => {
+  try {
+    const res = await api.get(url);
+    return res.data;
+  } catch (error: any) {
+    if (error?.response?.status === 401) return null;
+    throw error;
+  }
+};
 
 api.interceptors.response.use(
   (response) => response,

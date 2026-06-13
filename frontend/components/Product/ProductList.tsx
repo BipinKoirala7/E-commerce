@@ -28,7 +28,11 @@ function ProductList({ products }: ProductListProps) {
       variants={variants}
       initial="hidden"
       animate="visible"
-    ></motion.div>
+    >
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </motion.div>
   );
 }
 

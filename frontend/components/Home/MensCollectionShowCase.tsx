@@ -13,7 +13,7 @@ function MensCollectionShowCase() {
 
   if (isLoading)
     return (
-      <div className="w-full opacity-50 text-1xl flex items-center justify-center">
+      <div className="w-full opacity-50 text-1xl text-s flex items-center justify-center">
         Loading...
       </div>
     );
@@ -37,6 +37,8 @@ function MensCollectionShowCase() {
       </div>
     );
   }
+
+  console.log(data.data.content);
 
   return <ProductList products={data.data.content} />;
 }

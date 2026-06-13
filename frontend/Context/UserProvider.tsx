@@ -4,7 +4,7 @@ import { ApiEndpoint } from "@/lib/ApiEndpoint";
 import { fetcher } from "@/lib/axios";
 import { User, UserResponse } from "@/types";
 import { createContext, useContext, useMemo } from "react";
-import useSWR, { preload, SWRConfig } from "swr";
+import useSWR, { SWRConfig } from "swr";
 
 type UserProviderT = {
   data: User | null;
@@ -13,7 +13,20 @@ type UserProviderT = {
   isAuthenticated: () => boolean;
 };
 
-preload(ApiEndpoint.GET_USER, fetcher);
+// {
+//   fetcher,
+//   onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+//     if (error?.status === 401 || error?.response?.status === 401) return;
+//     if (retryCount >= 3) return;
+//     revalidate({ retryCount });
+//   },
+// }
+
+const swrConfig = {
+  fetcher,
+  shouldRetryOnError: false,
+  revalidateOnFocus: false,
+};
 
 const UserProviderContext = createContext<UserProviderT>({
   data: null,
@@ -26,36 +39,30 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   const { isLoading, data, error } = useSWR<UserResponse>(
     ApiEndpoint.GET_USER,
     fetcher,
+    {
+      shouldRetryOnError: false,
+      revalidateOnFocus: false,
+    },
   );
 
-  console.log("SWR Status:", { isLoading, data, error });
-
-  const info = useMemo(() => {
-    return { data: data ? data.data : null, isLoading, error };
-  }, [data, isLoading, error]);
-
+  const value = useMemo(
+    () => ({
+      data: data?.data ?? null,
+      isLoading,
+      error: error ?? null,
+      isAuthenticated: () => !!data?.data,
+    }),
+    [data, isLoading, error],
+  );
   if (isLoading)
     return (
       <div className="min-h-60 opacity-50 text-1xl flex items-center justify-center">
-        Loading it...
+        Loading...
       </div>
     );
 
-  const value = {
-    isAuthenticated: () => !!data,
-    ...info,
-  };
   return (
-    <SWRConfig
-      value={{
-        fetcher,
-        onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-          if (error?.status === 401 || error?.response?.status === 401) return;
-          if (retryCount >= 3) return;
-          revalidate({ retryCount });
-        },
-      }}
-    >
+    <SWRConfig value={swrConfig}>
       <UserProviderContext.Provider value={value}>
         {children}
       </UserProviderContext.Provider>

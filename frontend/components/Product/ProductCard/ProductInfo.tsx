@@ -13,7 +13,7 @@ type ProductInfoProps = {
 
 function ProductInfo({ show, product }: ProductInfoProps) {
   const springValue = useSpring(show, { stiffness: 300, damping: 30 });
-  const bottomPos = useTransform(springValue, [0, 1], ["-14%", "0%"]);
+  const bottomPos = useTransform(springValue, [0, 1], ["-12%", "0%"]);
   return (
     <>
       <motion.div

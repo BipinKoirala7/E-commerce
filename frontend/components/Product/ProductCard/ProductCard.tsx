@@ -27,7 +27,7 @@ function ProductCard({ product }: ProductCardProps) {
       onMouseEnter={() => show.set(1)}
       onMouseLeave={() => show.set(0)}
       variants={variants}
-      className="relative bg-foreground rounded-sm overflow-hidden cursor-pointer"
+      className="relative bg-f rounded-sm overflow-hidden cursor-pointer"
     >
       <div
         className={

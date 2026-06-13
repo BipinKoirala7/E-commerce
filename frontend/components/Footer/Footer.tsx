@@ -7,7 +7,7 @@ import FooterCopyrightLabel from "./FooterCopyrightLabel";
  */
 function Footer() {
   return (
-    <div className="w-full bg-text text-background px-8 pt-16 pb-4 grid grid-cols-2 gap-8">
+    <div className="w-full bg-t text-f px-8 pt-16 pb-4 grid grid-cols-2 gap-8">
       <FooterMainSection />
       <FooterLinks />
       <FooterCopyrightLabel />
