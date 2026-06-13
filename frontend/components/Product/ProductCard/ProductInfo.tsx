@@ -1,35 +1,38 @@
 "use client";
 
 import { ProductSummary } from "@/types";
-
-import { MotionValue, useSpring, useTransform } from "framer-motion";
 import * as motion from "motion/react-client";
 import Link from "next/link";
 
 type ProductInfoProps = {
-  show: MotionValue<number>;
   product: ProductSummary;
 };
 
-function ProductInfo({ show, product }: ProductInfoProps) {
-  const springValue = useSpring(show, { stiffness: 300, damping: 30 });
-  const bottomPos = useTransform(springValue, [0, 1], ["-12%", "0%"]);
+function ProductInfo({ product }: ProductInfoProps) {
+  const formattedPrice = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(product.price);
+
   return (
-    <>
-      <motion.div
-        style={{ bottom: bottomPos }}
-        className={`absolute left-1/2 -translate-x-1/2 w-full bg-secondary hover:bg-text hover:text-foreground transition-colors duration-300 text-text rounded-sm`}
+    <motion.div
+      whileHover={{ y: -4 }}
+      className="w-full flex-1 flex flex-col bg-secondary hover:bg-green3 hover:text-f transition-colors duration-300 border border-transparent hover:shadow-md"
+    >
+      <Link
+        href={`/product/${product.id}`}
+        className="flex flex-col flex-1 gap-1.5 p-4 text-text hover:text-f"
       >
-        <Link
-          href={`/product/${product.id}`}
-          className="flex flex-col gap-2 p-2"
-        >
-          <p className="text-2xl header-font">{product.brand.toWellFormed()}</p>
-          <p className={`single-line`}>{product.name.toWellFormed()}</p>
-          <p className={"font-bold"}>${product.price}</p>
-        </Link>
-      </motion.div>
-    </>
+        <h3 className="text-xl font-semibold tracking-tight header-font">
+          {product.brand.toWellFormed()}
+        </h3>
+        <p className="text-sm opacity-80 truncate standard-font">
+          {product.name.toWellFormed()}
+        </p>
+        <p className="mt-auto pt-2 text-base font-bold">{formattedPrice}</p>
+      </Link>
+    </motion.div>
   );
 }
 

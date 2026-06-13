@@ -2,26 +2,51 @@
 
 import { useState } from "react";
 import FilterOptions from "@/components/Search/Filter/FilterOptions";
-import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { IconButton } from "@/components/ui/IconButton";
+import { SlidersHorizontal } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 function Filter() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const currentParams = useSearchParams();
   const [show, setShow] = useState(false);
+
+  const updateQueryParam = (key: string, value: string) => {
+    const params = new URLSearchParams(currentParams.toString());
+
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+
+    params.set("page", "1");
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
   return (
-    <div className="relative">
-      <Button
-        // icon={<IoFilter className="text-2xl aspect-square" />}
-        name="Filter"
-        onClick={() => setShow(!show)}
-      />
-      {/* <Dialog
-        open={show}
-        onOpenChange={() => setShow(!show)}
-        //  className="w-full min-w-40 max-w-80"
+    <Popover open={show} onOpenChange={setShow}>
+      <PopoverTrigger onClick={() => setShow(!show)}>
+        <SlidersHorizontal className="text-2xl aspect-square" />
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-full min-w-60 max-w-120"
+        align="start"
+        side="left"
       >
-        <FilterOptions />
-      </Dialog> */}
-    </div>
+        <FilterOptions
+          currentParams={currentParams}
+          onUpdate={updateQueryParam}
+        />
+      </PopoverContent>
+    </Popover>
   );
 }
 

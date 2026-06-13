@@ -1,20 +1,22 @@
 "use client";
 
 import { Search as SearchIcon, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 function Search() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [searchInput, setSearchInput] = useState<string>("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("query") || "",
+  );
 
   function handleSearch() {
-    if (searchInput.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchInput.trim())}`);
+    if (searchQuery.trim()) {
+      router.push(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
     }
   }
 
@@ -23,7 +25,7 @@ function Search() {
       handleSearch();
     }
     if (e.key === "Escape") {
-      setSearchInput("");
+      router.push(`/search`);
       inputRef.current?.blur();
     }
   }
@@ -35,17 +37,17 @@ function Search() {
         type="text"
         className="max-w-48 w-48 h-8 text-t border-none shadow-none bg-transparent focus-visible:ring-0 placeholder:text-s"
         placeholder="Search Products..."
-        onChange={(e) => setSearchInput(e.target.value)}
         onKeyDown={handleKeyDown}
-        value={searchInput}
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.currentTarget.value)}
       />
 
       <Button
         variant="ghost"
         size="icon"
-        className={`h-7 w-7 rounded-l-sm shrink-0 transition-opacity ${searchInput.length > 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        className={`h-7 w-7 rounded-l-sm shrink-0 transition-opacity ${searchParams.get("query") ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         onClick={() => {
-          setSearchInput("");
+          router.push(`/search?query=`);
           inputRef.current?.focus();
         }}
       >

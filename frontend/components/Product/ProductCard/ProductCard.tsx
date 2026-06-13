@@ -44,7 +44,7 @@ function ProductCard({ product }: ProductCardProps) {
         />
       </div>
       <ProductActions show={show} product={product} />
-      <ProductInfo show={show} product={product} />
+      <ProductInfo product={product} />
     </motion.div>
   );
 }

@@ -1,31 +1,27 @@
 import { fetcher } from "@/lib/axios";
 import { productSearchUrl } from "@/lib/lib";
-import { ProductSearchParams, ProductSearchResponse } from "@/types";
+import { ProductSearchResponse } from "@/types";
 import useSWR from "swr";
 import ProductList from "@/components/Product/ProductList";
 import Pagination from "@/components/Search/Pagination/Pagination";
+import { useSearchParams } from "next/navigation";
 
 function SearchProductList() {
-  // const params: ProductSearchParams = {
-  //   query: store.query,
-  //   category: store.category,
-  //   minPrice: store.minPrice,
-  //   maxPrice: store.maxPrice,
-  //   sort: store.sort,
-  //   page: store.page,
-  //   size: store.size,
-  //   direction: store.direction,
-  // };
+  const params = useSearchParams();
+
+  console.log(params);
 
   const query = productSearchUrl({
-    query: "shirt",
-    category: "",
-    minPrice: "",
-    maxPrice: "",
-    sort: "relevance",
-    page: "0",
-    size: "20",
-    direction: "DESC",
+    query: params.get("query") || "",
+    category: params.get("category") || "",
+    minPrice: params.get("minPrice") || "",
+    maxPrice: params.get("maxPrice") || "",
+    sort: params.get("sort") || "",
+    page: params.get("page")
+      ? (Number(params.get("page")) - 1).toString()
+      : "0",
+    size: params.get("size") || "",
+    direction: (params.get("direction") as "ASC" | "DESC") || "",
   });
   console.log(query);
 
@@ -60,6 +56,8 @@ function SearchProductList() {
       </div>
     );
   }
+
+  console.log("Product List: ", data.data);
 
   return (
     <div className="min-h-full flex flex-col gap-8">

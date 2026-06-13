@@ -1,11 +1,17 @@
 import { capitalize } from "@/lib/lib";
-import { Category } from "@/types";
+import { Category, SortDirection } from "@/types";
+import { ReadonlyURLSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
-function FilterOptions() {
+type FilterOptionsProps = {
+  currentParams: ReadonlyURLSearchParams;
+  onUpdate: (key: string, value: string) => void;
+};
+
+function FilterOptions({ currentParams, onUpdate }: FilterOptionsProps) {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-3xl header-font">Filter</p>
+      <p className="text-2xl header-font">Filter</p>
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-2">
           <p className="text-xl">Category</p>
@@ -18,9 +24,9 @@ function FilterOptions() {
                     name="category"
                     id={category}
                     value={category}
-                    checked={searchParamsStore.category === category}
+                    checked={currentParams.get("category") === category}
                     radioGroup="categories"
-                    onChange={() => searchParamsStore.setCategory(category)}
+                    onChange={() => onUpdate("category", category)}
                   />
                   <label htmlFor={category} className=" cursor-pointer">
                     {capitalize(category)}
@@ -32,26 +38,28 @@ function FilterOptions() {
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-xl">Price Range</p>
-          <div className="flex flex-col gap-3">
+          <div className="flex gap-3">
             <div className="flex flex-col gap-2">
               <label htmlFor="">Min Price: </label>
               <input
                 type="text"
                 name="minPrice"
                 id="minPrice"
-                min={searchParamsStore.maxPrice}
-                value={searchParamsStore.minPrice}
+                min={currentParams.get("minPrice") || ""}
+                value={currentParams.get("minPrice") || ""}
                 onChange={(e) => {
-                  if (e.currentTarget.value >= searchParamsStore.maxPrice) {
+                  console.log(e.currentTarget.value);
+                  console.log(currentParams.get("maxPrice"));
+                  if (
+                    Number(e.currentTarget.value) >=
+                    Number(currentParams.get("maxPrice"))
+                  ) {
                     toast.error("Max Price cannot be less than Min Price");
                     return;
                   }
-                  searchParamsStore.setPriceRange(
-                    e.currentTarget.value,
-                    searchParamsStore.maxPrice,
-                  );
+                  onUpdate("minPrice", e.currentTarget.value);
                 }}
-                className="outline-none bg-primary px-2 py-1"
+                className="outline-none bg-p px-2 py-1"
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -60,16 +68,35 @@ function FilterOptions() {
                 type="text"
                 name="maxPrice"
                 id="maxPrice"
-                value={searchParamsStore.maxPrice}
-                onChange={(e) =>
-                  searchParamsStore.setPriceRange(
-                    searchParamsStore.minPrice,
-                    e.currentTarget.value,
-                  )
-                }
-                className="outline-none bg-primary px-2 py-1"
+                value={currentParams.get("maxPrice") || ""}
+                onChange={(e) => onUpdate("maxPrice", e.currentTarget.value)}
+                className="outline-none bg-p px-2 py-1"
               />
             </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-2xl header-font">Sort</p>
+          <div className="flex flex-col gap-3">
+            {Object.entries(SortDirection).map(
+              ([directionLabel, direction]) => {
+                return (
+                  <div key={direction} className="flex gap-2 items-center">
+                    <input
+                      type="radio"
+                      name="sort"
+                      id={direction}
+                      checked={currentParams.get("direction") === direction}
+                      onChange={() => onUpdate("direction", direction)}
+                      value={direction}
+                    />
+                    <label htmlFor={direction} className=" cursor-pointer">
+                      {capitalize(directionLabel)}
+                    </label>
+                  </div>
+                );
+              },
+            )}
           </div>
         </div>
       </div>
