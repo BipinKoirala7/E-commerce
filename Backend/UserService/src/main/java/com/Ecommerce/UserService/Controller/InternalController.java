@@ -20,7 +20,7 @@ public class InternalController {
   private final AuthService authService;
 
   @PostMapping("auth/token-refresh")
-  public ResponseEntity<RestApiResponse<TokenDTO>> refreshToken(@RequestBody @Valid String refreshToken){
+  public ResponseEntity<RestApiResponse<String>> refreshToken(@RequestBody @Valid String refreshToken){
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(RestApiResponse.success(HttpStatus.OK.value(), authService.refreshTokens(refreshToken), "Successfully generated refreshed tokens"));

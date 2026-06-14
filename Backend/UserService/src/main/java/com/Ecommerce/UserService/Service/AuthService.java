@@ -137,51 +137,9 @@ public class AuthService {
     log.info("OAuth User Login Success");
   }
 
-  //  This is for the login and sign Up to create refresh tokens
-//  @Transactional
-//  public void refreshTokens(HttpServletRequest request, HttpServletResponse response) {
-//    log.info("Refreshing tokens...");
-//
-//    Cookie refreshTokenCookie = cookieService.getCookie(request, cookieService.getREFRESH_TOKEN());
-//    String refreshToken = Optional
-//        .ofNullable(refreshTokenCookie)
-//        .map(Cookie::getValue)
-//        .orElseThrow(() -> {
-//          log.warn("Refreshing Tokens Failed - Refresh Token not found");
-//          return new EmptyTokenException("Refresh Token is empty");
-//        });
-//    log.debug("Refreshing Tokens Info - Refresh Token found in cookie");
-//
-//    jwtService.validateRefreshToken(refreshToken);
-//    log.debug("Refreshing Tokens Info - Refresh Token is valid");
-//
-//    UUID userId = UUID.fromString(jwtService.extractSubject(refreshToken));
-//    log.debug("Refreshing Tokens Info - User Id extracted from Refresh Token");
-//
-//    User user = userService.getUserById(userId);
-//    TokenDTO tokens = jwtService.generateTokens(user);
-//    log.debug("Refreshing Tokens Info - Tokens Generated Successfully");
-//
-//    cookieService.deleteRefreshTokenCookie(response);
-//    cookieService.deleteAccessTokenCookie(response);
-//    log.debug("Refreshing Tokens Info - Old cookies deleted successfully");
-//
-//    jwtService.revokeRefreshToken(refreshToken);
-//    log.debug("Refreshing Tokens Info - Refresh Token Revoked");
-//
-//    jwtService.storeActiveRefreshToken(user.getId(), tokens.getRefreshToken());
-//    log.debug("Refreshing Tokens Info - Active Refresh Token Stored");
-//
-//    response.addCookie(cookieService.createRefreshTokenCookie(tokens.getRefreshToken()));
-//    response.addCookie(cookieService.createAccessTokenCookie(tokens.getAccessToken()));
-//    log.debug("Refreshing Tokens Info - New cookies created successfully");
-//
-//    log.debug("Refreshing Tokens Success");
-//  }
-
   //  This is used by API Gateway for refreshing tokens.
   @Transactional
-  public TokenDTO refreshTokens(String refreshToken) {
+  public String refreshTokens(String refreshToken) {
     log.info("Refreshing tokens ..");
 
     jwtService.validateRefreshToken(refreshToken);
@@ -191,17 +149,11 @@ public class AuthService {
     log.debug("Refreshing Tokens Info - User Id extracted from Refresh Token");
 
     User user = userService.getUserById(userId);
-    TokenDTO tokens = jwtService.generateTokens(user);
+    String accessToken = jwtService.generateAccessToken(user);
     log.debug("Refreshing Tokens Info - Tokens Generated Successfully");
 
-    jwtService.revokeRefreshToken(refreshToken);
-    log.debug("Refreshing Tokens Info - Refresh Token Revoked");
-
-    jwtService.storeActiveRefreshToken(user.getId(), tokens.getRefreshToken());
-    log.debug("Refreshing Tokens Info - Active Refresh Token Stored");
-
     log.debug("Refreshing Tokens Success");
-    return tokens;
+    return accessToken;
   }
 
   @Transactional

@@ -106,32 +106,29 @@ public class JwtService {
     log.debug("Access Token Validation Success");
   }
 
-  public TokenDTO refreshToken(HttpServletRequest request, HttpServletResponse response) {
-    log.debug("Refreshing Token...");
+  public String generateNewAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    log.debug("Generate New Access Token...");
 
     String refreshToken = cookieService.extractRefreshTokenFromRequest(request);
-    log.debug("Refreshing Token Info - Refresh Token found in cookie");
+    log.debug("Generate New Access Token Info - Refresh Token found in cookie");
 
     validateRefreshToken(refreshToken);
     log.debug("Refreshing Token Info - Refresh Token is partially (need further checking with db) valid");
 
-    RestApiResponse<TokenDTO> apiResponse = userServiceClient.refreshToken(refreshToken);
+    RestApiResponse<String> apiResponse = userServiceClient.refreshToken(refreshToken);
 
     if(!apiResponse.getSuccess()){
-      log.debug("Refreshing Token Failed - Unable to refresh token: User Service token refresh failed");
-      throw new InValidTokenException("Refreshing Token Failed");  // Maybe use something different
+      log.debug("Refreshing Token Failed - Unable to refresh token");
+      throw new InValidTokenException("Refreshing Token Failed");
     }
 
-    TokenDTO newTokenSet = apiResponse.getData();
-
-    cookieService.deleteRefreshTokenCookie(response);
     cookieService.deleteAccessTokenCookie(response);
-    log.debug("Refreshing Token Info - Old cookies deleted successfully");
+    log.debug("Generate New Access Token Info - Old Access Token cookie deleted successfully");
 
-    response.addCookie(cookieService.createRefreshTokenCookie(newTokenSet.getRefreshToken()));
-    response.addCookie(cookieService.createAccessTokenCookie(newTokenSet.getAccessToken()));
-    log.debug("Refreshing Token Info - New Cookies for token created successfully");
-    return newTokenSet;
+    response.addCookie(cookieService.createAccessTokenCookie(apiResponse.getData()));
+    log.debug("Generate New Access Token Info - New Access Token cookie created successfully");
+
+    return apiResponse.getData();
   }
 
 }

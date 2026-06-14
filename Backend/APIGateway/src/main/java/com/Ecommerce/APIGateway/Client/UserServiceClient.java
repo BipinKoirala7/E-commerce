@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface UserServiceClient {
 
   @PostMapping("internal/auth/token-refresh")
-  public RestApiResponse<TokenDTO> refreshToken(@RequestBody @Valid String refreshToken);
+  RestApiResponse<String> refreshToken(@RequestBody @Valid String refreshToken);
 }

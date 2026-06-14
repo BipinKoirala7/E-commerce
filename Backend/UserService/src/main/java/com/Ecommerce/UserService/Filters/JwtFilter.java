@@ -35,6 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
       "/internal/auth/token-refresh",
       "/auth/register",
       "/auth/login",
+      "/auth/logout",
       "/auth/oauth/google",
       "/login/oauth2/code/**",
       "/oauth2/authorization/**",

@@ -70,16 +70,12 @@ public class JwtFilter extends OncePerRequestFilter {
       jwtService.validateAccessToken(accessToken);
       log.debug("Jwt Filter Authentication Info - Access Token is valid");
 
-      // Rotate the token with new ones
-      TokenDTO newTokenSet = jwtService.refreshToken(request, response);
-      accessTokenForContext = newTokenSet.getAccessToken();
-      log.debug("Jwt Filter Authentication Info - Token refreshed successfully, new Access Token set in cookie");
+      accessTokenForContext = accessToken;
 
     } catch (ExpiredJwtException | EmptyTokenException e) {
       // If the access token is expired or missing, attempt to refresh the token using the refresh token
       log.debug("Jwt Filter Authentication Info - Access Token is expired or missing, attempting to refresh token");
-      TokenDTO tokenDTO = jwtService.refreshToken(request, response);
-      accessTokenForContext = tokenDTO.getAccessToken();
+      accessTokenForContext = jwtService.generateNewAccessToken(request, response);
 
     }
       createSecurityContext(accessTokenForContext);

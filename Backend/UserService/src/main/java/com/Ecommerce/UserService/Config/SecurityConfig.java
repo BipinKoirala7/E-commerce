@@ -82,6 +82,7 @@ public class SecurityConfig {
             .requestMatchers(
                 "/auth/register",
                 "/auth/login",
+                "/auth/logout",
                 "/auth/oauth/**",
                 "/oauth2/authorization/**",
                 "/login/oauth2/code/**",
