@@ -79,21 +79,6 @@ export type ProductSummary = Omit<
 // Reverted Back to previous ProductSummary
 export type ProductSearchResult = PageableResult<ProductSummary>;
 
-// Wishlist enums, interfaces, and types
-
-export interface WishList {
-  id: string;
-  createdAt: Date;
-}
-
-export type AddToWishlist = {
-  productId: string;
-};
-
-export type WishListItem = Omit<WishList, "createdAt"> & {
-  product: ProductSummary;
-};
-
 // Cart enums, interfaces, and types
 export interface CartItem {
   id: string;
@@ -127,6 +112,36 @@ export interface OrderItem {
   quantity: number;
 }
 
+export interface OrderList {
+  id: string;
+  orderNumber: string;
+  noOfItems: number;
+  totalPrice: number;
+  orderStatus: OrderStatus;
+  createdAt: string;
+  billingAddress: string;
+}
+
+export interface OrderItem {
+  id: string;
+  productSummary: ProductSummary;
+  quantity: number;
+}
+
+export interface OrderDetails {
+  id: string;
+  orderNumber: string;
+  billingAddress: string;
+  shippingAddress: string;
+  email: string;
+  phone: string;
+  orderItems: OrderItem[];
+  totalPrice: number;
+  orderStatus: OrderStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Order {
   id: string;
   billingAddress: string;
@@ -149,6 +164,19 @@ export type OrderSummary = Omit<
   | "orderItems"
   | "updatedAt"
 >;
+
+export interface OrderCreateDTO {
+  billingAddress: string;
+  shippingAddress: string;
+  phone: string;
+  orderItems: OrderItemCreate[];
+}
+
+export interface OrderItemCreate {
+  productId: string;
+  quantity: number;
+}
+
 // Response enums, interfaces, and types
 export type ApiResponse<T> = {
   statusCode: number;
@@ -183,9 +211,10 @@ export type UserSignUpResponse = ApiResponse<boolean>;
 export type UserResponse = ApiResponse<User>;
 export type ProductSearchResponse = ApiResponse<ProductSearchResult>;
 export type ProductDetailsResponse = ApiResponse<Product>;
-export type WishListResponse = ApiResponse<WishListItem[]>;
-export type AddToWishlistResponse = ApiResponse<void>;
-export type RemoveFromWishlistResponse = ApiResponse<void>;
 export type CartResponse = ApiResponse<CartProductSummary[]>;
 export type AddToCartResponse = ApiResponse<void>;
 export type RemoveFromCartResponse = ApiResponse<void>;
+export type CreateOrderResponse = ApiResponse<void>;
+export type DeleteOrderResponse = ApiResponse<void>;
+export type OrderListResponse = ApiResponse<OrderList[]>;
+export type OrderDetailsResponse = ApiResponse<OrderDetails>;

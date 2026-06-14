@@ -6,52 +6,67 @@ import { fetcher } from "@/lib/axios";
 import useSWR from "swr";
 import SelectedCartInfo from "./SelectedCartInfo";
 import { ApiEndpoint } from "@/lib/ApiEndpoint";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
 
 function CartList() {
   const { isLoading, data, error } = useSWR<ApiResponse<CartProductSummary[]>>(
-    ApiEndpoint.GET_CART,
+    ApiEndpoint.CART,
     fetcher,
   );
+  const [selectedTotalPrice, setSelectedTotalPrice] = useState(0);
 
-  // Handle loading, error, and empty states
+  const subtract = (price: number) => {
+    setSelectedTotalPrice((prev) => prev - price);
+  };
+
+  const add = (price: number) => {
+    setSelectedTotalPrice((prev) => prev + price);
+  };
+
   if (isLoading)
     return (
-      <div className="min-h-60 opacity-50 text-1xl flex items-center justify-center">
-        Loading...
-      </div>
-    );
-  if (error)
-    return (
-      <div className="min-h-60 opacity-50 text-1xl flex items-center justify-center">
-        Error loading Cart Items
-      </div>
-    );
-  if (data == null)
-    return (
-      <div className="min-h-60 opacity-50 text-1xl flex items-center justify-center">
-        Something went wrong
+      <div className="flex flex-col gap-3">
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full rounded-md" />
+        ))}
       </div>
     );
 
-  if (data.data.length === 0) {
+  if (error)
     return (
-      <div className="min-h-60 opacity-50 text-1xl flex items-center justify-center">
-        Your Cart is empty
+      <div className="min-h-60 flex items-center justify-center text-sm text-muted-foreground">
+        Failed to load cart. Try again later.
       </div>
     );
-  }
+
+  if (data == null)
+    return (
+      <div className="min-h-60 flex items-center justify-center text-sm text-muted-foreground">
+        Something went wrong.
+      </div>
+    );
+
+  if (data.data.length === 0)
+    return (
+      <div className="min-h-60 flex items-center justify-center text-sm text-muted-foreground">
+        Your cart is empty.
+      </div>
+    );
 
   return (
     <div className="flex flex-col gap-2">
       {data.data.map((cartItem) => (
-        <div key={cartItem.id} className="flex flex-col gap-2">
-          <CartCard item={cartItem} />
-        </div>
+        <CartCard
+          key={cartItem.id}
+          item={cartItem}
+          add={add}
+          subtract={subtract}
+        />
       ))}
-      <div>
-        <hr className="border-t-2 border-primary mt-3" />
-        <SelectedCartInfo />
-      </div>
+      <Separator className="mt-4" />
+      <SelectedCartInfo totalPrice={selectedTotalPrice} />
     </div>
   );
 }

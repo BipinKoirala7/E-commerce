@@ -8,11 +8,11 @@ import useSWR from "swr";
 import ProductDetailsActions from "./ProductDetailsActions";
 import ProductDetailsInfo from "@/components/Product/ProductDetails/ProductDetailsInfo";
 import ProductDetailsMainImage from "./ProductDetailsMainImage";
-import ProductDetailsImageOptions from "./ProductDetailsImageOptions";
+import { useUser } from "@/Context/UserProvider";
 
 function ProductDetailsPage({ productId }: { productId: string }) {
-  console.log(productId);
-
+  const user = useUser();
+  console.log("User", user);
   const { isLoading, data, error } = useSWR<ProductDetailsResponse>(
     productDetailsUrl(productId),
     fetcher,
@@ -46,16 +46,17 @@ function ProductDetailsPage({ productId }: { productId: string }) {
     );
   return (
     <div className="w-full h-full grid grid-cols-2 gap-8">
-      <ProductDetailsMainImage productImage={data.data.images[0]} />
+      <ProductDetailsMainImage productImage={data.data.imageUrl} />
       <div className="flex flex-col gap-4 py-20">
         <ProductDetailsInfo
           name={data.data.name}
           price={data.data.price}
           brand={data.data.brand}
         />
-        <ProductDetailsImageOptions productImages={data.data.images} />
         <p>{data.data.description}</p>
-        <ProductDetailsActions productId={productId} />
+        {user.isAuthenticated() && (
+          <ProductDetailsActions productId={productId} />
+        )}
       </div>
     </div>
   );

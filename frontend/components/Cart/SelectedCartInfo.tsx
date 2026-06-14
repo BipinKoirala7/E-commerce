@@ -1,19 +1,21 @@
 "use client";
 
-import { useSelectedCartItemPriceInfoStore } from "@/store/zustand";
-import Button from "../ui/Button";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
-function SelectedCartInfo() {
-  const totalPrice = useSelectedCartItemPriceInfoStore((state) =>
-    state.getTotalPrice(),
-  );
+type SelectedCartInfoPropsT = {
+  totalPrice: number;
+};
+
+function SelectedCartInfo({ totalPrice }: SelectedCartInfoPropsT) {
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-lg font-medium">Total Price: ${totalPrice}</p>
-      <Button
-        name="Order"
-        className="bg-secondary text-white rounded-sm px-4 py-2 hover:bg-text smooth-transition"
-      />
+    <div className="flex flex-col gap-3 pt-2">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-muted-foreground">Subtotal</span>
+        <span className="font-semibold">${totalPrice.toFixed(2)}</span>
+      </div>
+
+      <Button className="w-full">Place order</Button>
     </div>
   );
 }

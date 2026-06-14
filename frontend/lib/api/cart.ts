@@ -8,14 +8,16 @@ import toast from "react-hot-toast";
 import { api } from "../axios";
 import { mutate } from "swr";
 
-const cartUrl = ApiEndpoint.GET_CART;
+const cartUrl = ApiEndpoint.CART;
 
 export async function addToCart(cartItem: AddCartItem): Promise<boolean> {
-  const response = await api.post<AddToCartResponse>(cartUrl, cartItem);
+  const response = await api.post<AddToCartResponse>(
+    cartUrl + "/" + cartItem.productId,
+  );
 
   if (response.data.success) {
     toast.success("Added to cart successfully");
-    mutate(ApiEndpoint.GET_CART);
+    mutate(cartUrl);
     return true;
   } else {
     toast.error("Failed to add to cart");
@@ -30,7 +32,7 @@ export async function removeFromCart(cartItemId: string): Promise<boolean> {
 
   if (response.data.success) {
     toast.success("Removed from cart successfully");
-    mutate(ApiEndpoint.GET_CART);
+    mutate(cartUrl);
     return true;
   } else {
     toast.error("Failed to remove from cart");

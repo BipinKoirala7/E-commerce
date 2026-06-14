@@ -1,12 +1,15 @@
 "use client";
 
-import IconButton from "../../ui/IconButton";
+import { IconButton } from "@/components/ui/IconButton";
 
 import { GoArrowUpRight } from "react-icons/go";
 import { useRouter } from "next/navigation";
 import NavCartUI from "./NavCartUI";
 
-function NavCartList() {
+type NavCartListPropsT = {
+  close: () => void;
+};
+function NavCartList({ close }: NavCartListPropsT) {
   const router = useRouter();
 
   return (
@@ -17,6 +20,7 @@ function NavCartList() {
           icon={<GoArrowUpRight className="w-5 h-5" />}
           className="hover:bg-primary"
           onClick={() => {
+            close();
             router.push("/cart");
           }}
         />

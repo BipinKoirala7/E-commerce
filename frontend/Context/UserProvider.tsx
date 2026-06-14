@@ -8,8 +8,6 @@ import useSWR, { SWRConfig } from "swr";
 
 type UserProviderT = {
   data: User | null;
-  isLoading: boolean;
-  error: Error | null;
   isAuthenticated: () => boolean;
 };
 
@@ -30,29 +28,21 @@ const swrConfig = {
 
 const UserProviderContext = createContext<UserProviderT>({
   data: null,
-  isLoading: false,
-  error: null,
   isAuthenticated: () => false,
 });
 
 function UserProvider({ children }: { children: React.ReactNode }) {
-  const { isLoading, data, error } = useSWR<UserResponse>(
-    ApiEndpoint.GET_USER,
-    fetcher,
-    {
-      shouldRetryOnError: false,
-      revalidateOnFocus: false,
-    },
-  );
+  const { isLoading, data } = useSWR<UserResponse>(ApiEndpoint.USER, fetcher, {
+    shouldRetryOnError: false,
+    revalidateOnFocus: false,
+  });
 
   const value = useMemo(
     () => ({
       data: data?.data ?? null,
-      isLoading,
-      error: error ?? null,
       isAuthenticated: () => !!data?.data,
     }),
-    [data, isLoading, error],
+    [data],
   );
   if (isLoading)
     return (

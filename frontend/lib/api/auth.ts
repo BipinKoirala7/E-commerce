@@ -5,7 +5,7 @@ import {
   UserSignUpResponse,
 } from "@/types";
 import { api } from "@/lib/axios";
-import { ApiEndpoint } from "../ApiEndpoint";
+import { ApiEndpoint } from "@/lib/ApiEndpoint";
 
 async function handleEmailSignup(userInfo: RegisterUserInfo) {
   try {

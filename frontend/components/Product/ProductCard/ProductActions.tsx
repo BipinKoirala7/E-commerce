@@ -6,6 +6,7 @@ import * as motion from "motion/react-client";
 
 import { Button } from "@/components/ui/button";
 import { ProductSummary } from "@/types";
+import { addToCart } from "@/lib/api/cart";
 
 type ProductInfoProps = {
   show: MotionValue<number>;
@@ -17,13 +18,23 @@ function ProductActions({ product, show }: ProductInfoProps) {
   const rightPos = useTransform(springValue, [0, 1], ["-25%", "2.5%"]);
   const opacity = useTransform(springValue, [0, 1], [0, 1]);
 
+  const handleClick = () => {
+    addToCart({
+      productId: product.id,
+    });
+  };
+
   return (
     <>
       <motion.div
         style={{ opacity, right: rightPos }}
         className="absolute top-[2.08%] flex flex-col gap-2"
       >
-        <Button size="icon" className="h-8 w-8 [&_svg]:size-10">
+        <Button
+          size="icon"
+          className="h-8 w-8 [&_svg]:size-10"
+          onClick={handleClick}
+        >
           <CirclePlus />
         </Button>
       </motion.div>

@@ -4,30 +4,28 @@ import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
 
 import NavCartList from "@/components/Cart/NavCartList/NavCartList";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 function CartOption() {
-  const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <Button
-        size="icon"
-        onClick={() => setOpen((prev) => !prev)}
-        aria-expanded={open}
-        aria-label="Toggle cart"
-      >
+    <Popover open={show} onOpenChange={setShow}>
+      <PopoverTrigger onClick={() => setShow(!show)}>
         <ShoppingCart className="w-5 h-5" />
-      </Button>
-
-      <DialogContent
-        showCloseButton={false}
-        className="w-full min-w-100 max-w-100 min-h-30 h-full"
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-full min-w-60 max-w-120"
+        align="start"
+        side="left"
       >
-        <NavCartList />
-      </DialogContent>
-    </Dialog>
+        <NavCartList close={() => setShow((prev) => !prev)} />
+      </PopoverContent>
+    </Popover>
   );
 }
 

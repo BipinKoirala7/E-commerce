@@ -8,15 +8,15 @@ export const productSearchUrl = (params: ProductSearchParams) => {
     ),
   );
 
-  return ApiEndpoint.GET_PRODUCT + "?" + searchParams.toString();
+  return ApiEndpoint.PRODUCT + "?" + searchParams.toString();
 };
 
 export const productCategorySearchUrl = (category: string) => {
-  return ApiEndpoint.GET_PRODUCT + "/category/" + category;
+  return ApiEndpoint.PRODUCT + "/category/" + category;
 };
 
 export const productDetailsUrl = (productId: string) => {
-  return ApiEndpoint.GET_PRODUCT + "/" + productId;
+  return ApiEndpoint.PRODUCT + "/" + productId;
 };
 
 export const capitalize = (str: string) =>
