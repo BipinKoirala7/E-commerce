@@ -4,5 +4,6 @@ public enum PaymentMethod {
   CARD,
   ESEWA,
   KHALTI,
-  CASHONHAND
+  CASHONHAND,
+  STRIPE
 }

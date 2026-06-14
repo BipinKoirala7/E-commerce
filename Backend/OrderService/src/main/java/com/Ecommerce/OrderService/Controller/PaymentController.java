@@ -1,6 +1,7 @@
 package com.Ecommerce.OrderService.Controller;
 
-import com.Ecommerce.OrderService.DTOs.Request.PaymentCreateDTO;
+import com.Ecommerce.OrderService.DTOs.Request.PaymentCreateDto;
+import com.Ecommerce.OrderService.DTOs.Response.PaymentResponseDto;
 import com.Ecommerce.OrderService.DTOs.Response.RestApiResponse;
 import com.Ecommerce.OrderService.DTOs.Response.StripeResponse;
 import com.Ecommerce.OrderService.Service.PaymentService;
@@ -21,7 +22,7 @@ public class PaymentController {
   private final PaymentService paymentService;
 
   @PostMapping("{orderId}/pay")
-  public ResponseEntity<RestApiResponse<StripeResponse>> payForOrder(@PathVariable @Valid UUID orderId, @RequestBody @Valid PaymentCreateDTO paymentCreateDTO){
+  public ResponseEntity<RestApiResponse<StripeResponse>> payForOrder(@PathVariable @Valid UUID orderId, @RequestBody @Valid PaymentCreateDto paymentCreateDTO){
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(RestApiResponse.success(HttpStatus.OK.value(), paymentService.initiateCheckout(orderId, paymentCreateDTO), "Successfully Paid for Order"));

@@ -19,6 +19,6 @@ public class OrderCreateDTO {
   private String phone;
 
   @NotEmpty
-  private List<OrderItemCreateDTO> orderItems;
+  private List<OrderItemCreateDto> orderItems;
 
 }

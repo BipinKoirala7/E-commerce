@@ -18,6 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
   List<Order> findByUserId(UUID userId);
 
   Optional<Order> findByIdAndUserId(UUID id, UUID userId);
+  Optional<Order> findByOrderNumberAndUserId(String id, UUID userId);
 
   @Modifying
   @Query(value = "UPDATE orders SET order_status= :status WHERE order_id= :order_id AND user_id= :user_id", nativeQuery = true)

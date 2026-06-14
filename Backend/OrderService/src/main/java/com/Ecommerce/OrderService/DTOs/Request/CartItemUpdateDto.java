@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CartItemUpdateDTO {
+public class CartItemUpdateDto {
 
   @NotNull
   private Integer quantity;

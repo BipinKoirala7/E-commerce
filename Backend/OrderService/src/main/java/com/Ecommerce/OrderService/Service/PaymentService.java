@@ -2,14 +2,15 @@ package com.Ecommerce.OrderService.Service;
 
 import cn.hutool.core.lang.Snowflake;
 import com.Ecommerce.OrderService.Config.StripeConfig;
-import com.Ecommerce.OrderService.DTOs.Request.OrderUpdateDTO;
-import com.Ecommerce.OrderService.DTOs.Request.PaymentCreateDTO;
+import com.Ecommerce.OrderService.DTOs.Request.PaymentCreateDto;
 import com.Ecommerce.OrderService.DTOs.Request.ProductRequest;
+import com.Ecommerce.OrderService.DTOs.Response.OrderDetailsResponseDTO;
 import com.Ecommerce.OrderService.DTOs.Response.OrderItemResponseDTO;
+import com.Ecommerce.OrderService.DTOs.Response.PaymentResponseDto;
 import com.Ecommerce.OrderService.DTOs.Response.StripeResponse;
 import com.Ecommerce.OrderService.Exception.OrderNotFound;
+import com.Ecommerce.OrderService.Exception.PaymentNotFound;
 import com.Ecommerce.OrderService.Mapper.PaymentMapper;
-import com.Ecommerce.OrderService.Model.OrderStatus;
 import com.Ecommerce.OrderService.Model.Payment;
 import com.Ecommerce.OrderService.Model.PaymentStatus;
 import com.Ecommerce.OrderService.Repository.PaymentRepository;
@@ -19,6 +20,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,17 +52,17 @@ public class PaymentService {
   private final StripeConfig stripeConfig;
 
   @Transactional
-  public StripeResponse initiateCheckout(UUID orderId, PaymentCreateDTO paymentCreateDTO){
+  public StripeResponse initiateCheckout(UUID orderId, PaymentCreateDto paymentCreateDTO){
     if(!orderService.existsById(orderId)){
       log.warn("Order with given order Id doesn't exists");
       throw new OrderNotFound("Order not found");
     }
 
-    List<OrderItemResponseDTO> orderItems = orderService.getOrderItemsOfOrder(orderId);
+    OrderDetailsResponseDTO orderDetailsResponseDTO = orderService.getOrder(orderId);
     ProductRequest productRequest = ProductRequest.builder()
-        .orderNumber(orderService.getOrder(orderId).getOrderNumber())
+        .orderNumber(orderDetailsResponseDTO.getOrderNumber())
         .currency("USD")
-        .orderItems(orderItems)
+        .orderItems(orderDetailsResponseDTO.getOrderItems())
         .build();
 
     StripeResponse response = stripeService.checkOut(productRequest);
@@ -68,7 +70,7 @@ public class PaymentService {
     newPayment.setUserId(SecurityUtils.getCurrentUserId());
     newPayment.setPaymentStatus(PaymentStatus.PENDING);
     newPayment.setOrderId(orderId);
-    newPayment.setTotalAmount(orderService.getOrder(orderId).getTotalPrice());
+    newPayment.setTotalAmount(orderDetailsResponseDTO.getTotalPrice());
     newPayment.setPaymentNumber(snowflake.nextIdStr());
     newPayment.setStripeSessionId(response.getSessionId());
 

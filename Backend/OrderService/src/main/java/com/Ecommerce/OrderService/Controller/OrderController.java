@@ -1,7 +1,7 @@
 package com.Ecommerce.OrderService.Controller;
 
 import com.Ecommerce.OrderService.DTOs.Request.OrderCreateDTO;
-import com.Ecommerce.OrderService.DTOs.Request.OrderUpdateDTO;
+import com.Ecommerce.OrderService.DTOs.Request.OrderUpdateDto;
 import com.Ecommerce.OrderService.DTOs.Response.OrderDetailsResponseDTO;
 import com.Ecommerce.OrderService.DTOs.Response.OrderListResponseDTO;
 import com.Ecommerce.OrderService.DTOs.Response.RestApiResponse;
@@ -36,15 +36,15 @@ public class OrderController {
         .body(RestApiResponse.success(HttpStatus.OK.value(), this.orderService.getAllOrders(), "Successfully Fetched Orders"));
   }
 
-  @GetMapping("{orderId}")
-  public ResponseEntity<RestApiResponse<OrderDetailsResponseDTO>> getOrderInfo(@PathVariable UUID orderId) {
+  @GetMapping("{orderNumber}")
+  public ResponseEntity<RestApiResponse<OrderDetailsResponseDTO>> getOrderInfo(@PathVariable String orderNumber) {
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(RestApiResponse.success(HttpStatus.OK.value(), this.orderService.getOrder(orderId), "Successfully Fetched Order"));
+        .body(RestApiResponse.success(HttpStatus.OK.value(), this.orderService.getOrder(orderNumber), "Successfully Fetched Order"));
   }
 
   @PutMapping("{orderId}")
-  public ResponseEntity<RestApiResponse<Void>> updateOrder(@Valid @RequestBody OrderUpdateDTO orderUpdateDTO, @PathVariable UUID orderId) {
+  public ResponseEntity<RestApiResponse<Void>> updateOrder(@Valid @RequestBody OrderUpdateDto orderUpdateDTO, @PathVariable UUID orderId) {
     this.orderService.updateOrder(orderId, orderUpdateDTO);
     return ResponseEntity
         .status(HttpStatus.OK)

@@ -3,16 +3,20 @@ package com.Ecommerce.OrderService.Service;
 import cn.hutool.core.lang.Snowflake;
 import com.Ecommerce.OrderService.Client.ProductServiceClient;
 import com.Ecommerce.OrderService.DTOs.Request.OrderCreateDTO;
-import com.Ecommerce.OrderService.DTOs.Request.OrderItemCreateDTO;
-import com.Ecommerce.OrderService.DTOs.Request.OrderUpdateDTO;
+import com.Ecommerce.OrderService.DTOs.Request.OrderItemCreateDto;
+import com.Ecommerce.OrderService.DTOs.Request.OrderUpdateDto;
 import com.Ecommerce.OrderService.DTOs.Response.*;
 import com.Ecommerce.OrderService.Exception.*;
 import com.Ecommerce.OrderService.Mapper.OrderMapper;
+import com.Ecommerce.OrderService.Mapper.PaymentMapper;
 import com.Ecommerce.OrderService.Model.Order;
 import com.Ecommerce.OrderService.Model.OrderItem;
 import com.Ecommerce.OrderService.Model.OrderStatus;
+import com.Ecommerce.OrderService.Model.Payment;
 import com.Ecommerce.OrderService.Repository.OrderRepository;
+import com.Ecommerce.OrderService.Repository.PaymentRepository;
 import com.Ecommerce.OrderService.Security.SecurityUtils;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +45,9 @@ public class OrderService {
 
   private final ProductServiceClient productServiceClient;
   private final OrderRepository orderRepository;
+  private final PaymentRepository paymentRepository;
   private final Snowflake snowflake;
+  private final PaymentMapper paymentMapper;
   private final OrderMapper orderMapper;
   private final JwtService jwtService;
 
@@ -51,7 +57,7 @@ public class OrderService {
 
     validateOrderItems(orderCreateDTO.getOrderItems());
 
-    Set<UUID> productIdsSet = orderCreateDTO.getOrderItems().stream().map(OrderItemCreateDTO::getProductId).collect(Collectors.toSet());
+    Set<UUID> productIdsSet = orderCreateDTO.getOrderItems().stream().map(OrderItemCreateDto::getProductId).collect(Collectors.toSet());
     Map<UUID, ProductSummary> productSummaryMap = fetchBatchProduct(productIdsSet);
     Order newOrder = createOrderInstance(orderCreateDTO, productSummaryMap);
     newOrder.setOrderNumber(snowflake.nextIdStr());
@@ -71,13 +77,60 @@ public class OrderService {
     }).toList();
   }
 
+  private Order findOrderByIdAndUser(UUID orderId) {
+    return orderRepository.findByIdAndUserId(orderId, SecurityUtils.getCurrentUserId())
+        .orElseThrow(() -> new OrderNotFound("Order not found"));
+  }
+
+  public List<OrderItemResponseDTO> getOrderItemsOfOrder(UUID orderId) {
+    if (Objects.isNull(orderId)) throw new IllegalArgumentException("Order Id is null");
+
+    Order order = findOrderByIdAndUser(orderId);
+    Set<UUID> productIds = order.getOrderItems().stream()
+        .map(OrderItem::getProductId)
+        .collect(Collectors.toSet());
+
+    Map<UUID, ProductSummary> productSummaryMap = fetchBatchProduct(productIds);
+
+    return order.getOrderItems().stream()
+        .map(item -> new OrderItemResponseDTO(
+            item.getId(),
+            productSummaryMap.get(item.getProductId()),
+            item.getQuantity()
+        ))
+        .toList();
+  }
+
   public OrderDetailsResponseDTO getOrder(UUID orderId) {
+    log.info("Fetching Order Details");
+    Order order = findOrderByIdAndUser(orderId);
+    OrderDetailsResponseDTO responseDTO = orderMapper.toDetailsResponseDTO(order);
+    responseDTO.setOrderItems(new ArrayList<>());
+
+    Set<UUID> productIds = order.getOrderItems().stream()
+        .map(OrderItem::getProductId)
+        .collect(Collectors.toSet());
+
+    Map<UUID, ProductSummary> productSummaryMap = fetchBatchProduct(productIds);
+
+    for (OrderItem item : order.getOrderItems()) {
+      responseDTO.getOrderItems().add(new OrderItemResponseDTO(
+          item.getId(),
+          productSummaryMap.get(item.getProductId()),
+          item.getQuantity()
+      ));
+    }
+    responseDTO.setPayment(getPaymentByOrderId(order.getId()));
+    return responseDTO;
+  }
+
+  public OrderDetailsResponseDTO getOrder(String orderNumber) {
     log.info("Fetching Order");
 
-    Order order = orderRepository.findByIdAndUserId(orderId, SecurityUtils.getCurrentUserId())
+    Order order = orderRepository.findByOrderNumberAndUserId(orderNumber, SecurityUtils.getCurrentUserId())
         .orElseThrow(() -> {
           log.warn("Fetching Order Failed - Order not found");
-          return new OrderNotFound("Order with given id not found");
+          return new OrderNotFound("Order with given order not found");
         });
 
     OrderDetailsResponseDTO responseDTO = orderMapper.toDetailsResponseDTO(order);
@@ -92,12 +145,13 @@ public class OrderService {
           .add(new OrderItemResponseDTO(orderItem.getId(), productSummaryMap.get(orderItem.getProductId()), orderItem.getQuantity()));
     }
 
+    responseDTO.setPayment(getPaymentByOrderId(order.getId()));
     log.info("Fetching Order Success");
     return responseDTO;
   }
 
   @Transactional
-  public void updateOrder(@NotNull UUID orderId, @NonNull OrderUpdateDTO orderUpdateDTO) {
+  public void updateOrder(@NotNull UUID orderId, @NonNull OrderUpdateDto orderUpdateDTO) {
     log.info("Order Update");
 
     if(orderUpdateDTO.getOrderStatus() == null){
@@ -176,7 +230,7 @@ public class OrderService {
     return productMap;
   }
 
-  private BigDecimal calculateTotalPrice(@NonNull List<OrderItemCreateDTO> items, Map<UUID, ProductSummary> productMap) {
+  private BigDecimal calculateTotalPrice(@NonNull List<OrderItemCreateDto> items, Map<UUID, ProductSummary> productMap) {
     return items.stream()
         .map(item -> productMap.get(item.getProductId())
             .getPrice()
@@ -189,7 +243,7 @@ public class OrderService {
     orderInstance.setUserId(SecurityUtils.getCurrentUserId());
     orderInstance.setEmail(jwtService.extractEmail(SecurityUtils.getAccessToken()));
 
-    for(OrderItemCreateDTO orderItemCreateDTO : orderCreateDTO.getOrderItems()) {
+    for(OrderItemCreateDto orderItemCreateDTO : orderCreateDTO.getOrderItems()) {
       ProductSummary product = productmap.get(orderItemCreateDTO.getProductId());
 
       if (product == null) {
@@ -222,13 +276,15 @@ public class OrderService {
         .orElseThrow(() -> new  OrderNotFound("Order with given id not found"));
   }
 
-  public List<OrderItemResponseDTO> getOrderItemsOfOrder(UUID orderId){
-    if(Objects.isNull(orderId)){
-      log.warn("Fetching Order Items of Order Failed - Order Id is null");
-      throw new IllegalArgumentException("Order Id is null");
-    }
+  public PaymentResponseDto getPaymentByOrderId(@Valid UUID orderId) {
+    log.info("Fetching Payment by Order Id");
 
-    return getOrder(orderId).getOrderItems();
+    return paymentRepository.findByOrderId(orderId)
+        .map(paymentMapper::toPaymentResponseDto)
+        .orElseGet(() -> {
+          log.warn("Payment not found for Order Id: {}", orderId);
+          return null;
+        });
   }
 
   public boolean existsById(UUID orderId){
@@ -240,13 +296,13 @@ public class OrderService {
     return orderRepository.existsByIdAndUserId(orderId, SecurityUtils.getCurrentUserId());
   }
 
-  private void validateOrderItems(List<OrderItemCreateDTO> orderItems){
+  private void validateOrderItems(List<OrderItemCreateDto> orderItems){
     if(Objects.isNull(orderItems) || orderItems.isEmpty()) {
       log.warn("Validate Order Items Failed - Order Items is empty");
       throw new EmptyProductsOrderCreationException("No products in order");
     }
 
-    for(OrderItemCreateDTO orderItemCreateDTO : orderItems){
+    for(OrderItemCreateDto orderItemCreateDTO : orderItems){
       if(orderItemCreateDTO.getQuantity() <= 0) {
         log.warn("Validate Order Items Failed - Order Item Quantity cannot be less than or equal to 0");
         throw new ZeroItemQuantityInOrderException("Order Item Quantity less than or equal to 0");

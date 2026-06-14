@@ -19,6 +19,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
+  @ExceptionHandler(PaymentNotFound.class)
+  public ResponseEntity<RestApiResponse<Void>> handlePaymentNotFoundException(@NonNull PaymentNotFound e) {
+    log.warn("Payment Not Found Exception Occurred");
+    log.warn("Exception Message: {}", e.getMessage());
+
+    return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body(RestApiResponse.error(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+  }
+
   @ExceptionHandler(InValidOrderUpdate.class)
   public ResponseEntity<RestApiResponse<Void>> handleInValidOrderUpdateException(@NonNull InValidOrderUpdate e) {
     log.warn("Invalid Order Exception Occurred");
@@ -31,7 +41,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ZeroItemQuantityInOrderException.class)
   public ResponseEntity<RestApiResponse<Void>> handleTokenAuthenticationException(@NonNull ZeroItemQuantityInOrderException e) {
-    log.warn("Zero Item Quantity In Order Excpetion Occurred");
+    log.warn("Zero Item Quantity In Order Exception Occurred");
     log.warn("Exception Message: {}", e.getMessage());
 
     return ResponseEntity

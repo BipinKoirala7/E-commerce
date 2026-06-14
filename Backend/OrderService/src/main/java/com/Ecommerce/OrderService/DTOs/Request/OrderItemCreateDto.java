@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class OrderItemCreateDTO {
+public class OrderItemCreateDto {
 
   @NotNull
   private UUID productId;

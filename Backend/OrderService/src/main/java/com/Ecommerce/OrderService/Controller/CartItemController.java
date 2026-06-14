@@ -1,6 +1,6 @@
 package com.Ecommerce.OrderService.Controller;
 
-import com.Ecommerce.OrderService.DTOs.Request.CartItemUpdateDTO;
+import com.Ecommerce.OrderService.DTOs.Request.CartItemUpdateDto;
 import com.Ecommerce.OrderService.DTOs.Response.CartItemResponseDTO;
 import com.Ecommerce.OrderService.Service.CartItemService;
 import com.Ecommerce.OrderService.DTOs.Response.RestApiResponse;
@@ -36,7 +36,7 @@ public class CartItemController {
   }
 
   @PatchMapping("{productId}")
-  public ResponseEntity<RestApiResponse<Void>> updateCartItem(@Valid @RequestBody CartItemUpdateDTO cartItemUpdateDTO, @PathVariable UUID productId) {
+  public ResponseEntity<RestApiResponse<Void>> updateCartItem(@Valid @RequestBody CartItemUpdateDto cartItemUpdateDTO, @PathVariable UUID productId) {
     cartItemService.updateCartItemQuantity(productId, cartItemUpdateDTO);
     return ResponseEntity
         .status(HttpStatus.OK)

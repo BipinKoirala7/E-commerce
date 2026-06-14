@@ -1,7 +1,7 @@
 package com.Ecommerce.OrderService.Service;
 
 import com.Ecommerce.OrderService.Client.ProductServiceClient;
-import com.Ecommerce.OrderService.DTOs.Request.CartItemUpdateDTO;
+import com.Ecommerce.OrderService.DTOs.Request.CartItemUpdateDto;
 import com.Ecommerce.OrderService.DTOs.Response.CartItemResponseDTO;
 import com.Ecommerce.OrderService.DTOs.Response.ProductSummary;
 import com.Ecommerce.OrderService.DTOs.Response.RestApiResponse;
@@ -25,7 +25,7 @@ import java.util.*;
  * @see ProductServiceClient
  * @see CartItemRepository
  * @see CartItemMapper
- * @see CartItemUpdateDTO
+ * @see CartItemUpdateDto
  * */
 @Slf4j
 @Service
@@ -50,7 +50,7 @@ public class CartItemService {
 
     if (existingCartItem.isPresent()) {
       log.debug("Cart Item Creation Info - Cart Item already exists And Updating Cart Item Quantity");
-      updateCartItemQuantity(existingCartItem.get().getProductId(), new CartItemUpdateDTO(existingCartItem.get().getQuantity() + 1));
+      updateCartItemQuantity(existingCartItem.get().getProductId(), new CartItemUpdateDto(existingCartItem.get().getQuantity() + 1));
 
       log.info("Cart Item Creation Success");
       return;
@@ -86,7 +86,7 @@ public class CartItemService {
   }
 
   @Transactional
-  public void updateCartItemQuantity(@NotNull UUID productId,@NonNull CartItemUpdateDTO cartItemUpdateDTO) {
+  public void updateCartItemQuantity(@NotNull UUID productId,@NonNull CartItemUpdateDto cartItemUpdateDTO) {
     log.info("Updating Cart Item...");
 
     log.debug("ProductId: {}, Updated Quantity: {}", productId, cartItemUpdateDTO.getQuantity());
