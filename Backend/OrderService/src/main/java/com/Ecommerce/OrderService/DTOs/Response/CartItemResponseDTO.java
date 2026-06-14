@@ -15,7 +15,7 @@ public class CartItemResponseDTO {
 
   public CartItemResponseDTO(@NonNull CartItem cartItem, ProductSummary productSummary){
     this.id = cartItem.getId();
-    this.productSummary = productSummary;
+    this.product = productSummary;
     this.quantity = cartItem.getQuantity();
     this.createdAt = cartItem.getCreatedAt();
     this.updatedAt = cartItem.getUpdatedAt();
@@ -25,7 +25,7 @@ public class CartItemResponseDTO {
   private UUID id;
 
   @NotNull
-  private ProductSummary productSummary;
+  private ProductSummary product;
 
   @NotNull
   private Integer quantity;

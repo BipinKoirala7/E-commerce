@@ -11,6 +11,8 @@ import com.Ecommerce.OrderService.Model.CartItem;
 import com.Ecommerce.OrderService.Repository.CartItemRepository;
 import com.Ecommerce.OrderService.Security.SecurityUtils;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,7 +50,7 @@ public class CartItemService {
 
     if (existingCartItem.isPresent()) {
       log.debug("Cart Item Creation Info - Cart Item already exists And Updating Cart Item Quantity");
-      updateCartItemQuantity(existingCartItem.get().getId(), new CartItemUpdateDTO(existingCartItem.get().getQuantity() + 1));
+      updateCartItemQuantity(existingCartItem.get().getProductId(), new CartItemUpdateDTO(existingCartItem.get().getQuantity() + 1));
 
       log.info("Cart Item Creation Success");
       return;
@@ -84,20 +86,8 @@ public class CartItemService {
   }
 
   @Transactional
-  public void updateCartItemQuantity(UUID productId, CartItemUpdateDTO cartItemUpdateDTO) {
+  public void updateCartItemQuantity(@NotNull UUID productId,@NonNull CartItemUpdateDTO cartItemUpdateDTO) {
     log.info("Updating Cart Item...");
-
-    if (Objects.isNull(productId)) {
-      log.warn("Cart Item Update Failed - Product Id is null");
-      throw new IllegalArgumentException("Product Id  is null");
-    }
-    log.debug("Updating Cart Item Info - Product Id is present");
-
-    if (Objects.isNull(cartItemUpdateDTO)) {
-      log.warn("Cart Item Update Failed - Updated Cart Item is null");
-      throw new IllegalArgumentException("Updated Cart Item is null");
-    }
-    log.debug("Updating Cart Item Info - Updated Cart Item is present");
 
     log.debug("ProductId: {}, Updated Quantity: {}", productId, cartItemUpdateDTO.getQuantity());
     if(!cartItemRepository.existsByProductIdAndUserId(productId, SecurityUtils.getCurrentUserId())){
@@ -105,9 +95,16 @@ public class CartItemService {
       throw new CartItemNotFound("Cart Item doesn't exists");
     }
 
-    if(cartItemUpdateDTO.getQuantity() <= 0){
+    if(cartItemUpdateDTO.getQuantity() < 0){
       log.warn("Cart Item Update Failed - Quantity must be greater than zero");
       throw new IllegalArgumentException("Quantity must be greater than zero");
+    }
+
+    if(cartItemUpdateDTO.getQuantity() == 0){
+      log.debug("Updated Quantity is zero, Deleting Cart Item");
+      deleteCartItem(productId);
+      log.info("Cart Item Update Success - Cart Item Deleted");
+      return;
     }
     log.debug("Updating Cart Item Info - Cart Item exists and Updated Quantity is valid");
 

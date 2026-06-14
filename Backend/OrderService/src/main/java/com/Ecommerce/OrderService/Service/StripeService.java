@@ -21,11 +21,11 @@ public class StripeService {
   public StripeResponse checkOut(@NonNull ProductRequest productRequest) {
     List<SessionCreateParams.LineItem> lineItems = productRequest.getOrderItems().stream().map(item -> {
       SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData.builder()
-          .setName(item.getProductSummary().getName()).build();
+          .setName(item.getProduct().getName()).build();
 
       SessionCreateParams.LineItem.PriceData priceData = SessionCreateParams.LineItem.PriceData.builder()
           .setCurrency(productRequest.getCurrency())
-          .setUnitAmount(item.getProductSummary().getPrice().longValue())
+          .setUnitAmount(item.getProduct().getPrice().longValue())
           .setProductData(productData)
           .build();
 

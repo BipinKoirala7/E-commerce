@@ -13,6 +13,6 @@ import java.util.UUID;
 @Getter
 public class OrderItemResponseDTO {
   private UUID id;
-  private ProductSummary productSummary;
+  private ProductSummary product;
   private Integer quantity;
 }
