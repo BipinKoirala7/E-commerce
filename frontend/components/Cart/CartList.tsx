@@ -8,22 +8,22 @@ import SelectedCartInfo from "./SelectedCartInfo";
 import { ApiEndpoint } from "@/lib/ApiEndpoint";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useMemo } from "react";
+import { useCartSelectionStore } from "@/store/zustand";
 
 function CartList() {
   const { isLoading, data, error } = useSWR<ApiResponse<CartProductSummary[]>>(
     ApiEndpoint.CART,
     fetcher,
   );
-  const [selectedTotalPrice, setSelectedTotalPrice] = useState(0);
+  const { checkedIds } = useCartSelectionStore();
 
-  const subtract = (price: number) => {
-    setSelectedTotalPrice((prev) => prev - price);
-  };
-
-  const add = (price: number) => {
-    setSelectedTotalPrice((prev) => prev + price);
-  };
+  const selectedTotalPrice = useMemo(() => {
+    if (!data?.data) return 0;
+    return data.data
+      .filter((item) => checkedIds.has(item.id))
+      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  }, [data, checkedIds]);
 
   if (isLoading)
     return (
@@ -58,12 +58,7 @@ function CartList() {
   return (
     <div className="flex flex-col gap-2">
       {data.data.map((cartItem) => (
-        <CartCard
-          key={cartItem.id}
-          item={cartItem}
-          add={add}
-          subtract={subtract}
-        />
+        <CartCard key={cartItem.id} item={cartItem} />
       ))}
       <Separator className="mt-4" />
       <SelectedCartInfo totalPrice={selectedTotalPrice} />

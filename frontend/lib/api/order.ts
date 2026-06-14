@@ -1,8 +1,4 @@
-import {
-  OrderCreateDTO,
-  CreateOrderResponse,
-  DeleteOrderResponse,
-} from "@/types";
+import { CreateOrderResponse, DeleteOrderResponse, CreateOrder } from "@/types";
 import { ApiEndpoint } from "../ApiEndpoint";
 import { api } from "@/lib/axios";
 import toast from "react-hot-toast";
@@ -10,7 +6,7 @@ import { mutate } from "swr";
 
 const orderUrl = ApiEndpoint.ORDER;
 
-export async function createOrder(order: OrderCreateDTO): Promise<boolean> {
+export async function createOrder(order: CreateOrder): Promise<boolean> {
   const response = await api.post<CreateOrderResponse>(orderUrl, order);
 
   if (response.data.success) {

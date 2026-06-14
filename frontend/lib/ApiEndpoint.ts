@@ -12,4 +12,5 @@ export enum ApiEndpoint {
   CART = "/cart-item",
   ORDER = "/order",
   PRODUCT = "/product",
+  PAYMENT = "/payment",
 }

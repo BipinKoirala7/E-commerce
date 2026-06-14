@@ -4,7 +4,9 @@ import { useState } from "react";
 import { CartProductSummary } from "@/types";
 import { TiMinus } from "react-icons/ti";
 import { IconButton } from "@/components/ui/IconButton";
-import { removeFromCart } from "@/lib/api/cart";
+import { addToCart, deleteFromCart, removeFromCart } from "@/lib/api/cart";
+import { Button } from "@/components/ui/button";
+import { Minus, Plus, Trash2 } from "lucide-react";
 
 type CartSmallCardProps = {
   item: CartProductSummary;
@@ -17,7 +19,7 @@ function CartSmallCard({ item }: CartSmallCardProps) {
       key={item.id}
       onMouseEnter={() => setShowOptions(true)}
       onMouseLeave={() => setShowOptions(false)}
-      className="p-2 rounded-sm flex items-center space-x-4 overflow-hidden cursor-pointer hover:bg-primary smooth-transition"
+      className="p-2 rounded-sm flex items-center space-x-4 overflow-hidden cursor-pointer hover:bg-f smooth-transition"
     >
       <Image
         src={item.product.imageUrl}
@@ -26,7 +28,7 @@ function CartSmallCard({ item }: CartSmallCardProps) {
         height={60}
         className="w-16 aspect-4/3 rounded object-cover"
       />
-      <div className="w-full flex items-center justify-between">
+      <div className="w-full flex items-center justify-between gap-8">
         <div className="relative flex flex-col gap-1 overflow-hidden">
           <p className="text-md font-medium single-line">
             {item.product.brand}
@@ -35,14 +37,39 @@ function CartSmallCard({ item }: CartSmallCardProps) {
             ${item.product.price.toFixed(2)}
           </p>
         </div>
-        <div
-          className={`h-full flex gap-2 p-1 items-center smooth-transition ${showOptions ? "opacity-100" : "opacity-0"}`}
-        >
-          <IconButton
-            icon={<TiMinus className="w-5 h-5" />}
-            className="hover:bg-secondary"
-            onClick={() => removeFromCart(item.product.id)}
-          />
+        <div className="flex items-center gap-2">
+          <div className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-sm text-muted-foreground">
+            <span className="text-xs text-muted-foreground/60">Qty</span>
+            <span className="font-medium text-foreground">{item.quantity}</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            onClick={() => removeFromCart(item.product.id, item.quantity - 1)}
+            disabled={item.quantity <= 1}
+          >
+            <Minus className="w-4 h-4" />
+            <span className="sr-only">Remove item</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="shrink-0 text-muted-foreground hover:text-green3 hover:bg-green3/10"
+            onClick={() => addToCart({ productId: item.product.id })}
+          >
+            <Plus className="w-4 h-4" />
+            <span className="sr-only">Remove item</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="shrink-0 text-destructive hover:text-f hover:bg-destructive"
+            onClick={() => deleteFromCart(item.product.id)}
+          >
+            <Trash2 className="w-4 h-4" />
+            <span className="sr-only">Remove item</span>
+          </Button>
         </div>
       </div>
     </div>

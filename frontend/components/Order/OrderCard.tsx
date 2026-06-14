@@ -2,6 +2,9 @@ import { OrderList, OrderStatus } from "@/types";
 import Link from "next/link";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "../ui/button";
+import { CheckCircle2 } from "lucide-react";
+import { pay } from "@/lib/api/payment";
 
 type OrderCardProps = {
   item: OrderList;
@@ -20,10 +23,19 @@ const statusVariant: Record<
 };
 
 function OrderCard({ item }: OrderCardProps) {
+  const isPending = item.orderStatus === OrderStatus.PENDING;
+
+  function handlePayNowClick() {
+    pay(item.id);
+  }
+
   return (
     <TableRow className="cursor-pointer hover:bg-muted/50 smooth-transition">
       <TableCell>
-        <Link href={`/orders/${item.id}`} className="block w-full h-full">
+        <Link
+          href={`/order/${item.orderNumber}`}
+          className="block w-full h-full"
+        >
           <span className="font-mono text-xs font-medium">
             {item.orderNumber}
           </span>
@@ -49,6 +61,19 @@ function OrderCard({ item }: OrderCardProps) {
             {item.orderStatus}
           </Badge>
         </Link>
+      </TableCell>
+      <TableCell>
+        {isPending ? (
+          <Button
+            size="sm"
+            className="text-xs text-f h-7 bg-green3 cursor-pointer"
+            onClick={() => handlePayNowClick()}
+          >
+            Pay now
+          </Button>
+        ) : (
+          <CheckCircle2 className="w-4 h-4 text-green-500" />
+        )}
       </TableCell>
     </TableRow>
   );

@@ -2,6 +2,7 @@ import {
   AddToCartResponse,
   AddCartItem,
   RemoveFromCartResponse,
+  DeleteFromCartResponse,
 } from "@/types";
 import { ApiEndpoint } from "@/lib/ApiEndpoint";
 import toast from "react-hot-toast";
@@ -25,9 +26,15 @@ export async function addToCart(cartItem: AddCartItem): Promise<boolean> {
   }
 }
 
-export async function removeFromCart(cartItemId: string): Promise<boolean> {
-  const response = await api.delete<RemoveFromCartResponse>(
-    cartUrl + "/" + cartItemId,
+export async function removeFromCart(
+  productId: string,
+  quantity: number,
+): Promise<boolean> {
+  const response = await api.patch<RemoveFromCartResponse>(
+    cartUrl + "/" + productId,
+    {
+      quantity,
+    },
   );
 
   if (response.data.success) {
@@ -36,6 +43,21 @@ export async function removeFromCart(cartItemId: string): Promise<boolean> {
     return true;
   } else {
     toast.error("Failed to remove from cart");
+    return false;
+  }
+}
+
+export async function deleteFromCart(productId: string): Promise<boolean> {
+  const response = await api.delete<DeleteFromCartResponse>(
+    cartUrl + "/" + productId,
+  );
+
+  if (response.data.success) {
+    toast.success("Deleted from cart successfully");
+    mutate(cartUrl);
+    return true;
+  } else {
+    toast.error("Failed to delete from cart");
     return false;
   }
 }

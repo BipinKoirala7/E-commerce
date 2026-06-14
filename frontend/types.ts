@@ -124,7 +124,7 @@ export interface OrderList {
 
 export interface OrderItem {
   id: string;
-  productSummary: ProductSummary;
+  product: ProductSummary;
   quantity: number;
 }
 
@@ -138,6 +138,7 @@ export interface OrderDetails {
   orderItems: OrderItem[];
   totalPrice: number;
   orderStatus: OrderStatus;
+  payment: PaymentDetails | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -165,16 +166,42 @@ export type OrderSummary = Omit<
   | "updatedAt"
 >;
 
-export interface OrderCreateDTO {
+export interface CreateOrder {
   billingAddress: string;
   shippingAddress: string;
   phone: string;
-  orderItems: OrderItemCreate[];
+  orderItems: CreateOrderItem[];
 }
 
-export interface OrderItemCreate {
+export interface CreateOrderItem {
   productId: string;
   quantity: number;
+}
+
+// Payment
+
+interface StripeResponse {
+  status: string;
+  message: string;
+  sessionId: string;
+  sessionUrl: string;
+}
+
+export enum PaymentStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+
+interface PaymentDetails {
+  id: string;
+  orderId: string;
+  paymentNumber: string;
+  paymentMethod: string;
+  paymentStatus: PaymentStatus;
+  totalAmount: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Response enums, interfaces, and types
@@ -214,7 +241,10 @@ export type ProductDetailsResponse = ApiResponse<Product>;
 export type CartResponse = ApiResponse<CartProductSummary[]>;
 export type AddToCartResponse = ApiResponse<void>;
 export type RemoveFromCartResponse = ApiResponse<void>;
-export type CreateOrderResponse = ApiResponse<void>;
-export type DeleteOrderResponse = ApiResponse<void>;
 export type OrderListResponse = ApiResponse<OrderList[]>;
 export type OrderDetailsResponse = ApiResponse<OrderDetails>;
+export type DeleteFromCartResponse = ApiResponse<void>;
+export type CreateOrderResponse = ApiResponse<void>;
+export type DeleteOrderResponse = ApiResponse<void>;
+export type CreatePaymentResponse = ApiResponse<StripeResponse>;
+export type PaymentDetailsResponse = ApiResponse<PaymentDetails>;

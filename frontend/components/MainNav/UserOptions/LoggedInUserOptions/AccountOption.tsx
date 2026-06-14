@@ -8,6 +8,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { LayoutList, LogOut, UserRound } from "lucide-react";
+import { handleLogOut } from "@/lib/api/auth";
 
 function AccountOption() {
   const [open, setOpen] = useState(false);
@@ -23,38 +24,41 @@ function AccountOption() {
         <p className="text-sm font-semibold px-2">My Account</p>
 
         <div className="flex flex-col gap-1">
-          {(
-            [
-              {
-                label: "Account",
-                icon: <UserRound className="w-4 h-4" />,
-                href: "/account",
-              },
-              {
-                label: "Orders",
-                icon: <LayoutList className="w-4 h-4" />,
-                href: "/orders",
-              },
-              {
-                label: "Log Out",
-                icon: <LogOut className="w-4 h-4" />,
-                href: "/logout",
-              },
-            ] as const
-          ).map(({ label, icon, href }) => (
-            <Button
-              key={label}
-              variant="ghost"
-              className="w-full justify-start gap-2 hover:bg-primary hover:text-primary-foreground"
-              onClick={() => {
-                setOpen(false);
-                router.push(href);
-              }}
-            >
-              {icon}
-              {label}
-            </Button>
-          ))}
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2 hover:bg-primary hover:text-primary-foreground"
+            onClick={() => {
+              setOpen(false);
+              router.push("/account");
+            }}
+          >
+            <UserRound className="w-4 h-4" />
+            Account
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2 hover:bg-primary hover:text-primary-foreground"
+            onClick={() => {
+              setOpen(false);
+              router.push("/order");
+            }}
+          >
+            <LayoutList className="w-4 h-4" />
+            Orders
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2 hover:bg-primary hover:text-primary-foreground"
+            onClick={() => {
+              setOpen(false);
+              handleLogOut();
+            }}
+          >
+            <LogOut className="w-4 h-4" />
+            Log Out
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

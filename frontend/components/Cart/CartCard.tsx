@@ -1,38 +1,35 @@
 "use client";
 
 import Image from "next/image";
-import { Minus } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { CartProductSummary } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { removeFromCart } from "@/lib/api/cart";
+import { addToCart, deleteFromCart, removeFromCart } from "@/lib/api/cart";
 import Link from "next/link";
+import { useCartSelectionStore } from "@/store/zustand";
 
 type CartCardProps = {
   item: CartProductSummary;
-  add: (price: number) => void;
-  subtract: (price: number) => void;
 };
 
-function CartCard({ item, add, subtract }: CartCardProps) {
+function CartCard({ item }: CartCardProps) {
+  const { checkedIds, toggle } = useCartSelectionStore();
+  const isChecked = checkedIds.has(item.id);
   return (
     <div className="flex items-center gap-4 p-3 rounded-md hover:bg-muted/50 smooth-transition">
       <Checkbox
         id={`cart-item-${item.id}`}
-        onCheckedChange={(checked) => {
-          if (checked) {
-            add(item.product.price * item.quantity);
-          } else {
-            subtract(item.product.price * item.quantity);
-          }
-        }}
+        checked={isChecked}
+        onCheckedChange={() => toggle(item.id)}
       />
 
       <div className="flex items-center gap-4 w-full overflow-hidden">
         <Image
           src={item.product.imageUrl}
           alt={item.product.name}
+          loading="eager"
           width={400}
           height={400}
           className="w-24 aspect-4/3 rounded-md object-cover shrink-0"
@@ -60,12 +57,28 @@ function CartCard({ item, add, subtract }: CartCardProps) {
           variant="ghost"
           size="icon"
           className="shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-          onClick={() => {
-            removeFromCart(item.product.id);
-            subtract(item.product.price * item.quantity);
-          }}
+          onClick={() => removeFromCart(item.product.id, item.quantity - 1)}
+          disabled={item.quantity <= 1}
         >
           <Minus className="w-4 h-4" />
+          <span className="sr-only">Remove item</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0 text-muted-foreground hover:text-green3 hover:bg-green3"
+          onClick={() => addToCart({ productId: item.product.id })}
+        >
+          <Plus className="w-4 h-4" />
+          <span className="sr-only">Remove item</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0 text-destructive hover:text-f hover:bg-destructive"
+          onClick={() => deleteFromCart(item.product.id)}
+        >
+          <Trash2 className="w-4 h-4" />
           <span className="sr-only">Remove item</span>
         </Button>
       </div>
