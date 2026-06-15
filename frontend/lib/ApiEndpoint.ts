@@ -1,16 +1,17 @@
-export enum ApiEndpoint {
-  BASE_URL = "http://localhost:4000/api",
+export const ApiEndpoint = {
+  BASE_URL: process.env.NEXT_PUBLIC_BASE_BACKEND_URL!,
 
   // Auth Actions
-  LOGIN = "/auth/login",
-  REGISTER = "/auth/register",
-  LOGOUT = "/auth/logout",
-  GOOGLE_LOGIN = "/oauth2/authorization/google",
+  LOGIN: process.env.NEXT_PUBLIC_BASE_USER_EMAIL_LOGIN_URL!,
+  REGISTER: process.env.NEXT_PUBLIC_BASE_USER_EMAIL_REGISTER_URL!,
+  LOGOUT: process.env.NEXT_PUBLIC_BASE_USER_LOGOUT_URL!,
+  GOOGLE_LOGIN: process.env.NEXT_PUBLIC_BASE_USER_GOOGLE_LOGIN_URL!,
 
   // Resource Routes
-  USER = "/user", // logged in user
-  CART = "/cart-item",
-  ORDER = "/order",
-  PRODUCT = "/product",
-  PAYMENT = "/payment",
-}
+  USER: process.env.NEXT_PUBLIC_BASE_USER_URL!,
+  CART: process.env.NEXT_PUBLIC_BASE_CART_URL!,
+  ORDER: process.env.NEXT_PUBLIC_BASE_ORDER_URL!,
+  PRODUCT: process.env.NEXT_PUBLIC_BASE_PRODUCT_URL!,
+  PAYMENT: process.env.NEXT_PUBLIC_BASE_PAYMENT_URL!,
+} as const;
+export type ApiEndpointType = typeof ApiEndpoint;
