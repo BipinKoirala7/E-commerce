@@ -23,6 +23,14 @@ for i, product in enumerate(products, 1):
     name = product.get("name", f"Product {i}")
     print(f"\n[{i}/{total}] Sending: {name}")
 
+    # --- Alter the payload to match ProductCreateDTO ---
+    # Extract the first image URL if it's currently a list/array
+    images = product.pop("images", [])  # remove the "images" key from payload
+    if images and isinstance(images[0], dict):
+        product["imageUrl"] = images[0].get("imageUrl", "")
+    else:
+        product["imageUrl"] = ""
+
     body = json.dumps(product).encode("utf-8")
     req = urllib.request.Request(
         API_URL,
