@@ -3,12 +3,16 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ecommerce}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ecommerce}?pgbouncer=true
     driver-class: org.postgresql.Driver
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     hikari:
       connection-init-sql: SET TimeZone='UTC'
+      maximum-pool-size: 3
+      minimum-idle: 1
+      idle-timeout: 30000
+      connection-timeout: 20000
   jpa:
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}

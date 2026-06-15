@@ -12,6 +12,7 @@ import com.Ecommerce.ProductService.Model.Product;
 import com.Ecommerce.ProductService.Model.ProductSpecification;
 import com.Ecommerce.ProductService.Repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -41,7 +42,7 @@ public class ProductService {
   private final ProductMapper productMapper;
 
   @Transactional
-  public Product createNewProduct(ProductCreateDTO newProductDTO) {
+  public Product createNewProduct(@NotNull ProductCreateDTO newProductDTO) {
     log.info("Creating Product...");
 
     if (Objects.isNull(newProductDTO)) {
