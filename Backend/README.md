@@ -1,7 +1,7 @@
 # E-Commerce Platform - Backend Project Overview
 
 ## Project Structure
-This is a **microservices-based e-commerce platform** built with **Spring Boot** and **Spring Cloud** using Java. The architecture follows the **service mesh pattern** with centralized configuration, service discovery, and API gateway.
+This is a **microservices-based e-commerce platform** built with **Spring Boot** and **Spring Cloud** using Java. The architecture follows the **service mesh pattern** with centralized configuration, service discovery, and API gateway. Backend is deployed using docker for each services to ``Render`` and frontend to ``Vercel``. 
 
 ---
 ## Services Overview
@@ -543,12 +543,4 @@ This is a **production-ready microservices architecture** with:
 - Comprehensive error handling
 
 The architecture is scalable, resilient, and follows microservices best practices.
-
----
-Note: The project is yet to be finished so when you pull or clone the repository, you may find some services are not fully 
-implemented or have placeholder code. The README will be updated as the project progresses. The things that are going to be added are: 
-- Notification Service (email notifications for order status updates)
-- Additional error handling and edge cases
-- More comprehensive unit and integration tests
-- DockerFile for running the app in one go
 
