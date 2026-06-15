@@ -16,7 +16,7 @@ function AccountOption() {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger>
         <UserRound className="w-5 h-5" />
       </PopoverTrigger>
 

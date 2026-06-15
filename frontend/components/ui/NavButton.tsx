@@ -9,11 +9,7 @@ type NavButtonT = {
 
 export function NavButton({ route, name, className }: NavButtonT) {
   return (
-    <Button
-      variant="ghost"
-      asChild
-      className={`${className} w-fit text-[1rem]`}
-    >
+    <Button variant="ghost" className={`${className} w-fit text-[1rem]`}>
       <Link href={route}>{name}</Link>
     </Button>
   );
