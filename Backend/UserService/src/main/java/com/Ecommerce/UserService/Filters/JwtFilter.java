@@ -39,7 +39,8 @@ public class JwtFilter extends OncePerRequestFilter {
       "/auth/oauth/google",
       "/login/oauth2/code/**",
       "/oauth2/authorization/**",
-      "/internal/auth/token/**"
+      "/internal/auth/token/**",
+      "/actuator/**"
   );
 
   private final JwtService jwtService;

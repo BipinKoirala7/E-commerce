@@ -86,7 +86,8 @@ public class SecurityConfig {
                 "/auth/oauth/**",
                 "/oauth2/authorization/**",
                 "/login/oauth2/code/**",
-                "/internal/auth/token-refresh"
+                "/internal/auth/token-refresh",
+                "/actuator/**"
             ).permitAll()
             .anyRequest().authenticated()
         )
