@@ -5,7 +5,6 @@ import {
   FaInstagram,
   FaLinkedin,
   FaTwitter,
-  FaX,
 } from "react-icons/fa6";
 
 function Socials() {

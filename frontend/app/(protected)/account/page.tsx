@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import toast from "react-hot-toast";
+import { UserRound } from "lucide-react";
 
 export default function Account() {
   const user: User | null = useUser().data;
@@ -19,14 +20,20 @@ export default function Account() {
         <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-20">
           <div className="relative">
             <div className="absolute inset-0 rounded-full blur-xl bg-indigo-300/30 scale-110" />
-            <div className="relative p-1.5 bg-white dark:bg-zinc-900 rounded-full shadow-xl border border-slate-200 dark:border-zinc-700">
-              <Image
-                src={user.profilePictureUrl || "/default-profile.png"}
-                alt="Profile Picture"
-                width={110}
-                height={110}
-                className="rounded-full object-cover aspect-square"
-              />
+            <div className="relative w-36 p-1.5 bg-white dark:bg-zinc-900 rounded-full shadow-xl border border-slate-200 dark:border-zinc-700">
+              {user.profilePictureUrl ? (
+                <Image
+                  src={user.profilePictureUrl}
+                  alt="Profile Picture"
+                  width={110}
+                  height={110}
+                  className="rounded-full object-cover aspect-square"
+                />
+              ) : (
+                <div className="flex items-center justify-center p-4">
+                  <UserRound className="rounded-full w-full h-full text-green1" />
+                </div>
+              )}
             </div>
           </div>
         </div>

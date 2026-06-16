@@ -233,8 +233,8 @@ export type PageableResult<T> = {
   numberOfElements: number;
 };
 
-export type UserLoginResponse = ApiResponse<boolean>;
-export type UserSignUpResponse = ApiResponse<boolean>;
+export type UserLoginResponse = ApiResponse<void>;
+export type UserSignUpResponse = ApiResponse<void>;
 export type UserResponse = ApiResponse<User>;
 export type ProductSearchResponse = ApiResponse<ProductSearchResult>;
 export type ProductDetailsResponse = ApiResponse<Product>;

@@ -1,6 +1,6 @@
 "use client";
 
-import { handleEmailLogin, handleGoogleAuth } from "@/lib/api/auth";
+import { handleEmailLogIn, handleGoogleAuth } from "@/lib/api/auth";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
@@ -68,7 +68,7 @@ function Page() {
 
           <Button
             className="w-full py-5 text-base"
-            onClick={() => handleEmailLogin({ email, password })}
+            onClick={() => handleEmailLogIn({ email, password })}
           >
             Login
           </Button>
