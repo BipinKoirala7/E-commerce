@@ -7,6 +7,7 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class StripeService {
+
+  @Value("${app.frontend.url}")
+  private String frontendUrl;
 
   public StripeResponse checkOut(@NonNull ProductRequest productRequest) {
     List<SessionCreateParams.LineItem> lineItems = productRequest.getOrderItems().stream().map(item -> {
@@ -38,8 +42,8 @@ public class StripeService {
     SessionCreateParams sessionCreateParams = SessionCreateParams.builder()
         .setMode(SessionCreateParams.Mode.PAYMENT)
         .addAllLineItem(lineItems)
-        .setSuccessUrl("http://localhost:4000/order/" + productRequest.getOrderNumber())
-        .setCancelUrl("http://localhost:8080/order/" + productRequest.getOrderNumber())
+        .setSuccessUrl(frontendUrl + productRequest.getOrderNumber())
+        .setCancelUrl(frontendUrl + productRequest.getOrderNumber())
         .build();
 
     Session session;
