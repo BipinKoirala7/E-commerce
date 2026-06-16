@@ -34,14 +34,3 @@ spring:
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
-app:
-  cookie:
-    refreshToken:
-      path: /api
-      expiration: ${APP_COOKIE_REFRESH_TOKEN_EXPIRATION:259200}
-    accessToken:
-      path: /
-      expiration: ${APP_COOKIE_ACCESS_TOKEN_EXPIRATION:3600}
-  jwt:
-    refreshTokenExpiration: 259200
-    accessTokenExpiration: 3600
