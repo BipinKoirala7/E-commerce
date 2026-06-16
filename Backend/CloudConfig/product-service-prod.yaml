@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format-sql: false
+    show-sql: false
+
+logging:
+  level:
+    com:
+      Ecommerce:
+        ProductService: WARN

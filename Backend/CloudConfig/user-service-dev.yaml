@@ -1,0 +1,18 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format-sql: true
+    show-sql: true
+app:
+  frontend:
+    url: http://localhost:3000
+  cookie:
+    secure: false
+logging:
+  level:
+    com:
+      Ecommerce:
+        UserService: DEBUG

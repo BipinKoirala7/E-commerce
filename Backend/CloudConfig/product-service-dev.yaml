@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format-sql: true
+    show-sql: true
+
+logging:
+  level:
+    com:
+      Ecommerce:
+        ProductService: DEBUG

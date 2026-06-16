@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format-sql: false
+    show-sql: false
+app:
+  frontend:
+    url: ${APP_FRONTEND_URL}
+logging:
+  level:
+    com:
+      Ecommerce:
+        OrderService: WARN

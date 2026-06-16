@@ -1,0 +1,21 @@
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: WARN
+      type:
+        descriptor:
+          sql:
+            BasicBinder: WARN
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  tracing:
+    sampling:
+      probability: 0.1
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
