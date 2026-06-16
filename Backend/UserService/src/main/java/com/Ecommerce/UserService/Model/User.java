@@ -54,7 +54,6 @@ public class User {
 
   @Nullable
   @PastOrPresent
-  @Column(nullable = false)
   private LocalDateTime lastLoginAt;
 
   @CreationTimestamp
