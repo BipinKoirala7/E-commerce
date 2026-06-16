@@ -30,7 +30,8 @@ public class JwtFilter extends OncePerRequestFilter {
   private final AntPathMatcher pathMatcher;
 
   private static final List<String> EXCLUDED_PATHS = List.of(
-      "/payment/webhook"
+      "/payment/webhook",
+      "/actuator/**"
   );
 
   @Override

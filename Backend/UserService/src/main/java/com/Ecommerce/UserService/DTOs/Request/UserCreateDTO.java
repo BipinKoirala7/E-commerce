@@ -1,7 +1,6 @@
 package com.Ecommerce.UserService.DTOs.Request;
 
-import com.Ecommerce.UserService.Model.AuthProvider;
-import com.Ecommerce.UserService.Model.Role;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -17,6 +16,6 @@ public class UserCreateDTO {
   @NotNull
   private String password;
 
-  @NotNull
+  @Nullable
   private String profilePictureUrl;
 }

@@ -5,23 +5,31 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Checks whether the source is verified or not.
  * */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class SourceAuthenticationFilter extends OncePerRequestFilter {
+  private final AntPathMatcher pathMatcher;
   private static final String GATEWAY_SECRET_HEADER = "X-Gateway-Secret";
   private static final String SERVICE_SECRET_HEADER = "X-Service-Secret";
+
+  private static final List<String> EXCLUDED_PATHS = List.of("/actuator/**");
 
   @Value("${app.gateway.secret}")
   private String GATEWAY_SECRET;
@@ -31,9 +39,14 @@ public class SourceAuthenticationFilter extends OncePerRequestFilter {
 
   @Override
   protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
-    String path = request.getRequestURI();
-    return path.startsWith("/actuator/health") ||
-        path.startsWith("/actuator/info");
+    String path = request.getServletPath();
+    boolean shouldSkip = EXCLUDED_PATHS.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
+
+    if (shouldSkip) {
+      log.debug("Source Authentication Filter Skipped - Path: {}", path);
+    }
+
+    return shouldSkip;
   }
 
   @Override

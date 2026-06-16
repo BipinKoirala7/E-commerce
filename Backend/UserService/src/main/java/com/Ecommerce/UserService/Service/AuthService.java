@@ -10,6 +10,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.Token;
@@ -43,7 +44,7 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
 
   @Transactional
-  public void registerUser(UserCreateDTO userCreateDTO) {
+  public void registerUser(@NotNull UserCreateDTO userCreateDTO) {
     log.debug("Registering User...");
     userService.createNewUser(userCreateDTO);
     log.debug("Successfully Registered User!");

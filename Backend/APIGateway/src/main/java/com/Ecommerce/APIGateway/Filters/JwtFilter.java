@@ -38,7 +38,8 @@ public class JwtFilter extends OncePerRequestFilter {
       "/login/oauth2/code/**",
       "/oauth2/authorization/**",
       "/product/**",
-      "/payment/webhook"
+      "/payment/webhook",
+      "/actuator/**"
   );
 
   @Override

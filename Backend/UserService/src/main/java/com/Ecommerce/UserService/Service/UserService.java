@@ -46,15 +46,16 @@ public class UserService {
     }
     log.debug("User Creation Info - User Info is present");
 
-    User newUser = userMapper.fromCreateDto(userCreateDTO);
-    newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-    log.debug("User Creation Info - Password is encoded");
-
-    if (userRepository.existsByEmail(newUser.getEmail())) {
+    if (userRepository.existsByEmail(userCreateDTO.getEmail())) {
       log.warn("User Creation Failed - User with given email already exists");
       throw new UserAlreadyExistsException("User Already Exists");
     }
     log.debug("User Creation Info - User with given email doesn't exist");
+
+    User newUser = userMapper.fromCreateDto(userCreateDTO);
+    newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+    log.debug("User Creation Info - Password is encoded");
+
 
     userRepository.save(newUser);
     log.info("User Creation Success");

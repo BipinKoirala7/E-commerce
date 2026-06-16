@@ -36,6 +36,7 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(request -> request
+            .requestMatchers("/actuator/**").permitAll()
             .requestMatchers("/payment/webhook").permitAll()
             .anyRequest().authenticated())
         .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
