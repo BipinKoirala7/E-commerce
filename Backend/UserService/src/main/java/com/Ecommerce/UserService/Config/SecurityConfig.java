@@ -66,7 +66,6 @@ public class SecurityConfig {
   private final JwtFilter jwtFilter;
   private final FilterExceptionHandler filterExceptionHandler;
   private final SourceAuthenticationFilter sourceAuthenticationFilter;
-  private final CorsConfig corsConfig;
   private final OAuthSuccessHandler oAuthSuccessHandler;
   private final OAuthFailureHandler oAuthFailureHandler;
   private final CustomAuthenticationEntryPoint authenticationEntryPoint;
@@ -75,7 +74,7 @@ public class SecurityConfig {
   public SecurityFilterChain httpSecurityFilterChain(@NonNull HttpSecurity http) {
     return http
         .csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(corsConfiguration()))
+        .cors(AbstractHttpConfigurer::disable)
         .sessionManagement(session ->
             session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .authorizeHttpRequests(request -> request
@@ -102,20 +101,5 @@ public class SecurityConfig {
         .addFilterAfter(sourceAuthenticationFilter, FilterExceptionHandler.class)
         .addFilterAfter(jwtFilter, SourceAuthenticationFilter.class)
         .build();
-  }
-
-  @Bean
-  public CorsConfigurationSource corsConfiguration() {
-    CorsConfiguration corsConfiguration = new CorsConfiguration();
-    corsConfiguration.setAllowedOriginPatterns(Arrays.asList(corsConfig.getAllowedOriginPatterns()));
-    corsConfiguration.setAllowedHeaders(Arrays.asList(corsConfig.getAllowedHeaders()));
-    corsConfiguration.setAllowedMethods(Arrays.asList(corsConfig.getAllowedMethods()));
-    corsConfiguration.setAllowCredentials(corsConfig.getAllowCredentials());
-    corsConfiguration.setExposedHeaders(Arrays.asList(corsConfig.getExposedHeaders()));
-    corsConfiguration.setMaxAge(corsConfig.getMaxAge());
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", corsConfiguration);
-    return source;
   }
 }

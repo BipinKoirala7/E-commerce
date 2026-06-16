@@ -9,7 +9,7 @@ app:
     enabled: ${APP_CORS_ENABLED:true}
     allowed-origins: ${APP_CORS_ORIGIN:http://localhost:3000}
     allowed-methods: ${APP_CORS_METHODS:GET,POST,PUT,PATCH,DELETE,OPTIONS}
-    allowed-headers: ${APP_CORS_ALLOWED_HEADERS:*}
+    allowed-headers: ${APP_CORS_ALLOWED_HEADERS:Authorization,Content-Type,Accept,X-Requested-With,Cache-Control}
     exposed-headers: ${APP_CORS_EXPOSED_HEADERS:Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Credentials}
     allow-credentials: ${APP_CORS_CREDENTIALS:true}
     max-age: ${APP_CORS_MAX_AGE:3600}

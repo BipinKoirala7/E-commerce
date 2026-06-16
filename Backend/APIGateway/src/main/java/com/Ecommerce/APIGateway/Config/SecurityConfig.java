@@ -39,6 +39,7 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(request -> request
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .requestMatchers("/actuator/**").permitAll()
             .requestMatchers("/login/oauth2/code/**").permitAll()
             .requestMatchers("/oauth2/authorization/**").permitAll()
             .requestMatchers("/auth/**").permitAll()
@@ -54,6 +55,7 @@ public class SecurityConfig {
 
   private @NonNull CorsConfigurationSource corsConfiguration() {
     CorsConfiguration corsConfiguration = new CorsConfiguration();
+    corsConfiguration.applyPermitDefaultValues();
     corsConfiguration.setAllowedOrigins(Arrays.asList(corsConfig.getAllowedOrigins()));
     corsConfiguration.setAllowedHeaders(Arrays.asList(corsConfig.getAllowedHeaders()));
     corsConfiguration.setAllowedMethods(Arrays.asList(corsConfig.getAllowedMethods()));

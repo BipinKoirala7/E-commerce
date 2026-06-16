@@ -1,16 +1,6 @@
 server:
   port: ${SERVER_PORT:8083}
 
-app:
-  cors:
-    enabled: ${APP_CORS_ENABLED:true}
-    allowed-origin-patterns: ${APP_CORS_ORIGIN_PATTERNS:http://localhost:*}
-    allowed-methods: ${APP_CORS_METHODS:GET,POST,PATCH,PUT,DELETE,OPTIONS}
-    allowed-headers: ${APP_CORS_ALLOWED_HEADERS:*}
-    allow-credentials: ${APP_CORS_CREDENTIALS:true}
-    exposed-headers: ${APP_CORS_EXPOSED_HEADERS:Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Credentials}
-    max-age: ${APP_CORS_MAX_AGE:3600}
-
 spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ecommerce}
