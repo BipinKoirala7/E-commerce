@@ -5,7 +5,9 @@ spring:
   application:
     name: product-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
+    url: jdbc:postgresql://${SPRING_DATASOURCE_HOST}/${SPRING_DATASOURCE_DB}?sslmode=require&channel_binding=require
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class: org.postgresql.Driver
     hikari:
       maximum-pool-size: 3
