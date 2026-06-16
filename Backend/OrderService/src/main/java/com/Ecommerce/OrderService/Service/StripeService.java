@@ -42,8 +42,8 @@ public class StripeService {
     SessionCreateParams sessionCreateParams = SessionCreateParams.builder()
         .setMode(SessionCreateParams.Mode.PAYMENT)
         .addAllLineItem(lineItems)
-        .setSuccessUrl(frontendUrl + productRequest.getOrderNumber())
-        .setCancelUrl(frontendUrl + productRequest.getOrderNumber())
+        .setSuccessUrl(frontendUrl + "/order/" +  productRequest.getOrderNumber())
+        .setCancelUrl(frontendUrl + "/order" )
         .build();
 
     Session session;
