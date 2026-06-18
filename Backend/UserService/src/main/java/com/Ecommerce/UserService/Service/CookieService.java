@@ -32,7 +32,7 @@ public class CookieService {
   @Value("${app.cookie.httpOnly:true}")
   private Boolean httpOnly;
 
-  @Value("${app.cookie.secure:true}")
+  @Value("${app.cookie.secure}")
   private Boolean secure;
 
   @Value("${app.accessTokenExpiration:3600}")
@@ -87,7 +87,7 @@ public class CookieService {
     cookie.setPath(path);
     cookie.setHttpOnly(httpOnly);
     cookie.setSecure(secure);
-    cookie.setAttribute("SameSite", "lax");
+    cookie.setAttribute("SameSite", "None");
     cookie.setMaxAge(maxAge);
 
     return cookie;

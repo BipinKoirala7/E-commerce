@@ -14,4 +14,4 @@ spring:
           password: ${GITHUB_AUTH_PASSWORD_TOKEN}
           force-pull: true
           clone-on-start: ${SPRING_CLOUD_CONFIG_SERVER_GIT_CLONE_ON_START:false}
-          search-paths: ${SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS:'Backend/CloudConfig'}
+          search-paths: ${SPRING_CLOUD_CONFIG_SERVER_GIT_SEARCH_PATHS:Backend/CloudConfig}

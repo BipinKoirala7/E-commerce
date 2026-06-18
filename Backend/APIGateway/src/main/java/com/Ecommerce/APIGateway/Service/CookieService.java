@@ -83,7 +83,7 @@ public class CookieService {
     cookie.setPath(path);
     cookie.setHttpOnly(httpOnly);
     cookie.setSecure(secure);
-    cookie.setAttribute("SameSite", "lax");
+    cookie.setAttribute("SameSite", "None");
     cookie.setMaxAge(maxAge);
 
     return cookie;
