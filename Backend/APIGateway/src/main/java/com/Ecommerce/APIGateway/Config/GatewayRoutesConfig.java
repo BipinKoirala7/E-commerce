@@ -33,6 +33,7 @@ public class GatewayRoutesConfig {
   private static final String USER_SERVICE = "user-service";
   private static final String PRODUCT_SERVICE = "product-service";
   private static final String ORDER_SERVICE = "order-service";
+  private static final String PAYMENT_WEBHOOK = "payment-webhook";
 
   // Paths
   private static final String USER_PATH = "/user/**";
@@ -45,6 +46,7 @@ public class GatewayRoutesConfig {
   private static final String WISHLIST_PATH = "/wishlist/**";
   private static final String ORDER_PATH = "/order/**";
   private static final String PAYMENT_PATH = "/payment/**";
+  private static final String PAYMENT_WEBHOOK_PATH = "/payment-webhook/";
 
   @Bean
   public RouterFunction<ServerResponse> gatewayRouter() {
@@ -71,7 +73,8 @@ public class GatewayRoutesConfig {
   }
 
   private @NonNull RouterFunction<ServerResponse> orderServiceRoutes() {
-    return gatewayRouter(ORDER_SERVICE, ORDER_PATH)
+    return webhookRoute()
+        .and(gatewayRouter(ORDER_SERVICE, ORDER_PATH))
         .and(gatewayRouter(ORDER_SERVICE, PAYMENT_PATH));
   }
 
@@ -79,6 +82,15 @@ public class GatewayRoutesConfig {
     return gatewayRouter(ORDER_SERVICE, CART_PATH)
         .and(gatewayRouter(ORDER_SERVICE, CART_ITEM_PATH))
         .and(gatewayRouter(ORDER_SERVICE, WISHLIST_PATH));
+  }
+
+  private @NonNull RouterFunction<ServerResponse> webhookRoute() {
+    return GatewayRouterFunctions.route(PAYMENT_WEBHOOK)
+        .before(BeforeFilterFunctions.stripPrefix(stripPrefixParts))
+        .before(BeforeFilterFunctions.addRequestHeader(GATEWAY_HEADER, GATEWAY_SECRET))
+        .route(GatewayRequestPredicates.path(PAYMENT_WEBHOOK_PATH), HandlerFunctions.http())
+        .filter(LoadBalancerFilterFunctions.lb(ORDER_SERVICE))
+        .build();
   }
 
   private @NonNull RouterFunction<ServerResponse> gatewayRouter(String serviceName, String servicePath) {

@@ -7,17 +7,23 @@ import com.Ecommerce.OrderService.DTOs.Response.StripeResponse;
 import com.Ecommerce.OrderService.Service.PaymentService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("payment")
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentController {
   private final PaymentService paymentService;
 
@@ -29,7 +35,13 @@ public class PaymentController {
   }
 
   @PostMapping("webhook")
-  public ResponseEntity<RestApiResponse<Void>> webhookGetMapper(@RequestBody String payload, @RequestHeader("Stripe-Signature") String signHeader) throws SignatureVerificationException {
+  public ResponseEntity<RestApiResponse<Void>> webhookGetMapper(HttpServletRequest request, @RequestHeader("Stripe-Signature") String signHeader) throws SignatureVerificationException, IOException {
+    byte[] payloadBytes = request.getInputStream().readAllBytes();
+    String payload = new String(payloadBytes, StandardCharsets.UTF_8);
+
+    log.info("Payload bytes length: {}", payloadBytes.length);
+    log.info("First 100 chars: {}", new String(payloadBytes, StandardCharsets.UTF_8).substring(0, Math.min(100, payloadBytes.length)));
+
     paymentService.handleWebhook(payload, signHeader);
     return ResponseEntity
         .status(HttpStatus.ACCEPTED)
