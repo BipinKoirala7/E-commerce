@@ -5,7 +5,7 @@ import urllib.request
 import urllib.error
 import time
 
-API_URL = "http://localhost:8080/api/v1/product"
+API_URL = "http://localhost:8082/product"
 DATA_FILE = "products_data.json"
 
 with open(DATA_FILE, "r") as f:

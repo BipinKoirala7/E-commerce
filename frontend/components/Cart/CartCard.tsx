@@ -64,9 +64,8 @@ function CartCard({ item }: CartCardProps) {
           <span className="sr-only">Remove item</span>
         </Button>
         <Button
-          variant="ghost"
           size="icon"
-          className="shrink-0 text-muted-foreground hover:text-green3 hover:bg-green3"
+          className="bg-transparent shrink-0 text-t hover:bg-green3/25"
           onClick={() => addToCart({ productId: item.product.id })}
         >
           <Plus className="w-4 h-4" />

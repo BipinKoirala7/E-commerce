@@ -56,10 +56,6 @@ A premium e-commerce platform featuring a modern full-stack architecture with mi
 | **Annotations**                      | Lombok                   | Latest                 |
 | **Payment Processing**               | Stripe Java SDK          | 32.0.0                 |
 | **Code Generation**                  | Lombok, MapStruct        | Latest                 |
-| **Distributed Tracing**              | Brave + Zipkin           | Spring Boot integrated |
-| **Observability**                    | OpenTelemetry (OTLP)     | Spring Boot integrated |
-| **Metrics**                          | Prometheus + Micrometer  | Spring Boot integrated |
-| **Message Broker**                   | RabbitMQ                 | 3.8+                   |
 | **Service-to-Service Communication** | OpenFeign                | Spring Cloud           |
 
 ### Frontend
@@ -80,8 +76,8 @@ A premium e-commerce platform featuring a modern full-stack architecture with mi
 
 ### Infrastructure
 
-- **Web Server:** Nginx (reverse proxy)
-- **Container Orchestration:** Docker (planned)
+- **Web Server:** Nginx (reverse proxy) (not used for development, only for development)
+- **Container Orchestration:** Docker
 - **Distributed IDs:** Snowflake ID (used in Order Service)
 - **External Auth:** Google OAuth2
 - **Payment Gateway:** Stripe
@@ -203,5 +199,3 @@ ZIPKIN_ENDPOINT=http://localhost:9411/v2/spans
 ZIPKIN_ENABLE=true
 MANAGEMENT_OPEN_TELEMETRY_TRACING_ENDPOINT=http://localhost:4318/v1/traces
 ```
-
-### Note: The project is still under development, and some features may not be fully implemented yet.
