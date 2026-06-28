@@ -9,6 +9,9 @@ spring:
 app:
   frontend:
     url: ${APP_FRONTEND_URL}
+  cors:
+    enabled: true
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGIN}
   cookie:
     secure: true
 logging:
