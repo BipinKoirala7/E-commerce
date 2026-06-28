@@ -9,6 +9,9 @@ spring:
 app:
   frontend:
     url: http://localhost:3000
+  cors:
+    enabled: true
+    allowed-origins: http://localhost:3000
 logging:
   level:
     com:
