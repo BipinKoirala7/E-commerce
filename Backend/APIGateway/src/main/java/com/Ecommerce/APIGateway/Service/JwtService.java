@@ -75,45 +75,39 @@ public class JwtService {
   }
 
   public void validateRefreshToken(String token) {
-    log.debug("Refresh Token Validation...");
+    log.info("Refresh Token Validation...");
 
     if (Objects.isNull(token) || token.isBlank()) {
       log.debug("Refresh Token Validation Failed - Token is null");
-      throw new IllegalArgumentException("Token must be provided");
+      throw new EmptyTokenException("Token must be provided");
     }
-    log.debug("Refresh Token Validation Info - Refresh Token is present");
-
     if (!isRefreshToken(token)) {
       log.debug("Refresh Token Validation Failed - Given token is not a refresh token");
       throw new InValidTokenException("Given token is not a refresh token");
     }
-    log.debug("Refresh Token Validation Success");
+    log.info("Refresh Token Validation Success");
   }
 
   public void validateAccessToken(String token) {
-    log.debug("Access Token Validation...");
+    log.info("Access Token Validation...");
 
     if (Objects.isNull(token) || token.isBlank()) {
       log.debug("Access Token Validation Failed - Token is null");
-      throw new IllegalArgumentException("Token must be provided");
+      throw new EmptyTokenException("Token must be provided");
     }
-    log.debug("Access Token Validation Info - Token is present");
-
     if (!isAccessToken(token)) {
       log.debug("Access Token Validation Failed - Given token is not a access token");
       throw new InValidTokenException("Given token is not a access token");
     }
-    log.debug("Access Token Validation Success");
+    log.info("Access Token Validation Success");
   }
 
   public String generateNewAccessToken(HttpServletRequest request, HttpServletResponse response) {
-    log.debug("Generate New Access Token...");
+    log.info("Generate New Access Token...");
 
     String refreshToken = cookieService.extractRefreshTokenFromRequest(request);
-    log.debug("Generate New Access Token Info - Refresh Token found in cookie");
-
     validateRefreshToken(refreshToken);
-    log.debug("Refreshing Token Info - Refresh Token is partially (need further checking with db) valid");
+    log.debug("Refreshing Token Info - Refresh Token is partially valid");
 
     RestApiResponse<String> apiResponse = userServiceClient.refreshToken(refreshToken);
 
@@ -123,10 +117,10 @@ public class JwtService {
     }
 
     cookieService.deleteAccessTokenCookie(response);
-    log.debug("Generate New Access Token Info - Old Access Token cookie deleted successfully");
-
     response.addCookie(cookieService.createAccessTokenCookie(apiResponse.getData()));
-    log.debug("Generate New Access Token Info - New Access Token cookie created successfully");
+    log.debug("Generate New Access Token Info - Old Access Token cookie deleted and new tokens generated");
+
+    log.info("Generate New Access Token Success");
 
     return apiResponse.getData();
   }

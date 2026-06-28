@@ -47,44 +47,37 @@ public class FilterExceptionHandler extends OncePerRequestFilter {
 
       filterChain.doFilter(request, response);
     } catch (EmptyTokenException e) {
-      log.warn("Empty Token Exception Occurred");
-      log.warn("Exception Message: {}", e.getMessage());
+      log.warn("Empty Token Exception Occurred: {}", e.getMessage());
       String message = "Authentication Failed. Please log in again!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (InValidTokenException e) {
-      log.warn("InValid Token Type Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
+      log.warn("InValid Token Type Exception Occurred : {}", e.getMessage());
       String message = "Authentication Failed. Please log in again!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (ExpiredJwtException e) {
-      log.warn("Expired Jwt Exception occurred");
-      log.warn("Exception message : {}", e.getMessage());
+      log.warn("Expired Jwt Exception occurred: {}", e.getMessage());
       String message = "Authentication Failed. Please log in again!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (SignatureException e) {
-      log.info("Signature Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
+      log.info("Signature Exception Occurred: {}", e.getMessage());
       String message = "Authentication Failed. Please log in again!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (MalformedJwtException e) {
-      log.info("Malformed Jwt Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
+      log.info("Malformed Jwt Exception Occurred {}", e.getMessage());
       String message = "Authentication Failed. Please log in again!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (UnsupportedJwtException e) {
-      log.warn("Unsupported Jwt Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
+      log.warn("Unsupported Jwt Exception Occurred {}", e.getMessage());
       String message = "Authentication Failed. Please log in again!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (JwtException e) {
-      log.warn("Jwt Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
+      log.warn("Jwt Exception Occurred {}", e.getMessage());
       String message = "Authentication Failed. Please log in again!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);

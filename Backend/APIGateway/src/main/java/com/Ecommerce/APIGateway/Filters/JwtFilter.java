@@ -66,8 +66,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
       // Validate the token from the request cookie
       String accessToken = cookieService.extractAccessTokenFromRequest(request);
-      log.debug("Jwt Authentication Info - Access Token found in cookie");
-
       jwtService.validateAccessToken(accessToken);
       log.debug("Jwt Filter Authentication Info - Access Token is valid");
 

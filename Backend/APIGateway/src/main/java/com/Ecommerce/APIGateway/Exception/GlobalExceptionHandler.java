@@ -15,8 +15,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(NoResourceFoundException.class)
   public ResponseEntity<RestApiResponse<Void>> handleNoResourceException(@NonNull NoResourceFoundException e) {
-    log.debug("No Resource Found Exception Occurred");
-    log.debug("Exception message: {}", e.getMessage());
+    log.debug("No Resource Found Exception Occurred: {}", e.getMessage());
     String message = "No Resource Found";
 
     return ResponseEntity.
@@ -26,9 +25,8 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<RestApiResponse<Void>> handleGeneralException(@NonNull Exception e) {
-    log.warn("General Exception Occurred");
+    log.warn("General Exception Occurred: {}", e.getMessage());
     log.warn("Exception : {}", e.getClass().getName());
-    log.warn("Exception Message: {}", e.getMessage());
     String message = "An unexpected error occurred. Please try again.";
 
     return ResponseEntity

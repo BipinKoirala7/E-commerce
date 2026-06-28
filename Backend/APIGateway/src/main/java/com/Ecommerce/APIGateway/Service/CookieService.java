@@ -41,7 +41,7 @@ public class CookieService {
   private long refreshTokenExpiration;
 
   public Cookie getCookie(@NonNull HttpServletRequest request, @NonNull String cookieName) {
-    log.debug("Fetching Cookie...");
+    log.info("Fetching Cookie...");
     Cookie[] cookies = request.getCookies();
 
     if (Objects.isNull(cookies)) {
@@ -55,7 +55,7 @@ public class CookieService {
         return cookie;
       }
     }
-    log.debug("Fetching Cookie Failed - Cookie with given name Not Found");
+    log.debug("Fetching Cookie Failed - Cookie Not Found");
     return null;
   }
 
