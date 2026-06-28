@@ -126,18 +126,15 @@ public class JwtService {
       log.debug("Refresh Token Validation Failed - Token is null");
       throw new IllegalArgumentException("Token must be provided");
     }
-    log.debug("Refresh Token Validation Info - Refresh Token is present");
-
     if (!isRefreshTokenActive(token)) {
       log.debug("Refresh Token Validation Failed - Token is not active");
       throw new InValidTokenException("Given Token is not active");
     }
-    log.debug("Refresh Token Validation Info - Token is active");
-
     if (!isRefreshToken(token)) {
       log.debug("Refresh Token Validation Failed - Given token is not a refresh token");
       throw new InValidTokenException("Given token is not a refresh token");
     }
+
     log.debug("Refresh Token Validation Success");
   }
 
@@ -148,8 +145,6 @@ public class JwtService {
       log.debug("Access Token Validation Failed - Token is null");
       throw new IllegalArgumentException("Token must be provided");
     }
-    log.debug("Access Token Validation Info - Token is present");
-
     if (!isAccessToken(token)) {
       log.debug("Access Token Validation Failed - Given token is not a access token");
       throw new InValidTokenException("Given token is not a access token");
@@ -165,20 +160,16 @@ public class JwtService {
       log.warn("Storing Active Refresh Token Failed - User Id is missing");
       throw new IllegalArgumentException("User Id is missing");
     }
-    log.debug("Storing Active Refresh Token Info - User Id is present");
-
     if (Objects.isNull(refreshToken) || refreshToken.isBlank()) {
       log.warn("Storing Active Refresh Token Failed - Refresh Token is missing");
       throw new IllegalArgumentException("Refresh Token is missing");
     }
-    log.debug("Storing Active Refresh Token Info - Refresh Token is present");
 
     ActiveRefreshToken activeRefreshToken = new ActiveRefreshToken();
     activeRefreshToken.setUserId(userId);
     activeRefreshToken.setRefreshToken(refreshToken);
     activeRefreshToken.setExpiresAt(getExpiration(refreshToken));
     activeRefreshToken.setRevoked(false);
-    log.debug("Storing Active Refresh Token Info - Successfully created Active Refresh Token entity");
 
     activeRefreshTokenRepository.save(activeRefreshToken);
     log.debug("Successfully stored Refresh Token");
@@ -192,7 +183,6 @@ public class JwtService {
       log.warn("Removing Redundant Active Refresh Tokens Failed - User Id is missing");
       throw new IllegalArgumentException("User Id is missing");
     }
-    log.debug("Removing Redundant Active Refresh Tokens Info - User Id is present");
 
     activeRefreshTokenRepository.deleteByUserId(userId);
     log.debug("Successfully removed redundant active refresh tokens for user");
@@ -206,35 +196,26 @@ public class JwtService {
       log.info("Revoking Refresh Token Failed - Refresh Token is missing");
       throw new IllegalArgumentException("Token is missing");
     }
-    log.debug("Revoking Refresh Token Info - Refresh Token is present");
-
     if (!isRefreshToken(refreshToken)) {
       log.debug("Revoking Refresh Token Info - Refresh Token is invalid");
       throw new InValidTokenException("Token is invalid");
     }
-    log.debug("Revoking Refresh Token Info - Refresh Token is valid");
-
     if (!isRefreshTokenActive(refreshToken)) {
       log.debug("Revoking Refresh Token Info - Refresh Token is not active");
       throw new InValidTokenException("Token is invalid");
     }
-    log.debug("Revoking Refresh Token Info - Refresh Token is active, proceeding to revoke");
 
     activeRefreshTokenRepository
         .deleteByUserIdAndRefreshToken(UUID.fromString(extractSubject(refreshToken)), refreshToken);
     removeRedundantActiveRefreshTokens(UUID.fromString(extractSubject(refreshToken)));
     log.debug("Revoking Refresh Token Info - Successfully deleted Active Refresh Token");
 
-    log.debug("Revoking Refresh Token Success");
+    log.info("Revoking Refresh Token Success");
   }
 
   public TokenDTO generateTokens(User user) {
     log.debug("Generating Tokens...");
-    String refreshToken = generateRefreshToken(user);
-    String accessToken = generateAccessToken(user);
-
-    log.debug("Successfully generated Tokens...");
-    return new TokenDTO(refreshToken, accessToken);
+    return new TokenDTO(generateRefreshToken(user), generateAccessToken(user));
   }
 
   public boolean isRefreshTokenActive(String refreshToken) {
@@ -248,16 +229,10 @@ public class JwtService {
       log.debug("Extracting Bearer Token Failed - Header is missing or not a Bearer Token");
       throw new EmptyTokenException("Invalid Authorization header");
     }
-    log.debug("Extracting Bearer Token Info - Authorization header is present");
-
     String token = authHeader.substring(7);
-
     if (token.isBlank()) {
       throw new EmptyTokenException("Token is blank or empty");
     }
-    log.debug("Extracting Bearer Token Info - Token is present");
-
-    log.debug("Extracting Bearer Token Success");
     return token;
   }
 }

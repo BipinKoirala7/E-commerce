@@ -57,11 +57,7 @@ public class CookieService {
       log.debug("Fetching Cookie Failed - Request doesn't have any cookies");
       return null;
     }
-    log.debug("Fetching Cookie Info - Cookies Found");
-
     for (Cookie cookie : cookies) {
-      log.debug("Cookie Name : {}", cookie.getName());
-      log.debug("Cookie Value : {}", cookie.getValue());
       if (cookie.getName().equals(cookieName)) {
         log.debug("Fetching Cookie Success for Cookie: {}", cookieName);
         return cookie;

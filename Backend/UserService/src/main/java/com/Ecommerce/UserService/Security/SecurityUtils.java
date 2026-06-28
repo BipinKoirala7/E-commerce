@@ -16,11 +16,9 @@ public class SecurityUtils {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (!(authentication instanceof JwtAuthenticationToken)) {
-      log.warn("Authentication is not of type JwtAuthenticationToken");
-      //  throw new TokenAuthenticationException("Authentication is required to access this resource");
+      log.warn("No Authentication exists");
       return null;
     }
-    log.debug("Authentication is of type JwtAuthenticationToken");
 
     return ((JwtAuthenticationToken) authentication).getUserId();
   }
@@ -30,11 +28,9 @@ public class SecurityUtils {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (!(authentication instanceof JwtAuthenticationToken)) {
-      log.warn("Authentication is not of type JwtAuthenticationToken.");
-      //  throw new TokenAuthenticationException("Authentication is required to access this resource");
+      log.warn("No Authentication exists.");
       return null;
     }
-    log.debug("Authentication is of type JwtAuthenticationToken.");
 
     return ((JwtAuthenticationToken) authentication).getAccessToken();
   }

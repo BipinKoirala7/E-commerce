@@ -40,23 +40,18 @@ public class UserService {
   @Transactional
   public void createNewUser(UserCreateDTO userCreateDTO) {
     log.info("User Creation...");
+
     if (Objects.isNull(userCreateDTO)) {
       log.warn("User Creation Failed - User cannot be null");
       throw new IllegalArgumentException("User cannot be null");
     }
-    log.debug("User Creation Info - User Info is present");
-
     if (userRepository.existsByEmail(userCreateDTO.getEmail())) {
       log.warn("User Creation Failed - User with given email already exists");
       throw new UserAlreadyExistsException("User Already Exists");
     }
-    log.debug("User Creation Info - User with given email doesn't exist");
 
     User newUser = userMapper.fromCreateDto(userCreateDTO);
     newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-    log.debug("User Creation Info - Password is encoded");
-
-
     userRepository.save(newUser);
     log.info("User Creation Success");
   }
@@ -64,17 +59,15 @@ public class UserService {
   @Transactional
   public User createNewOAuthUser(OAuthUserCreateDTO oAuthUserCreateDTO) {
     log.info("OAuth User Creation...");
+
     if (Objects.isNull(oAuthUserCreateDTO)) {
       log.warn("OAuth User Creation Failed - OAuth User cannot be null");
       throw new IllegalArgumentException("OAuth User cannot be null");
     }
-    log.debug("OAuth User Creation Info - OAuth User Info is present");
-
     if (userRepository.existsByEmailAndProviderId(oAuthUserCreateDTO.getEmail(), oAuthUserCreateDTO.getProviderId())) {
       log.warn("OAuth User Creation Failed - OAuth User with given email already exists");
       throw new UserAlreadyExistsException("User Already Exists");
     }
-    log.debug("OAuth User Creation Info - OAuth User with given email doesn't exist");
 
     User newUser = userRepository.save(userMapper.fromOAuthCreateDto(oAuthUserCreateDTO));
     log.info("OAuth User Creation Success");
@@ -88,7 +81,6 @@ public class UserService {
       log.info("Fetching User Failed - User Not Found");
       throw new UserNotFoundException("User Not Found");
     }
-    log.debug("Fetching User Info - User Exists");
 
     User user = userRepository.findById(SecurityUtils.getCurrentUserId())
         .orElseThrow(() -> {
@@ -107,14 +99,12 @@ public class UserService {
       log.warn("User Update Failed - Updated User cannot be null");
       throw new IllegalArgumentException("Updated User be null");
     }
-    log.debug("User Update Info - Updated User is present");
 
     User user = userRepository.findById(Objects.requireNonNull(SecurityUtils.getCurrentUserId()))
         .orElseThrow(() -> {
           log.warn("User Update Failed - User doesn't exist");
           return new IllegalArgumentException("User not found");
         });
-    log.debug("User Update Info - User Exists");
 
     userMapper.fromUpdateDTOtoEntity(userUpdateDTO, user);
     userRepository.save(user);
@@ -129,7 +119,6 @@ public class UserService {
       log.info("User Deletion Failed - User does not exist");
       throw new IllegalArgumentException("User does not exist");
     }
-    log.debug("User Deletion Info - User Exists");
 
     userRepository.deleteById(SecurityUtils.getCurrentUserId());
     log.info("User Deletion Success");
@@ -137,26 +126,20 @@ public class UserService {
 
   //  Other Methods
   public void updateUserLastLoginAt(UUID userId) {
-    log.debug("User Last Login Date Update");
-
     if (Objects.isNull(userId)) {
       log.debug("User Last Login Date Update Failed - User Id cannot be null");
       throw new IllegalArgumentException("User Id cannot be null");
     }
-    log.debug("User Last Login Date Update Info - User Id present");
 
     userRepository.updateLastLoginDate(LocalDateTime.now(), userId);
     log.debug("User Last Login Date Update Success");
   }
 
   public User getUserByEmail(String email) {
-    log.debug("Fetching User...");
-
     if (Objects.isNull(email)) {
       log.warn("Fetching User Failed - Email cannot be null");
       throw new IllegalArgumentException("Email cannot be null");
     }
-    log.debug("Fetching User Info - Email is present");
 
     return userRepository
         .findByEmail(email)
@@ -167,13 +150,10 @@ public class UserService {
   }
 
   public User getUserById(UUID userId) {
-    log.debug("Fetching User By UserId...");
-
     if (Objects.isNull(userId)) {
       log.warn("Fetching User Failed - User Id cannot be null");
       throw new IllegalArgumentException("User Id cannot be null");
     }
-    log.debug("Fetching User Info - User Id is present");
 
     return userRepository
         .findById(userId)

@@ -59,13 +59,10 @@ public class SourceAuthenticationFilter extends OncePerRequestFilter {
 
     boolean isInternalPath = path.contains("/internal");
     log.debug("Source Authentication Filter Info - Internal Route: {}", isInternalPath);
-    log.debug("Source Authentication Filter Info - Path: {}", path);
 
     String gatewaySecretHeader = request.getHeader(GATEWAY_SECRET_HEADER);
-    log.debug("Source Authentication Filter Info - Gateway Secret Header Retrieved");
-
     String serviceSecretHeader = request.getHeader(SERVICE_SECRET_HEADER);
-    log.debug("Source Authentication Filter Info - Service Secret Header Retrieved");
+    log.debug("Source Authentication Filter Info - Gateway and Service Secret Header Retrieved");
 
     if (isInternalPath) {
       log.debug("Source Authentication Filter Info - Internal Controller Request.");
@@ -93,7 +90,6 @@ public class SourceAuthenticationFilter extends OncePerRequestFilter {
     if (headerValue == null || headerValue.isBlank()) {
       return false;
     }
-    log.debug("Header value is present");
 
     return MessageDigest.isEqual(headerValue.getBytes(), expectedSecret.getBytes());
   }

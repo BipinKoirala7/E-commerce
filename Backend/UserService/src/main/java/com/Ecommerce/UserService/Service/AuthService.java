@@ -60,42 +60,39 @@ public class AuthService {
 
   @Transactional
   public void loginUser(UserLoginDTO userLoginDTO, HttpServletResponse response) {
-    log.info("User Login...");
+    log.info("Login User...");
 
     if (Objects.isNull(userLoginDTO)) {
-      log.debug("User Login Failed - User Login DTO is null");
+      log.debug("Login User Failed - User Login DTO is null");
       throw new IllegalArgumentException("Login Credentials must be provided");
     }
-    log.debug("User Login Info - User Login DTO is present");
 
     User user = userService.getUserByEmail(userLoginDTO.getEmail());
-    log.debug("User Login Info - Getting User of Given Email");
+    log.debug("Login User Info - Getting User of Given Email");
 
     if (Objects.isNull(user)) {
-      log.debug("User Login Failed -User with given email is not present");
+      log.debug("Login User Failed -User with given email is not present");
       throw new UserNotFoundException("User doesn't exist");
     }
-    log.debug("User Login Info - User with given email exists");
 
     if (!passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())) {
-      log.debug("User Login Failed - Passwords don't match");
+      log.debug("Login User Failed - Passwords don't match");
       throw new IncorrectEmailOrPasswordException("Email or Password is incorrect");
     }
-    log.debug("User Login Info - Passwords match");
 
     TokenDTO tokenSet = jwtService.generateTokens(user);
-    log.debug("User Login Info - Generating Tokens for User");
+    log.debug("Login User Info - Generating Tokens for User");
 
     response.addCookie(cookieService.createRefreshTokenCookie(tokenSet.getRefreshToken()));
     response.addCookie(cookieService.createAccessTokenCookie(tokenSet.getAccessToken()));
 
     jwtService.storeActiveRefreshToken(user.getId(), tokenSet.getRefreshToken());
-    log.debug("User Login Info - Active Refresh Token Stored");
+    log.debug("Login User Info - Active Refresh Token Stored");
 
-    log.debug("User Login Info - Updating user's last login time");
     userService.updateUserLastLoginAt(user.getId());
+    log.debug("Login User Info - User's last login time updated");
 
-    log.info("User Login Success");
+    log.info("Login User Success");
   }
 
   @Transactional
@@ -106,13 +103,11 @@ public class AuthService {
       log.debug("OAuth User Login Failed - Email is null");
       throw new IllegalArgumentException("Please Provide credentials properly.");
     }
-    log.debug("OAuth User Login Info - Email is present");
 
     if (Objects.isNull(providerId)) {
       log.debug("OAuth User Login Failed - Provider Id is null");
       throw new IllegalArgumentException("Please Provide credentials properly.");
     }
-    log.debug("OAuth User Login Info - Provider Id is present");
 
     User user = userService.getUserByEmail(email);
     log.debug("OAuth User Login Info - Getting User of Given Email");
@@ -121,7 +116,6 @@ public class AuthService {
       log.debug("OAuth User Login Failed - User with given social email is not present");
       throw new UserNotFoundException("User doesn't exist");
     }
-    log.debug("OAuth User Login Info - User with given social email exists");
 
     TokenDTO tokenSet = jwtService.generateTokens(user);
     log.debug("OAuth User Login Info - Tokens Generated");
@@ -141,7 +135,7 @@ public class AuthService {
   //  This is used by API Gateway for refreshing tokens.
   @Transactional
   public String refreshTokens(String refreshToken) {
-    log.info("Refreshing tokens ..");
+    log.debug("Refreshing tokens...");
 
     jwtService.validateRefreshToken(refreshToken);
     log.debug("Refreshing Tokens Info - Refresh Token is valid");

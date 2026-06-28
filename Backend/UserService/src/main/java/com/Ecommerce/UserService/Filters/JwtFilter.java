@@ -62,8 +62,6 @@ public class JwtFilter extends OncePerRequestFilter {
     log.debug("Jwt Authentication Filter...");
 
     String token = jwtService.extractBearerToken(request.getHeader("Authorization"));
-    log.debug("Jwt Authentication Info - Extracted Bearer Token");
-
     jwtService.validateAccessToken(token);
     log.debug("Jwt Authentication Info - Access Token is valid");
 
