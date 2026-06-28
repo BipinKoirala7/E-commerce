@@ -20,6 +20,17 @@ const fetcher = async (url: string) => {
   }
 };
 
+const healthApi = axios.create({
+  baseURL: ApiEndpoint.BASE_URL,
+  timeout: 10000,
+  withCredentials: false,
+});
+
+const healthFetcher = async (url: string) => {
+  const res = await healthApi.get(url);
+  return res.data;
+};
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -36,4 +47,4 @@ api.interceptors.response.use(
   },
 );
 
-export { api, fetcher };
+export { api, fetcher, healthFetcher };

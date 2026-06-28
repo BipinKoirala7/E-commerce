@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import UserProvider from "@/Context/UserProvider";
 import Footer from "@/components/Footer/Footer";
 import MainNav from "@/components/MainNav/MainNav";
+import ServerInfoValidatorProvider from "@/Context/ServerInfoValidaterProvider";
 
 const montserratHeading = Montserrat({
   subsets: ["latin"],
@@ -62,16 +63,18 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <UserProvider>
-          <main className="w-full min-h-screen h-full flex flex-col">
-            <MainNav />
-            <div className="w-full flex-1 text-text flex justify-center">
-              {children}
-            </div>
-          </main>
-          <Footer />
-          <Toaster />
-        </UserProvider>
+        <ServerInfoValidatorProvider>
+          <UserProvider>
+            <main className="w-full min-h-screen h-full flex flex-col">
+              <MainNav />
+              <div className="w-full flex-1 text-text flex justify-center">
+                {children}
+              </div>
+            </main>
+            <Footer />
+            <Toaster />
+          </UserProvider>
+        </ServerInfoValidatorProvider>
       </body>
     </html>
   );

@@ -11,15 +11,6 @@ type UserProviderT = {
   isAuthenticated: () => boolean;
 };
 
-// {
-//   fetcher,
-//   onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-//     if (error?.status === 401 || error?.response?.status === 401) return;
-//     if (retryCount >= 3) return;
-//     revalidate({ retryCount });
-//   },
-// }
-
 const swrConfig = {
   fetcher,
   shouldRetryOnError: false,
