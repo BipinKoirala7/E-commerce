@@ -26,6 +26,7 @@ import java.util.Arrays;
 @Slf4j
 public class SecurityConfig {
   private final JwtFilter jwtFilter;
+  private final CorsConfig corsConfig;
   private final FilterExceptionHandler filterExceptionHandler;
   private final SourceAuthenticationFilter sourceAuthenticationFilter;
   private final CustomAuthenticationEntryPoint authenticationEntryPoint;
@@ -34,7 +35,7 @@ public class SecurityConfig {
   public SecurityFilterChain httpSecurityFilterChain(@NonNull HttpSecurity http) {
     return http
         .csrf(AbstractHttpConfigurer::disable)
-        .cors(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfiguration()))
         .authorizeHttpRequests(request -> request
             .requestMatchers("/actuator/**").permitAll()
             .requestMatchers("/payment/webhook").permitAll()
@@ -44,5 +45,20 @@ public class SecurityConfig {
         .addFilterAfter(sourceAuthenticationFilter, FilterExceptionHandler.class)
         .addFilterAfter(jwtFilter, SourceAuthenticationFilter.class)
         .build();
+  }
+
+  private @NonNull CorsConfigurationSource corsConfiguration() {
+    CorsConfiguration corsConfiguration = new CorsConfiguration();
+    corsConfiguration.applyPermitDefaultValues();
+    corsConfiguration.setAllowedOrigins(Arrays.asList(corsConfig.getAllowedOrigins()));
+    corsConfiguration.setAllowedHeaders(Arrays.asList(corsConfig.getAllowedHeaders()));
+    corsConfiguration.setAllowedMethods(Arrays.asList(corsConfig.getAllowedMethods()));
+    corsConfiguration.setAllowCredentials(corsConfig.getAllowCredentials());
+    corsConfiguration.setExposedHeaders(Arrays.asList(corsConfig.getExposedHeaders()));
+    corsConfiguration.setMaxAge(corsConfig.getMaxAge());
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", corsConfiguration);
+    return source;
   }
 }
