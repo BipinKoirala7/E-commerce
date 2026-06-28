@@ -51,13 +51,8 @@ public class JwtFilter extends OncePerRequestFilter {
     log.debug("Jwt Authentication Filter...");
 
     String token = jwtService.extractBearerToken(request.getHeader(AUTH_HEADER));
-    log.debug("Jwt Authentication Info - Extracted Bearer Token");
-
     jwtService.validateAccessToken(token);
-    log.debug("Jwt Authentication Info - Access Token is valid");
-
     UUID userId = UUID.fromString(jwtService.extractSubject(token));
-    log.debug("Jwt Authentication Info - Extracted User Id from Access Token");
 
     JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(
         token,
@@ -65,7 +60,6 @@ public class JwtFilter extends OncePerRequestFilter {
         List.of(new SimpleGrantedAuthority("ROLE_USER"))
     );
     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-    log.debug("Security Context established");
 
     filterChain.doFilter(request, response);
   }

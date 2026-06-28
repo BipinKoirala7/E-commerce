@@ -21,68 +21,67 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(PaymentNotFound.class)
   public ResponseEntity<RestApiResponse<Void>> handlePaymentNotFoundException(@NonNull PaymentNotFound e) {
-    log.warn("Payment Not Found Exception Occurred");
-    log.warn("Exception Message: {}", e.getMessage());
+    log.warn("Payment Not Found Exception Occurred: {}", e.getMessage());
+    String message = "Payment Not Found";
 
     return ResponseEntity
         .status(HttpStatus.NOT_FOUND)
-        .body(RestApiResponse.error(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+        .body(RestApiResponse.error(HttpStatus.NOT_FOUND.value(), message));
   }
 
   @ExceptionHandler(InValidOrderUpdate.class)
   public ResponseEntity<RestApiResponse<Void>> handleInValidOrderUpdateException(@NonNull InValidOrderUpdate e) {
-    log.warn("Invalid Order Exception Occurred");
-    log.warn("Exception Message: {}", e.getMessage());
+    log.warn("Invalid Order Exception Occurred: {}", e.getMessage());
+    String message = "Order Update Failed";
 
     return ResponseEntity
         .status(HttpStatus.CONFLICT)
-        .body(RestApiResponse.error(HttpStatus.CONFLICT.value(), e.getMessage()));
+        .body(RestApiResponse.error(HttpStatus.CONFLICT.value(), message));
   }
 
   @ExceptionHandler(ZeroItemQuantityInOrderException.class)
   public ResponseEntity<RestApiResponse<Void>> handleTokenAuthenticationException(@NonNull ZeroItemQuantityInOrderException e) {
-    log.warn("Zero Item Quantity In Order Exception Occurred");
-    log.warn("Exception Message: {}", e.getMessage());
+    log.warn("Zero Item Quantity In Order Exception Occurred: {}", e.getMessage());
+    String message = "Item Quantity cannot be zero";
 
     return ResponseEntity
         .status(HttpStatus.NOT_ACCEPTABLE)
-        .body(RestApiResponse.error(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage()));
+        .body(RestApiResponse.error(HttpStatus.NOT_ACCEPTABLE.value(), message));
   }
 
   @ExceptionHandler(TokenAuthenticationException.class)
   public ResponseEntity<RestApiResponse<Void>> handleTokenAuthenticationException(@NonNull TokenAuthenticationException e) {
-    log.warn("Empty Cart Exception Occurred");
-    log.warn("Exception Message: {}", e.getMessage());
+    log.warn("Token Authentication Exception Occurred: {}", e.getMessage());
+    String message = "Authentication Failed, Please Log in";
 
     return ResponseEntity
         .status(HttpStatus.UNAUTHORIZED)
-        .body(RestApiResponse.error(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
+        .body(RestApiResponse.error(HttpStatus.UNAUTHORIZED.value(), message));
   }
 
   @ExceptionHandler(EmptyProductsOrderCreationException.class)
   public ResponseEntity<RestApiResponse<Void>> handleEmptyCartOrderCreationException(@NonNull EmptyProductsOrderCreationException e) {
-    log.warn("Empty Cart Exception Occurred");
-    log.warn("Exception Message: {}", e.getMessage());
+    log.warn("Empty Cart Exception Occurred: {}", e.getMessage());
+    String message = "Order without item failed";
 
     return ResponseEntity
         .status(HttpStatus.NOT_ACCEPTABLE)
-        .body(RestApiResponse.error(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage()));
+        .body(RestApiResponse.error(HttpStatus.NOT_ACCEPTABLE.value(), message));
   }
 
   @ExceptionHandler(OrderNotFound.class)
   public ResponseEntity<RestApiResponse<Void>> handleOrderNotFoundException(@NonNull OrderNotFound e) {
-    log.warn("Order Not Found Exception Occurred");
-    log.warn("Exception Message: {}", e.getMessage());
+    log.warn("Order Not Found Exception Occurred: {}", e.getMessage());
+    String message = "Order Not Found";
 
     return ResponseEntity
         .status(HttpStatus.NOT_FOUND)
-        .body(RestApiResponse.error(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+        .body(RestApiResponse.error(HttpStatus.NOT_FOUND.value(), message));
   }
 
   @ExceptionHandler(FeignException.FeignClientException.class)
   public ResponseEntity<RestApiResponse<Void>> handleFeignClientError(FeignException.@NonNull FeignClientException e) {
-    log.error("Feign Client Exception Occurred");
-    log.error("Exception Message : {}", e.getMessage());
+    log.error("Feign Client Exception Occurred: {}", e.getMessage());
 
     HttpStatus status = HttpStatus.valueOf(e.status());
     String message = extractErrorMessage(e, status);
@@ -94,8 +93,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(FeignException.FeignServerException.class)
   public ResponseEntity<RestApiResponse<Void>> handleFeignServerError(FeignException.@NonNull FeignServerException e) {
-    log.error("Feign Server Exception Occurred");
-    log.error("Exception Message : {}", e.getMessage());
+    log.error("Feign Server Exception Occurred: {}", e.getMessage());
 
     HttpStatus status = HttpStatus.valueOf(e.status());
     String message = extractErrorMessage(e, status);
@@ -107,8 +105,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(FeignException.class)
   public ResponseEntity<RestApiResponse<Void>> handleFeignException(@NonNull FeignException e) {
-    log.error("Feign Exception Occurred");
-    log.error("Exception Message : {}", e.getMessage());
+    log.error("Feign Exception Occurred: {}", e.getMessage());
 
     int statusCode = e.status() != -1 ? e.status() : HttpStatus.INTERNAL_SERVER_ERROR.value();
     HttpStatus status = HttpStatus.valueOf(statusCode);
@@ -121,9 +118,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(RetryableException.class)
   public ResponseEntity<RestApiResponse<Void>> handleRetryableException(@NonNull RetryableException e) {
-    log.error("Retryable Exception Occurred");
-    log.error("Feign Retryable Exception (timeout/connection)");
-    log.error("Exception Message : {}", e.getMessage());
+    log.error("Retryable Exception Occurred: {}", e.getMessage());
     String message = "Service is temporarily unavailable. Please try again.";
 
     return ResponseEntity
@@ -133,7 +128,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<RestApiResponse<Void>> handleConstraintViolationException(@NonNull ConstraintViolationException e) {
-    log.error("Constraint Violation Exception Occurred");
+    log.error("Constraint Violation Exception Occurred: {}", e.getMessage());
     log.error("Exception Message: {}", e.getMessage());
 
     // Extract specific validation errors for better user feedback
@@ -153,8 +148,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(DataIntegrityViolationException.class)
   public ResponseEntity<RestApiResponse<Void>> handleDataIntegrityViolationException(@NonNull DataIntegrityViolationException e) {
-    log.error("Data Integrity Violation Exception Occurred");
-    log.error("Exception Message : {}", e.getMessage());
+    log.error("Data Integrity Violation Exception Occurred: {}", e.getMessage());
     String message = "Database constraint violated";
 
     return ResponseEntity
@@ -164,10 +158,8 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(TransactionSystemException.class)
   public ResponseEntity<RestApiResponse<Void>> handleTransactionSystemException(@NonNull TransactionSystemException e) {
-    log.error("Transaction System Exception Occurred");
-    log.error("Exception Message: {}", e.getMessage());
+    log.error("Transaction System Exception Occurred: {}", e.getMessage());
 
-    // Unwrap the root cause
     Throwable cause = e.getRootCause();
 
     if (cause instanceof ConstraintViolationException constraintViolationException) {
@@ -190,20 +182,16 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<RestApiResponse<?>> handleIllegalArgumentException(@NonNull IllegalArgumentException e) {
-    log.warn("Illegal Argument Exception Occurred");
-    log.warn("Exception Message: {}", e.getMessage());
+    log.warn("Illegal Argument Exception Occurred: {}", e.getMessage());
 
     return ResponseEntity
         .status(HttpStatus.NOT_ACCEPTABLE)
         .body(RestApiResponse.error(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage()));
   }
 
-  // It handles General Exception, which is not handled by other handlers
   @ExceptionHandler(Exception.class)
   public ResponseEntity<RestApiResponse<?>> handleGeneralException(@NonNull Exception e) {
-    log.warn("General Exception Occurred");
-    log.warn("Exception : {}", e.getClass().getName());
-    log.warn("Exception Message: {}", e.getMessage());
+    log.warn("{} Exception Occurred: {}",e.getClass().getName(), e.getMessage());
 
     return ResponseEntity
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -211,8 +199,7 @@ public class GlobalExceptionHandler {
             .value(), e.getMessage()));
   }
 
-  //  Helper function
-
+  //  Helper function to extract error message from FeignException
   private @NonNull String extractErrorMessage(@NonNull FeignException e, HttpStatus status) {
     String contentUTF8 = e.contentUTF8();
 

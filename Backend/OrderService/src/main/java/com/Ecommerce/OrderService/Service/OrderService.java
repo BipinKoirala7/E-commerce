@@ -130,7 +130,7 @@ public class OrderService {
     Order order = orderRepository.findByOrderNumberAndUserId(orderNumber, SecurityUtils.getCurrentUserId())
         .orElseThrow(() -> {
           log.warn("Fetching Order Failed - Order not found");
-          return new OrderNotFound("Order with given order not found");
+          return new OrderNotFound("Order with given order number not found");
         });
 
     OrderDetailsResponseDTO responseDTO = orderMapper.toDetailsResponseDTO(order);

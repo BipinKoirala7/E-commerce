@@ -43,20 +43,15 @@ public class CartItemService {
       log.warn("Cart Item Creation Failed - Product Id is null");
       throw new IllegalArgumentException("Product Id is null");
     }
-    log.debug("Cart Item Creation Info - Product Id is present");
 
-    Optional<CartItem> existingCartItem = cartItemRepository
-        .findByProductIdAndUserId(productId, SecurityUtils.getCurrentUserId());
+    Optional<CartItem> existingCartItem = cartItemRepository.findByProductIdAndUserId(productId, SecurityUtils.getCurrentUserId());
 
     if (existingCartItem.isPresent()) {
       log.debug("Cart Item Creation Info - Cart Item already exists And Updating Cart Item Quantity");
       updateCartItemQuantity(existingCartItem.get().getProductId(), new CartItemUpdateDto(existingCartItem.get().getQuantity() + 1));
-
-      log.info("Cart Item Creation Success");
       return;
     }
 
-    log.debug("Cart Item Creation Info - Cart Item doesn't exists");
     CartItem newCartItem = cartItemMapper.toCartItemEntity(productId);
     newCartItem.setUserId(SecurityUtils.getCurrentUserId());
 
@@ -68,15 +63,13 @@ public class CartItemService {
     log.info("Fetching Cart Items");
 
     List<CartItem> cartItems = cartItemRepository.findByUserId(SecurityUtils.getCurrentUserId());
-    log.info("Cart Items Retrieval Success");
-    log.info("Cart Items Retrieval Info: {}", cartItems.toString());
 
     return cartItems.stream().map(cartItem -> {
       RestApiResponse<ProductSummary> apiResponse = productServiceClient.getProductSummary(cartItem.getProductId());
 
       if(!apiResponse.getSuccess()){
         log.debug("CartItem Product Summary Retrieval Failed");
-        throw new IllegalArgumentException("Product Summary Retrieval Failed"); //  Maybe some other exception
+        throw new IllegalArgumentException("Product Summary Retrieval Failed");
       }
 
       ProductSummary productSummary = apiResponse.getData();
@@ -89,7 +82,6 @@ public class CartItemService {
   public void updateCartItemQuantity(@NotNull UUID productId,@NonNull CartItemUpdateDto cartItemUpdateDTO) {
     log.info("Updating Cart Item...");
 
-    log.debug("ProductId: {}, Updated Quantity: {}", productId, cartItemUpdateDTO.getQuantity());
     if(!cartItemRepository.existsByProductIdAndUserId(productId, SecurityUtils.getCurrentUserId())){
       log.warn("Cart Item Update Failed - Cart Item doesn't exists");
       throw new CartItemNotFound("Cart Item doesn't exists");
@@ -103,13 +95,10 @@ public class CartItemService {
     if(cartItemUpdateDTO.getQuantity() == 0){
       log.debug("Updated Quantity is zero, Deleting Cart Item");
       deleteCartItem(productId);
-      log.info("Cart Item Update Success - Cart Item Deleted");
       return;
     }
     log.debug("Updating Cart Item Info - Cart Item exists and Updated Quantity is valid");
 
-    //  Using custom query to update quantity directly in the database without fetching the entity first
-    //  Make a decision whether to have updated_at or not
     cartItemRepository.updateQuantityByIdAndUserId(cartItemUpdateDTO.getQuantity(), productId, SecurityUtils.getCurrentUserId());
     log.info("Cart Item Update Success");
   }
@@ -122,13 +111,11 @@ public class CartItemService {
       log.warn("Cart Item Deletion Failed - Product Id is null");
       throw new IllegalArgumentException("Product Id is null");
     }
-    log.debug("Cart Item Deletion Info - Product Id is present");
 
     if (!cartItemRepository.existsByProductIdAndUserId(productId, SecurityUtils.getCurrentUserId())) {
       log.warn("Cart Item Deletion Failed - Cart Item doesn't exists");
       throw new CartItemNotFound("Cart Item doesn't exists");
     }
-    log.debug("Cart Item Deletion Info - Cart Item exists");
 
     cartItemRepository.deleteByProductIdAndUserId(productId, SecurityUtils.getCurrentUserId());
     log.info("Cart Item Deletion Success");

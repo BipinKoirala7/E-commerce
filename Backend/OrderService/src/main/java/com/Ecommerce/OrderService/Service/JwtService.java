@@ -71,27 +71,23 @@ public class JwtService {
       log.debug("Access Token Validation Failed - Token is null");
       throw new IllegalArgumentException("Token must be provided");
     }
-    log.debug("Access Token Validation Info - Token is present");
-
     if (!isAccessToken(token)) {
       log.debug("Access Token Validation Failed - Given token is not a refresh token");
       throw new InValidTokenException("Token is invalid");
     }
+
     log.debug("Access Token Validation Success");
   }
 
   public String extractBearerToken(String authHeader) {
     log.debug("Extracting Bearer Token...");
 
-    log.debug("Extracting Bearer Token Info - Checking if Authorization header is null");
     if (Objects.isNull(authHeader) || !authHeader.startsWith("Bearer")) {
       log.debug("Extracting Bearer Token Failed - Header is missing or not a Bearer Token");
       throw new EmptyTokenException("Invalid Authorization header");
     }
-    log.debug("Extracting Bearer Token Info - Removing 'Bearer ' from Authorization header");
     String token = authHeader.substring(7);
 
-    log.debug("Extracting Bearer Token Info - Checking if extracted token is blank");
     if (token.isBlank()) {
       throw new EmptyTokenException("Token is blank or empty");
     }

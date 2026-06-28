@@ -42,55 +42,46 @@ public class FilterExceptionHandler extends OncePerRequestFilter {
 
       filterChain.doFilter(request, response);
     } catch (UnVerifiedSourceException e) {
-      log.error("UnVerified Token Exception Occurred");
-      log.warn("Exception Message: {}", e.getMessage());
+      log.error("UnVerified Token Exception Occurred: {}", e.getMessage());
       String message = "Access Denied.";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (EmptyTokenException e) {
-      log.error("Empty Token Exception Occurred");
-      log.warn("Exception Message: {}", e.getMessage());
+      log.error("Empty Token Exception Occurred: {}", e.getMessage());
       String message = "Token is missing";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (InValidTokenException e) {
-      log.error("InValid Token Type Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
+      log.error("InValid Token Type Exception Occurred: {}", e.getMessage());
       String message = "Invalid token type";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (ExpiredJwtException e) {
-      log.error("Expired Jwt Exception occurred");
-      log.warn("Exception message : {}", e.getMessage());
-      String message = "Authentication Failed. Please log in again!";
+      log.error("Expired Jwt Exception occurred: {}", e.getMessage());
+      String message = "Authentication Failed. Please log in!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (SignatureException e) {
-      log.info("Signature Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
-      String message = "Authentication Failed. Please log in again!";
+      log.info("Signature Exception Occurred: {}", e.getMessage());
+      String message = "Authentication Failed. Please log in!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (MalformedJwtException e) {
-      log.info("Malformed Jwt Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
-      String message = "Authentication Failed. Please log in again!";
+      log.info("Malformed Jwt Exception Occurred: {}", e.getMessage());
+      String message = "Authentication Failed. Please log in!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (UnsupportedJwtException e) {
-      log.info("Unsupported Jwt Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
-      String message = "Authentication Failed. Please log in again!";
+      log.info("Unsupported Jwt Exception Occurred: {}", e.getMessage());
+      String message = "Authentication Failed. Please log in!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (JwtException e) {
-      log.info("Jwt Exception Occurred");
-      log.warn("Exception message : {}", e.getMessage());
+      log.info("Jwt Exception Occurred: {}", e.getMessage());
       String message = "Authentication Failed. Please log in again!";
 
       sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, message);
     } catch (ServletException | IOException e) {
-      log.error("Exception Message: {}", e.getMessage());
       throw e;
     } catch (RuntimeException e) {
       log.error("Exception(Runtime) Message : {}", e.getMessage());
@@ -98,7 +89,6 @@ public class FilterExceptionHandler extends OncePerRequestFilter {
 
       sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
     } catch (Exception e) {
-      log.error("Exception Message: {}", e.getMessage());
       String message = "Something went wrong. Please try again!";
 
       sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);

@@ -85,12 +85,8 @@ public class PaymentService {
         .findByStripeSessionId(session.getId())
         .orElseThrow(() -> new RuntimeException("Payment not found for session."));
 
-    log.debug("Payment for session {}", payment);
-
     payment.setStripePaymentIntentId(session.getPaymentIntent());
     payment.setPaymentStatus(PaymentStatus.COMPLETED);
-
-    log.debug("Existing payment fetched and updated");
 
     paymentRepository.save(payment);
     orderService.confirmOrder(payment.getOrderId(), payment.getUserId());
