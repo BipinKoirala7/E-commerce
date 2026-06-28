@@ -41,29 +41,6 @@ public class ProductService {
   private final ProductRepository productRepository;
   private final ProductMapper productMapper;
 
-  @Transactional
-  public Product createNewProduct(@NotNull ProductCreateDTO newProductDTO) {
-    log.info("Creating Product...");
-
-    if (Objects.isNull(newProductDTO)) {
-      log.warn("New Product is null");
-      throw new IllegalArgumentException("Product cannot be null");
-    }
-    log.debug("Product Creation Info - New Product is present");
-
-    Product newProduct = productMapper.toProductEntity(newProductDTO);
-    log.debug("Product Creation Info - New Product Entity is created");
-
-    if(Objects.isNull(newProduct.getImageUrl())) {
-      log.warn("Product Creation Failed - Product cannot be created without images");
-      throw new ProductWithNoImageException("Product with no images");
-    }
-
-    Product product = productRepository.save(newProduct);
-    log.debug("Product Creation Success");
-    return product;
-  }
-
   public PageResponse<Product> getProducts(
       String query, String category, int minPrice, int maxPrice,
       int page, String size, String sort, String direction
@@ -92,7 +69,6 @@ public class ProductService {
       log.warn("Fetching product Summary Failed - Product ID is null");
       throw new IllegalArgumentException("Product ID cannot be null");
     }
-    log.debug("Fetching Product Summary Info - Product ID is present");
 
     Product product = productRepository
         .findById(productId)
@@ -101,9 +77,7 @@ public class ProductService {
           return new ProductNotFoundException("Product Not Found");
         });
 
-    log.info("Fetching Product Summary Success");
     ProductSummary summary = productMapper.toProductSummary(product);
-    log.debug("Fetching product summary for : {}", summary.getName());
     return summary;
   }
 
@@ -114,7 +88,6 @@ public class ProductService {
       log.warn("Fetching Product Info - Product ID is null");
       throw new IllegalArgumentException("Product ID cannot be null");
     }
-    log.debug("Fetching Product Info - Product ID is present");
 
     Product product = productRepository
         .findById(productId)
@@ -125,55 +98,6 @@ public class ProductService {
 
     log.info("Fetching Product Success");
     return product;
-  }
-
-  @Transactional
-  public void updateProduct(UUID productId, ProductUpdateDTO productUpdateDTO) {
-    log.info("Updating a Product...");
-
-    if (Objects.isNull(productId)) {
-      log.warn("Product Update Info - Product ID is null");
-      throw new IllegalArgumentException("Product ID cannot be null");
-    }
-    log.debug("Product Update Info - Product ID is present");
-
-    if (Objects.isNull(productUpdateDTO)) {
-      log.warn("Updated Product is null so updating not possible");
-      throw new IllegalArgumentException("Updated Product cannot be null");
-    }
-    log.debug("Product Update Info - Updated Product is present");
-
-    Product product = getProduct(productId);
-    log.debug("Product Update Info - Existing Product is fetched");
-
-    if(Objects.isNull(product.getImageUrl())) {
-      log.warn("Product Update Failed - Product cannot be updated without image");
-      throw new ProductWithNoImageException("Product with no image");
-    }
-
-    productMapper.fromUpdateDtoToProductEntity(productUpdateDTO, product);
-    this.productRepository.save(product);
-    log.info("Updated Product saved");
-  }
-
-  @Transactional
-  public void deleteProduct(UUID productId) {
-    log.info("Product Deletion...");
-
-    if (Objects.isNull(productId)) {
-      log.warn("Product Deletion Failed - Product ID is null");
-      throw new IllegalArgumentException("Product ID cannot be null");
-    }
-    log.debug("Product Deletion Info - Product ID is present");
-
-    if (!productRepository.existsById(productId)) {
-      log.warn("Product Deletion Failed - Product with given ID Not Found");
-      throw new ProductNotFoundException("Product with given ID Not Found");
-    }
-    log.debug("Product Deletion Info - Product with given ID is present");
-
-    this.productRepository.deleteById(productId);
-    log.info("Successfully deleted a product");
   }
 
   public List<ProductSummary> getProductBatch(Set<UUID> ids){
@@ -193,7 +117,6 @@ public class ProductService {
       log.warn("Product ID cannot be null");
       throw new IllegalArgumentException("Product ID cannot be null");
     }
-    log.debug("Product Verification Info - Product ID is present");
 
     return getProduct(productId).getId().equals(productId);
   }
