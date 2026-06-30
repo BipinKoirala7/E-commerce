@@ -14,7 +14,7 @@ app:
     allowed-origins: http://localhost:3000
   cookie:
     secure: false
-    sameSite: None
+    sameSite: Lax
 logging:
   level:
     com:
