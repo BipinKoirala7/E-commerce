@@ -7,11 +7,11 @@ spring:
   profiles:
     active: ${SPRING_PROFILE_ACTIVE}
   config:
-    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:8888}
+    import: ${SPRING_CONFIG_IMPORT}
 management:
   endpoints:
     web:
       cors:
-        allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+        allowed-origins: ${CORS_ALLOWED_ORIGINS}
         allowed-methods: GET
         allowed-headers: "*"
