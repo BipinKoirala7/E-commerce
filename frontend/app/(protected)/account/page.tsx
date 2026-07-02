@@ -20,7 +20,7 @@ export default function Account() {
         <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-20">
           <div className="relative">
             <div className="absolute inset-0 rounded-full blur-xl bg-indigo-300/30 scale-110" />
-            <div className="relative w-36 p-1.5 bg-white dark:bg-zinc-900 rounded-full shadow-xl border border-slate-200 dark:border-zinc-700">
+            <div className="relative p-1.5 bg-white dark:bg-zinc-900 rounded-full shadow-xl border border-slate-200 dark:border-zinc-700">
               {user.profilePictureUrl ? (
                 <Image
                   src={user.profilePictureUrl}

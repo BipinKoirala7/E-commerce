@@ -29,7 +29,7 @@ export async function updateOrder(
   orderId: string,
   updateOrder: UpdateOrder,
 ): Promise<boolean> {
-  const response = await api.put<UpdateOrderResponse>(
+  const response = await api.patch<UpdateOrderResponse>(
     orderUrl + "/" + orderId,
     updateOrder,
   );
