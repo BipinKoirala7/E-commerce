@@ -42,7 +42,7 @@ public class OrderController {
         .status(HttpStatus.OK)
         .body(RestApiResponse.success(HttpStatus.OK.value(), this.orderService.getOrder(orderNumber), "Successfully Fetched Order"));
   }
-
+  // Patch Request
   @PutMapping("{orderId}")
   public ResponseEntity<RestApiResponse<Void>> updateOrder(@Valid @RequestBody OrderUpdateDto orderUpdateDTO, @PathVariable UUID orderId) {
     this.orderService.updateOrder(orderId, orderUpdateDTO);

@@ -161,7 +161,7 @@ public class OrderService {
 
     if(orderUpdateDTO.getOrderStatus() == OrderStatus.CONFIRMED){
       log.warn("Order Update Failed - Order Status cannot be CONFIRMED");
-      throw new UnVerifiedSourceException("No Authority to perform this operation");  // This gives 500 but something else might be correct HTTP Code.
+      throw new InValidOrderUpdate("No Authority to perform this operation");
     }
 
     Order order = getOrderById(orderId);
@@ -261,6 +261,13 @@ public class OrderService {
   @Transactional
   public void deleteOrderById(@NotNull UUID orderId) {
     log.info("Order Deletion");
+
+//    Order order = orderRepository.findByIdAndUserId(orderId, SecurityUtils.getCurrentUserId())
+//        .orElseThrow(() -> new OrderNotFound("Order with given id not found"));
+//
+//    if(order.getOrderStatus().equals(OrderStatus.PENDING)) {
+//
+//    }
 
     int deleted = orderRepository.deleteByIdAndUserId(orderId, SecurityUtils.getCurrentUserId());
     if (deleted == 0) {
