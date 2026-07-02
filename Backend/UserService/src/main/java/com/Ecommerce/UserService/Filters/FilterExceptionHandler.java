@@ -30,7 +30,8 @@ import java.util.UUID;
  * @see EmptyTokenException
  * @see InValidTokenException
  * @see UnVerifiedSourceException
- * **/
+ *
+ **/
 @Slf4j
 @RequiredArgsConstructor
 @Component

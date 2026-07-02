@@ -13,7 +13,7 @@ public class ProductSpecification {
     return (root, criteriaQuery, criteriaBuilder) -> {
       List<Predicate> predicates = new ArrayList<>();
 
-      if(Objects.nonNull(query) && !query.isBlank()) {
+      if (Objects.nonNull(query) && !query.isBlank()) {
         String pattern = "%" + query.toLowerCase() + "%";
         predicates.add(criteriaBuilder.like(
             criteriaBuilder.lower(criteriaBuilder.concat(criteriaBuilder.concat(root.get("brand"), " "), root.get("name"))),

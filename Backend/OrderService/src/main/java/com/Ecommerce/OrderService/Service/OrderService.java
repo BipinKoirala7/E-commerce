@@ -6,13 +6,15 @@ import com.Ecommerce.OrderService.DTOs.Request.OrderCreateDTO;
 import com.Ecommerce.OrderService.DTOs.Request.OrderItemCreateDto;
 import com.Ecommerce.OrderService.DTOs.Request.OrderUpdateDto;
 import com.Ecommerce.OrderService.DTOs.Response.*;
-import com.Ecommerce.OrderService.Exception.*;
+import com.Ecommerce.OrderService.Exception.EmptyProductsOrderCreationException;
+import com.Ecommerce.OrderService.Exception.InValidOrderUpdate;
+import com.Ecommerce.OrderService.Exception.OrderNotFound;
+import com.Ecommerce.OrderService.Exception.ZeroItemQuantityInOrderException;
 import com.Ecommerce.OrderService.Mapper.OrderMapper;
 import com.Ecommerce.OrderService.Mapper.PaymentMapper;
 import com.Ecommerce.OrderService.Model.Order;
 import com.Ecommerce.OrderService.Model.OrderItem;
 import com.Ecommerce.OrderService.Model.OrderStatus;
-import com.Ecommerce.OrderService.Model.Payment;
 import com.Ecommerce.OrderService.Repository.OrderRepository;
 import com.Ecommerce.OrderService.Repository.PaymentRepository;
 import com.Ecommerce.OrderService.Security.SecurityUtils;
@@ -37,7 +39,8 @@ import java.util.stream.Collectors;
  * @see OrderRepository
  * @see OrderMapper
  * @see JwtService
- * */
+ *
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -139,7 +142,7 @@ public class OrderService {
     Set<UUID> productIdsSet = order.getOrderItems().stream().map(OrderItem::getProductId).collect(Collectors.toSet());
     Map<UUID, ProductSummary> productSummaryMap = fetchBatchProduct(productIdsSet);
 
-    for(OrderItem orderItem : order.getOrderItems()){
+    for (OrderItem orderItem : order.getOrderItems()) {
       responseDTO
           .getOrderItems()
           .add(new OrderItemResponseDTO(orderItem.getId(), productSummaryMap.get(orderItem.getProductId()), orderItem.getQuantity()));
@@ -154,12 +157,12 @@ public class OrderService {
   public void updateOrder(@NotNull UUID orderId, @NonNull OrderUpdateDto orderUpdateDTO) {
     log.info("Order Update");
 
-    if(orderUpdateDTO.getOrderStatus() == null){
+    if (orderUpdateDTO.getOrderStatus() == null) {
       log.warn("Order Update Failed - Order Status is null");
       throw new InValidOrderUpdate("Order Status is null");
     }
 
-    if(orderUpdateDTO.getOrderStatus() == OrderStatus.CONFIRMED){
+    if (orderUpdateDTO.getOrderStatus() == OrderStatus.CONFIRMED) {
       log.warn("Order Update Failed - Order Status cannot be CONFIRMED");
       throw new InValidOrderUpdate("No Authority to perform this operation");
     }
@@ -168,28 +171,28 @@ public class OrderService {
 
     switch (order.getOrderStatus()) {
       case PENDING -> {
-        if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)){
+        if (orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)) {
           order.setOrderStatus(OrderStatus.CANCELLED);
         } else {
           throw new InValidOrderUpdate("Order is not confirmed yet");
         }
       }
       case PROCESSING -> {
-        if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)){
+        if (orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)) {
           order.setOrderStatus(OrderStatus.CANCELLED);
-        } else if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.DELIVERED)) {
+        } else if (orderUpdateDTO.getOrderStatus().equals(OrderStatus.DELIVERED)) {
           order.setOrderStatus(OrderStatus.DELIVERED);
         } else {
           throw new InValidOrderUpdate("Order is not delivered");
         }
       }
       case DELIVERED -> {
-        if(orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)) {
+        if (orderUpdateDTO.getOrderStatus().equals(OrderStatus.CANCELLED)) {
           throw new InValidOrderUpdate("You can't cancel order at this stage");
         }
       }
-      case CANCELLED -> throw new  InValidOrderUpdate("Order cannot be updated as it's cancelled");
-      default -> throw new  InValidOrderUpdate("Order status is unknown");
+      case CANCELLED -> throw new InValidOrderUpdate("Order cannot be updated as it's cancelled");
+      default -> throw new InValidOrderUpdate("Order status is unknown");
 
     }
 
@@ -200,24 +203,24 @@ public class OrderService {
   public void confirmOrder(@NotNull UUID orderId, @NonNull UUID userId) {
     log.info("Confirming Order");
 
-    Order order = orderRepository.findByIdAndUserId(orderId, userId).orElseThrow(() -> new  OrderNotFound("Order with given id not found"));
-    if(order.getOrderStatus().equals(OrderStatus.PENDING)) {
+    Order order = orderRepository.findByIdAndUserId(orderId, userId).orElseThrow(() -> new OrderNotFound("Order with given id not found"));
+    if (order.getOrderStatus().equals(OrderStatus.PENDING)) {
       order.setOrderStatus(OrderStatus.CONFIRMED);
       orderRepository.save(order);
-    } else  {
+    } else {
       throw new InValidOrderUpdate("Order is not confirmed yet");
     }
   }
 
-  private Map<UUID, ProductSummary> fetchBatchProduct(Set<UUID> productIdsSet){
+  private Map<UUID, ProductSummary> fetchBatchProduct(Set<UUID> productIdsSet) {
     RestApiResponse<List<ProductSummary>> apiResponse = productServiceClient.getProductBatch(productIdsSet);
 
-    if(Objects.isNull(apiResponse.getData()) || !apiResponse.getSuccess()){
+    if (Objects.isNull(apiResponse.getData()) || !apiResponse.getSuccess()) {
       log.warn("Order Creation Failed - Product with given ids doesn't exists");
       throw new IllegalArgumentException("Product with given ids doesn't exists");
     }
 
-    Map<UUID, ProductSummary> productMap =  apiResponse.getData().stream().collect(Collectors.toMap(ProductSummary::getId, Function.identity()));
+    Map<UUID, ProductSummary> productMap = apiResponse.getData().stream().collect(Collectors.toMap(ProductSummary::getId, Function.identity()));
     Set<UUID> missingIds = productIdsSet.stream()
         .filter(id -> !productMap.containsKey(id))
         .collect(Collectors.toSet());
@@ -238,12 +241,12 @@ public class OrderService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
-  private @NonNull Order createOrderInstance(@NonNull OrderCreateDTO orderCreateDTO, Map<UUID, ProductSummary> productmap){
+  private @NonNull Order createOrderInstance(@NonNull OrderCreateDTO orderCreateDTO, Map<UUID, ProductSummary> productmap) {
     Order orderInstance = orderMapper.toOrderEntity(orderCreateDTO);
     orderInstance.setUserId(SecurityUtils.getCurrentUserId());
     orderInstance.setEmail(jwtService.extractEmail(SecurityUtils.getAccessToken()));
 
-    for(OrderItemCreateDto orderItemCreateDTO : orderCreateDTO.getOrderItems()) {
+    for (OrderItemCreateDto orderItemCreateDTO : orderCreateDTO.getOrderItems()) {
       ProductSummary product = productmap.get(orderItemCreateDTO.getProductId());
 
       if (product == null) {
@@ -258,29 +261,11 @@ public class OrderService {
     return orderInstance;
   }
 
-  @Transactional
-  public void deleteOrderById(@NotNull UUID orderId) {
-    log.info("Order Deletion");
-
-//    Order order = orderRepository.findByIdAndUserId(orderId, SecurityUtils.getCurrentUserId())
-//        .orElseThrow(() -> new OrderNotFound("Order with given id not found"));
-//
-//    if(order.getOrderStatus().equals(OrderStatus.PENDING)) {
-//
-//    }
-
-    int deleted = orderRepository.deleteByIdAndUserId(orderId, SecurityUtils.getCurrentUserId());
-    if (deleted == 0) {
-      throw new OrderNotFound("Order doesn't exist");
-    }
-    log.info("Order Deletion Success");
-  }
-
   private Order getOrderById(@NotNull UUID orderId) {
     log.info("Getting Order");
     return orderRepository
         .findByIdAndUserId(orderId, SecurityUtils.getCurrentUserId())
-        .orElseThrow(() -> new  OrderNotFound("Order with given id not found"));
+        .orElseThrow(() -> new OrderNotFound("Order with given id not found"));
   }
 
   public PaymentResponseDto getPaymentByOrderId(@Valid UUID orderId) {
@@ -294,8 +279,8 @@ public class OrderService {
         });
   }
 
-  public boolean existsById(UUID orderId){
-    if(Objects.isNull(orderId)){
+  public boolean existsById(UUID orderId) {
+    if (Objects.isNull(orderId)) {
       log.warn("Order Id is null");
       throw new IllegalArgumentException("Order Id is null");
     }
@@ -303,14 +288,14 @@ public class OrderService {
     return orderRepository.existsByIdAndUserId(orderId, SecurityUtils.getCurrentUserId());
   }
 
-  private void validateOrderItems(List<OrderItemCreateDto> orderItems){
-    if(Objects.isNull(orderItems) || orderItems.isEmpty()) {
+  private void validateOrderItems(List<OrderItemCreateDto> orderItems) {
+    if (Objects.isNull(orderItems) || orderItems.isEmpty()) {
       log.warn("Validate Order Items Failed - Order Items is empty");
       throw new EmptyProductsOrderCreationException("No products in order");
     }
 
-    for(OrderItemCreateDto orderItemCreateDTO : orderItems){
-      if(orderItemCreateDTO.getQuantity() <= 0) {
+    for (OrderItemCreateDto orderItemCreateDTO : orderItems) {
+      if (orderItemCreateDTO.getQuantity() <= 0) {
         log.warn("Validate Order Items Failed - Order Item Quantity cannot be less than or equal to 0");
         throw new ZeroItemQuantityInOrderException("Order Item Quantity less than or equal to 0");
       }

@@ -10,5 +10,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface PaymentMapper {
 
   PaymentResponseDto toPaymentResponseDto(Payment payment);
+
   Payment toPaymentEntity(PaymentCreateDto paymentCreateDTO);
 }

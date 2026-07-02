@@ -1,7 +1,6 @@
 package com.Ecommerce.OrderService.Repository;
 
 import com.Ecommerce.OrderService.Model.Order;
-import com.Ecommerce.OrderService.Model.OrderItem;
 import com.Ecommerce.OrderService.Model.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,6 +17,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
   List<Order> findByUserId(UUID userId);
 
   Optional<Order> findByIdAndUserId(UUID id, UUID userId);
+
   Optional<Order> findByOrderNumberAndUserId(String id, UUID userId);
 
   @Modifying

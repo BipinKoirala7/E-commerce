@@ -4,8 +4,6 @@ import com.Ecommerce.UserService.DTOs.Request.UserUpdateDTO;
 import com.Ecommerce.UserService.DTOs.Response.RestApiResponse;
 import com.Ecommerce.UserService.DTOs.Response.UserResponseDTO;
 import com.Ecommerce.UserService.Service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
  * @see UserService
  * @see UserUpdateDTO
  * @see RestApiResponse
- * **/
+ *
+ **/
 @RequestMapping("user")
 @RestController
 @RequiredArgsConstructor

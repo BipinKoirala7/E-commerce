@@ -24,7 +24,8 @@ import java.util.UUID;
  * Handles JWT Authentication for the requests.
  *
  * @see JwtService
- * **/
+ *
+ **/
 @Slf4j
 @RequiredArgsConstructor
 @Component

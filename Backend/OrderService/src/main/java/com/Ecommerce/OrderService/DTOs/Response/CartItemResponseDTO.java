@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CartItemResponseDTO {
 
-  public CartItemResponseDTO(@NonNull CartItem cartItem, ProductSummary productSummary){
+  public CartItemResponseDTO(@NonNull CartItem cartItem, ProductSummary productSummary) {
     this.id = cartItem.getId();
     this.product = productSummary;
     this.quantity = cartItem.getQuantity();

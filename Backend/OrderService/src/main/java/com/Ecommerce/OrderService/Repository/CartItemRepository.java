@@ -13,7 +13,9 @@ import java.util.UUID;
 public interface CartItemRepository extends JpaRepository<CartItem, UUID> {
 
   List<CartItem> findByUserId(UUID userId);
+
   Optional<CartItem> findByProductIdAndUserId(UUID productId, UUID userId);
+
   Optional<CartItem> findByIdAndUserId(UUID id, UUID userId);
 
   @Modifying
@@ -22,5 +24,6 @@ public interface CartItemRepository extends JpaRepository<CartItem, UUID> {
   void updateQuantityByIdAndUserId(Integer quantity, UUID productId, UUID userId);
 
   boolean existsByProductIdAndUserId(UUID productId, UUID userId);
+
   void deleteByProductIdAndUserId(UUID productId, UUID userId);
 }

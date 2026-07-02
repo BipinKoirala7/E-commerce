@@ -3,16 +3,17 @@ package com.Ecommerce.UserService.Controller;
 import com.Ecommerce.UserService.DTOs.Request.UserCreateDTO;
 import com.Ecommerce.UserService.DTOs.Request.UserLoginDTO;
 import com.Ecommerce.UserService.DTOs.Response.RestApiResponse;
-import com.Ecommerce.UserService.DTOs.Response.UserResponseDTO;
 import com.Ecommerce.UserService.Service.AuthService;
-import com.Ecommerce.UserService.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller handling user authentication for the UserService.

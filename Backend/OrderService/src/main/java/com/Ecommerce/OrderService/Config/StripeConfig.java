@@ -20,7 +20,7 @@ public class StripeConfig {
   public static String paidStatusFromSession = "paid";
 
   @PostConstruct
-  public void init(){
+  public void init() {
     Stripe.apiKey = this.secretKey;
   }
 }

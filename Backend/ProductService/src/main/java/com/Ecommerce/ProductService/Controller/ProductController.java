@@ -1,13 +1,10 @@
 package com.Ecommerce.ProductService.Controller;
 
-import com.Ecommerce.ProductService.DTOs.Request.ProductCreateDTO;
-import com.Ecommerce.ProductService.DTOs.Request.ProductUpdateDTO;
 import com.Ecommerce.ProductService.DTOs.Response.PageResponse;
 import com.Ecommerce.ProductService.DTOs.Response.RestApiResponse;
 import com.Ecommerce.ProductService.Model.Category;
 import com.Ecommerce.ProductService.Model.Product;
 import com.Ecommerce.ProductService.Service.ProductService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,7 +19,8 @@ import java.util.UUID;
  * REST controller for Products.
  *
  * @see ProductService
- * */
+ *
+ */
 @RestController
 @RequestMapping("product")
 @RequiredArgsConstructor
@@ -33,7 +31,7 @@ public class ProductController {
   public ResponseEntity<RestApiResponse<PageResponse<Product>>> getProductsByCategory(
       @PathVariable String category,
       @PageableDefault(size = 4, direction = Sort.Direction.ASC) Pageable pageable
-  ){
+  ) {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(RestApiResponse.success(HttpStatus.OK.value(), productService.getProductsByCategory(Category.fromString(category), pageable), "Successfully Fetched Products"));
@@ -43,7 +41,7 @@ public class ProductController {
   public ResponseEntity<RestApiResponse<PageResponse<Product>>> getProductsByBrand(
       @PathVariable String brand,
       @PageableDefault(size = 4, direction = Sort.Direction.ASC) Pageable pageable
-  ){
+  ) {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(RestApiResponse.success(HttpStatus.OK.value(), productService.getProductsByBrand(brand, pageable), "Successfully Fetched Products"));

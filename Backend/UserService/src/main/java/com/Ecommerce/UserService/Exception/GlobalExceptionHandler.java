@@ -1,7 +1,6 @@
 package com.Ecommerce.UserService.Exception;
 
 import com.Ecommerce.UserService.DTOs.Response.RestApiResponse;
-import feign.FeignException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.util.stream.Collectors;
+
 /**
  * Exception Handler for whole service. (except Filters).
  *
@@ -33,7 +33,8 @@ import java.util.stream.Collectors;
  * @see AuthenticationException
  * @see UserNotFoundException
  * @see UnVerifiedSourceException
- * **/
+ *
+ **/
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {

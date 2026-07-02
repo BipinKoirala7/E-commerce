@@ -1,8 +1,6 @@
 package com.Ecommerce.UserService.Config;
 
 import com.Ecommerce.UserService.DTOs.Request.OAuthUserCreateDTO;
-import com.Ecommerce.UserService.Model.AuthProvider;
-import com.Ecommerce.UserService.Model.Role;
 import com.Ecommerce.UserService.Model.User;
 import com.Ecommerce.UserService.Service.AuthService;
 import com.Ecommerce.UserService.Service.UserService;
@@ -21,8 +19,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 /*
-* Success Handler for OAuth
-* */
+ * Success Handler for OAuth
+ * */
 @Component
 @Slf4j
 @RequiredArgsConstructor

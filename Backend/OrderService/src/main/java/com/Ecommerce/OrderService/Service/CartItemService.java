@@ -17,7 +17,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Cart Item Service handles cart item creation and deletion.
@@ -26,7 +29,8 @@ import java.util.*;
  * @see CartItemRepository
  * @see CartItemMapper
  * @see CartItemUpdateDto
- * */
+ *
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -67,7 +71,7 @@ public class CartItemService {
     return cartItems.stream().map(cartItem -> {
       RestApiResponse<ProductSummary> apiResponse = productServiceClient.getProductSummary(cartItem.getProductId());
 
-      if(!apiResponse.getSuccess()){
+      if (!apiResponse.getSuccess()) {
         log.debug("CartItem Product Summary Retrieval Failed");
         throw new IllegalArgumentException("Product Summary Retrieval Failed");
       }
@@ -79,20 +83,20 @@ public class CartItemService {
   }
 
   @Transactional
-  public void updateCartItemQuantity(@NotNull UUID productId,@NonNull CartItemUpdateDto cartItemUpdateDTO) {
+  public void updateCartItemQuantity(@NotNull UUID productId, @NonNull CartItemUpdateDto cartItemUpdateDTO) {
     log.info("Updating Cart Item...");
 
-    if(!cartItemRepository.existsByProductIdAndUserId(productId, SecurityUtils.getCurrentUserId())){
+    if (!cartItemRepository.existsByProductIdAndUserId(productId, SecurityUtils.getCurrentUserId())) {
       log.warn("Cart Item Update Failed - Cart Item doesn't exists");
       throw new CartItemNotFound("Cart Item doesn't exists");
     }
 
-    if(cartItemUpdateDTO.getQuantity() < 0){
+    if (cartItemUpdateDTO.getQuantity() < 0) {
       log.warn("Cart Item Update Failed - Quantity must be greater than zero");
       throw new IllegalArgumentException("Quantity must be greater than zero");
     }
 
-    if(cartItemUpdateDTO.getQuantity() == 0){
+    if (cartItemUpdateDTO.getQuantity() == 0) {
       log.debug("Updated Quantity is zero, Deleting Cart Item");
       deleteCartItem(productId);
       return;

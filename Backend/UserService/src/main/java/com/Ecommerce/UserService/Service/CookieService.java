@@ -14,7 +14,8 @@ import java.util.Objects;
 /**
  * Cookie Service for User Service. Handles cookie
  * creation, deletion and fetching cookie.
- * */
+ *
+ */
 @Slf4j
 @Service
 @Getter
@@ -71,7 +72,7 @@ public class CookieService {
   }
 
   public void deleteRefreshTokenCookie(@NonNull HttpServletResponse response) {
-    Cookie cookie = createCookie(REFRESH_TOKEN,null, REFRESH_TOKEN_PATH, 0);
+    Cookie cookie = createCookie(REFRESH_TOKEN, null, REFRESH_TOKEN_PATH, 0);
     response.addCookie(cookie);
   }
 

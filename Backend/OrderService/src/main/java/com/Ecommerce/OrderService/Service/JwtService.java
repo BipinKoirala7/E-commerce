@@ -15,7 +15,8 @@ import java.util.Objects;
 
 /**
  * Handles jwt token validation
- * */
+ *
+ */
 @Slf4j
 @Service
 public class JwtService {

@@ -1,6 +1,5 @@
 package com.Ecommerce.OrderService.DTOs.Response;
 
-import com.Ecommerce.OrderService.Model.Order;
 import com.Ecommerce.OrderService.Model.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

@@ -7,8 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.AntPathMatcher;
 
 /*
-* Security Beans for path matching and password Encoding
-* */
+ * Security Beans for path matching and password Encoding
+ * */
 @Configuration
 public class AuthConfig {
 

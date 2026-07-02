@@ -42,20 +42,13 @@ public class OrderController {
         .status(HttpStatus.OK)
         .body(RestApiResponse.success(HttpStatus.OK.value(), this.orderService.getOrder(orderNumber), "Successfully Fetched Order"));
   }
+
   // Patch Request
-  @PutMapping("{orderId}")
+  @PatchMapping("{orderId}")
   public ResponseEntity<RestApiResponse<Void>> updateOrder(@Valid @RequestBody OrderUpdateDto orderUpdateDTO, @PathVariable UUID orderId) {
     this.orderService.updateOrder(orderId, orderUpdateDTO);
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(RestApiResponse.success(HttpStatus.OK.value(), "Order Updated Successfully"));
-  }
-
-  @DeleteMapping("{orderId}")
-  public ResponseEntity<RestApiResponse<Void>> deleteOrder(@PathVariable UUID orderId) {
-    this.orderService.deleteOrderById(orderId);
-    return ResponseEntity
-        .status(HttpStatus.NOT_FOUND)
-        .body(RestApiResponse.success(HttpStatus.NOT_FOUND.value(), "Order Deleted Successfully"));
   }
 }

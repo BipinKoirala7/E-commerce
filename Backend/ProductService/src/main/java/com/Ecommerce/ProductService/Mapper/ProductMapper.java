@@ -14,7 +14,10 @@ import java.util.List;
 public interface ProductMapper {
 
   Product toProductEntity(ProductCreateDTO productCreateDTO);
+
   List<ProductSummary> toProductSummaryList(List<Product> products);
+
   ProductSummary toProductSummary(Product product);
+
   void fromUpdateDtoToProductEntity(ProductUpdateDTO productUpdateDTO, @MappingTarget Product product);
 }

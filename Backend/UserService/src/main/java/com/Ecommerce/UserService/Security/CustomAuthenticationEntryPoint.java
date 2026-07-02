@@ -17,7 +17,8 @@ import java.io.IOException;
 
 /**
  * Handles the authentication exception for Security Filter Chain.
- * */
+ *
+ */
 @Component
 @Slf4j
 @RequiredArgsConstructor

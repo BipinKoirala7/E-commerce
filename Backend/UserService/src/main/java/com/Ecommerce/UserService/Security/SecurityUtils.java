@@ -8,7 +8,8 @@ import java.util.UUID;
 
 /**
  * Helper Class to Extract UserId and Token
- * */
+ *
+ */
 @Slf4j
 public class SecurityUtils {
   public static @Nullable UUID getCurrentUserId() {

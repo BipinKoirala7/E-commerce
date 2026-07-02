@@ -4,7 +4,9 @@ import com.Ecommerce.UserService.DTOs.Request.OAuthUserCreateDTO;
 import com.Ecommerce.UserService.DTOs.Request.UserCreateDTO;
 import com.Ecommerce.UserService.DTOs.Request.UserLoginDTO;
 import com.Ecommerce.UserService.DTOs.Response.TokenDTO;
-import com.Ecommerce.UserService.Exception.*;
+import com.Ecommerce.UserService.Exception.EmptyTokenException;
+import com.Ecommerce.UserService.Exception.IncorrectEmailOrPasswordException;
+import com.Ecommerce.UserService.Exception.UserNotFoundException;
 import com.Ecommerce.UserService.Model.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +15,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.Token;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,8 @@ import java.util.UUID;
  * @see UserCreateDTO
  * @see OAuthUserCreateDTO
  * @see UserLoginDTO
- * */
+ *
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor

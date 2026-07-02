@@ -28,7 +28,8 @@ import java.util.UUID;
  * @see UserCreateDTO
  * @see OAuthUserCreateDTO
  * @see UserUpdateDTO
- * */
+ *
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

@@ -191,7 +191,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<RestApiResponse<?>> handleGeneralException(@NonNull Exception e) {
-    log.warn("{} Exception Occurred: {}",e.getClass().getName(), e.getMessage());
+    log.warn("{} Exception Occurred: {}", e.getClass().getName(), e.getMessage());
 
     return ResponseEntity
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

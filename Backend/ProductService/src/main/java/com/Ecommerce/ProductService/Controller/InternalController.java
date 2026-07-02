@@ -17,7 +17,8 @@ import java.util.UUID;
  * Takes requests from other microservices.
  *
  * @see ProductService
- * */
+ *
+ */
 @RestController
 @RequestMapping("internal/product")
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class InternalController {
   }
 
   @PostMapping("batch")
-  public ResponseEntity<RestApiResponse<List<ProductSummary>>> getProductBatch(@RequestBody @NotEmpty Set<UUID> set){
+  public ResponseEntity<RestApiResponse<List<ProductSummary>>> getProductBatch(@RequestBody @NotEmpty Set<UUID> set) {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(RestApiResponse.success(HttpStatus.OK.value(), productService.getProductBatch(set), "Product Fetched SuccessFully"));

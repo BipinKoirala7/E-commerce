@@ -5,11 +5,8 @@ import com.Ecommerce.OrderService.Config.StripeConfig;
 import com.Ecommerce.OrderService.DTOs.Request.PaymentCreateDto;
 import com.Ecommerce.OrderService.DTOs.Request.ProductRequest;
 import com.Ecommerce.OrderService.DTOs.Response.OrderDetailsResponseDTO;
-import com.Ecommerce.OrderService.DTOs.Response.OrderItemResponseDTO;
-import com.Ecommerce.OrderService.DTOs.Response.PaymentResponseDto;
 import com.Ecommerce.OrderService.DTOs.Response.StripeResponse;
 import com.Ecommerce.OrderService.Exception.OrderNotFound;
-import com.Ecommerce.OrderService.Exception.PaymentNotFound;
 import com.Ecommerce.OrderService.Mapper.PaymentMapper;
 import com.Ecommerce.OrderService.Model.Payment;
 import com.Ecommerce.OrderService.Model.PaymentStatus;
@@ -20,7 +17,6 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +24,6 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -39,7 +34,8 @@ import java.util.UUID;
  * @see OrderService
  * @see PaymentRepository
  * @see StripeConfig
- * */
+ *
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -52,8 +48,8 @@ public class PaymentService {
   private final StripeConfig stripeConfig;
 
   @Transactional
-  public StripeResponse initiateCheckout(UUID orderId, PaymentCreateDto paymentCreateDTO){
-    if(!orderService.existsById(orderId)){
+  public StripeResponse initiateCheckout(UUID orderId, PaymentCreateDto paymentCreateDTO) {
+    if (!orderService.existsById(orderId)) {
       log.warn("Order with given order Id doesn't exists");
       throw new OrderNotFound("Order not found");
     }
@@ -79,7 +75,7 @@ public class PaymentService {
   }
 
   @Transactional
-  public void fullFillOrder(@NonNull Session session){
+  public void fullFillOrder(@NonNull Session session) {
     log.info("Fulfill Order");
     Payment payment = paymentRepository
         .findByStripeSessionId(session.getId())
@@ -98,11 +94,11 @@ public class PaymentService {
     Event event = Webhook.constructEvent(payload, signHead, stripeConfig.getWebhookSecretKey());
     log.info("Event type: {}", event.getType());
 
-    if(StripeConfig.checkOutSessionCompleted.equals(event.getType())){
+    if (StripeConfig.checkOutSessionCompleted.equals(event.getType())) {
       log.info("Handle Webhook Info - Session Completed");
       Session session = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
 
-      if(StripeConfig.paidStatusFromSession.equals(session.getPaymentStatus())){
+      if (StripeConfig.paidStatusFromSession.equals(session.getPaymentStatus())) {
         log.info("Handle Webhook Info - Payment Completed");
         fullFillOrder(session);
       } else {

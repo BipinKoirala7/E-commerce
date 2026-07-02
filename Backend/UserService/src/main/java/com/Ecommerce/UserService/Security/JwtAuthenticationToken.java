@@ -10,7 +10,8 @@ import java.util.UUID;
 
 /**
  * Creates JWT filled authentication token class for Security Context.
- * */
+ *
+ */
 @Getter
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
   private final UUID userId;

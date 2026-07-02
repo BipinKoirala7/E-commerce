@@ -5,14 +5,11 @@ import com.Ecommerce.ProductService.DTOs.Request.ProductUpdateDTO;
 import com.Ecommerce.ProductService.DTOs.Response.PageResponse;
 import com.Ecommerce.ProductService.DTOs.Response.ProductSummary;
 import com.Ecommerce.ProductService.Exception.ProductNotFoundException;
-import com.Ecommerce.ProductService.Exception.ProductWithNoImageException;
 import com.Ecommerce.ProductService.Mapper.ProductMapper;
 import com.Ecommerce.ProductService.Model.Category;
 import com.Ecommerce.ProductService.Model.Product;
 import com.Ecommerce.ProductService.Model.ProductSpecification;
 import com.Ecommerce.ProductService.Repository.ProductRepository;
-import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,7 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Core Service that handles product creation, deletion, update
@@ -32,7 +32,8 @@ import java.util.*;
  * @see ProductMapper
  * @see ProductCreateDTO
  * @see ProductUpdateDTO
- * */
+ *
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -100,8 +101,8 @@ public class ProductService {
     return product;
   }
 
-  public List<ProductSummary> getProductBatch(Set<UUID> ids){
-    if(ids.isEmpty()){
+  public List<ProductSummary> getProductBatch(Set<UUID> ids) {
+    if (ids.isEmpty()) {
       log.warn("Set Of Ids are empty");
       throw new IllegalArgumentException("Ids are empty");
     }

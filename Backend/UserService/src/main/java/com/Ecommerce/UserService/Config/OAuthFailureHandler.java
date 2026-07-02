@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /*
-* Authentication Failure handler for OAuth.
-* */
+ * Authentication Failure handler for OAuth.
+ * */
 @Component
 @Slf4j
 public class OAuthFailureHandler extends SimpleUrlAuthenticationFailureHandler {

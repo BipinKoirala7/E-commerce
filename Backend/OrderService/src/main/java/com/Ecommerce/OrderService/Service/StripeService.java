@@ -14,7 +14,8 @@ import java.util.List;
 
 /**
  * Handles checkout with Stripe Checkout.
- * */
+ *
+ */
 @Service
 @Slf4j
 public class StripeService {
@@ -42,8 +43,8 @@ public class StripeService {
     SessionCreateParams sessionCreateParams = SessionCreateParams.builder()
         .setMode(SessionCreateParams.Mode.PAYMENT)
         .addAllLineItem(lineItems)
-        .setSuccessUrl(frontendUrl + "/order/" +  productRequest.getOrderNumber())
-        .setCancelUrl(frontendUrl + "/order" )
+        .setSuccessUrl(frontendUrl + "/order/" + productRequest.getOrderNumber())
+        .setCancelUrl(frontendUrl + "/order")
         .build();
 
     Session session;

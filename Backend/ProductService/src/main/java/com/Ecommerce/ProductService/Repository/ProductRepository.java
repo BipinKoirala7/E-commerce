@@ -16,6 +16,7 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpecificationExecutor<Product> {
 
   Page<Product> findByCategory(Category category, Pageable pageable);
+
   Page<Product> findByBrand(String brand, Pageable pageable);
 
   List<Product> findAllById(@NonNull Iterable<UUID> ids);

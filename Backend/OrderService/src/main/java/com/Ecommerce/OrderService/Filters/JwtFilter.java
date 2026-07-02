@@ -16,7 +16,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
   );
 
   @Override
-  protected boolean shouldNotFilter(@NonNull HttpServletRequest request){
+  protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
     String path = request.getServletPath();
     boolean shouldSkip = EXCLUDED_PATHS.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
 

@@ -15,12 +15,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Checks whether the source is verified or not.
- * */
+ *
+ */
 @Component
 @Slf4j
 @RequiredArgsConstructor

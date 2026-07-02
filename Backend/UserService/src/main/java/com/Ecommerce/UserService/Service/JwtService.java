@@ -31,7 +31,8 @@ import java.util.UUID;
  *
  * @see ActiveRefreshTokenRepository
  * @see ActiveRefreshToken
- * */
+ *
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
