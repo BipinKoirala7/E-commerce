@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import useSWR from "swr";
-import { MapPin, Phone, Receipt, ShoppingBag } from "lucide-react";
+import { Loader2, MapPin, Phone, Receipt, ShoppingBag } from "lucide-react";
 
 import { ApiResponse, CartProductSummary, CreateOrderItem } from "@/types";
 import { fetcher } from "@/lib/axios";
@@ -33,6 +33,7 @@ function CreateOrderForm() {
   const [shippingAddress, setShippingAddress] = useState("");
   const [sameAsBilling, setSameAsBilling] = useState(false);
   const [phone, setPhone] = useState("");
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   const checkedIds = useCartSelectionStore((s) => s.checkedIds);
 
@@ -55,19 +56,26 @@ function CreateOrderForm() {
   };
 
   const handleSubmit = async () => {
-    const items: CreateOrderItem[] = selectedItems.map((item) => ({
-      productId: item.product.id,
-      quantity: item.quantity,
-    }));
-    const result = await createOrder({
-      billingAddress,
-      shippingAddress,
-      phone,
-      orderItems: items,
-    });
+    if (isPlacingOrder) return;
 
-    if (result) {
-      router.push("/order");
+    setIsPlacingOrder(true);
+    try {
+      const items: CreateOrderItem[] = selectedItems.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+      }));
+      const result = await createOrder({
+        billingAddress,
+        shippingAddress,
+        phone,
+        orderItems: items,
+      });
+
+      if (result) {
+        router.push("/order");
+      }
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
@@ -213,11 +221,19 @@ function CreateOrderForm() {
                   !billingAddress ||
                   !shippingAddress ||
                   !phone ||
-                  selectedItems.length === 0
+                  selectedItems.length === 0 ||
+                  isPlacingOrder
                 }
                 onClick={handleSubmit}
               >
-                Place order
+                {isPlacingOrder ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Placing order...
+                  </>
+                ) : (
+                  "Place order"
+                )}
               </Button>
             </CardFooter>
           </>

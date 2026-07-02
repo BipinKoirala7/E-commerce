@@ -2,18 +2,52 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { CartProductSummary } from "@/types";
-import { TiMinus } from "react-icons/ti";
-import { IconButton } from "@/components/ui/IconButton";
 import { addToCart, deleteFromCart, removeFromCart } from "@/lib/api/cart";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Loader2, Minus, Plus, Trash2 } from "lucide-react";
 
 type CartSmallCardProps = {
   item: CartProductSummary;
 };
 
+type LoadingAction = "decrease" | "increase" | "delete" | null;
+
 function CartSmallCard({ item }: CartSmallCardProps) {
   const [showOptions, setShowOptions] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<LoadingAction>(null);
+
+  const isLoading = loadingAction !== null;
+
+  const handleDecrease = async () => {
+    if (isLoading) return;
+    setLoadingAction("decrease");
+    try {
+      await removeFromCart(item.product.id, item.quantity - 1);
+    } finally {
+      setLoadingAction(null);
+    }
+  };
+
+  const handleIncrease = async () => {
+    if (isLoading) return;
+    setLoadingAction("increase");
+    try {
+      await addToCart({ productId: item.product.id });
+    } finally {
+      setLoadingAction(null);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (isLoading) return;
+    setLoadingAction("delete");
+    try {
+      await deleteFromCart(item.product.id);
+    } finally {
+      setLoadingAction(null);
+    }
+  };
+
   return (
     <div
       key={item.id}
@@ -46,28 +80,42 @@ function CartSmallCard({ item }: CartSmallCardProps) {
             variant="ghost"
             size="icon"
             className="shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-            onClick={() => removeFromCart(item.product.id, item.quantity - 1)}
-            disabled={item.quantity <= 1}
+            onClick={handleDecrease}
+            disabled={item.quantity <= 1 || isLoading}
           >
-            <Minus className="w-4 h-4" />
+            {loadingAction === "decrease" ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Minus className="w-4 h-4" />
+            )}
             <span className="sr-only">Remove item</span>
           </Button>
           <Button
             variant="ghost"
             size="icon"
             className="shrink-0 text-muted-foreground hover:text-green3 hover:bg-green3/10"
-            onClick={() => addToCart({ productId: item.product.id })}
+            onClick={handleIncrease}
+            disabled={isLoading}
           >
-            <Plus className="w-4 h-4" />
+            {loadingAction === "increase" ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Plus className="w-4 h-4" />
+            )}
             <span className="sr-only">Remove item</span>
           </Button>
           <Button
             variant="ghost"
             size="icon"
             className="shrink-0 text-destructive hover:text-f hover:bg-destructive"
-            onClick={() => deleteFromCart(item.product.id)}
+            onClick={handleDelete}
+            disabled={isLoading}
           >
-            <Trash2 className="w-4 h-4" />
+            {loadingAction === "delete" ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Trash2 className="w-4 h-4" />
+            )}
             <span className="sr-only">Remove item</span>
           </Button>
         </div>

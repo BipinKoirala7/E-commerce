@@ -17,8 +17,8 @@ export async function addToCart(cartItem: AddCartItem): Promise<boolean> {
   );
 
   if (response.data.success) {
+    await mutate(cartUrl);
     toast.success("Added to cart successfully");
-    mutate(cartUrl);
     return true;
   } else {
     toast.error("Failed to add to cart");
@@ -38,8 +38,8 @@ export async function removeFromCart(
   );
 
   if (response.data.success) {
+    await mutate(cartUrl);
     toast.success("Removed from cart successfully");
-    mutate(cartUrl);
     return true;
   } else {
     toast.error("Failed to remove from cart");
@@ -53,8 +53,8 @@ export async function deleteFromCart(productId: string): Promise<boolean> {
   );
 
   if (response.data.success) {
+    await mutate(cartUrl);
     toast.success("Deleted from cart successfully");
-    mutate(cartUrl);
     return true;
   } else {
     toast.error("Failed to delete from cart");

@@ -16,7 +16,11 @@ function SelectedCartInfo({ totalPrice }: SelectedCartInfoPropsT) {
         <span className="font-semibold">${totalPrice.toFixed(2)}</span>
       </div>
 
-      <Button className="w-full" onClick={() => router.push("/order/create")}>
+      <Button
+        disabled={totalPrice <= 0}
+        className="w-full"
+        onClick={() => router.push("/order/create")}
+      >
         Place order
       </Button>
     </div>

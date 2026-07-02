@@ -17,7 +17,7 @@ export async function createOrder(order: CreateOrder): Promise<boolean> {
 
   if (response.data.success) {
     toast.success("Order Created successfully");
-    mutate(orderUrl);
+    await mutate(orderUrl);
     return true;
   } else {
     toast.error("Failed to create order");
@@ -36,7 +36,7 @@ export async function updateOrder(
 
   if (response.data.success) {
     toast.success("Order updated successfully");
-    mutate(orderUrl);
+    await mutate(orderUrl);
     return true;
   } else {
     toast.error("Failed to update order");
@@ -49,7 +49,7 @@ export async function deleteOrder(orderId: string): Promise<boolean> {
 
   if (response.data.success) {
     toast.success("Order deleted successfully");
-    mutate(orderUrl);
+    await mutate(orderUrl);
     return true;
   } else {
     toast.error("Failed to delete order");
