@@ -178,6 +178,10 @@ export interface CreateOrderItem {
   quantity: number;
 }
 
+export interface UpdateOrder {
+  orderStatus: OrderStatus;
+}
+
 // Payment
 
 interface StripeResponse {
@@ -243,6 +247,7 @@ export type AddToCartResponse = ApiResponse<void>;
 export type RemoveFromCartResponse = ApiResponse<void>;
 export type OrderListResponse = ApiResponse<OrderList[]>;
 export type OrderDetailsResponse = ApiResponse<OrderDetails>;
+export type UpdateOrderResponse = ApiResponse<void>;
 export type DeleteFromCartResponse = ApiResponse<void>;
 export type CreateOrderResponse = ApiResponse<void>;
 export type DeleteOrderResponse = ApiResponse<void>;

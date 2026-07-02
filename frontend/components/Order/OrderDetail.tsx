@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import useSWR from "swr";
 import {
@@ -14,6 +15,7 @@ import {
   Clock,
   XCircle,
   Hash,
+  Ban,
 } from "lucide-react";
 
 import { ApiResponse, OrderDetails, OrderStatus, PaymentStatus } from "@/types";
@@ -33,6 +35,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { pay } from "@/lib/api/payment";
+import { updateOrder } from "@/lib/api/order";
 
 type Props = {
   orderNumber: string;
@@ -49,6 +52,12 @@ const statusVariant: Record<
   [OrderStatus.CANCELLED]: "destructive",
   [OrderStatus.RETURNED]: "destructive",
 };
+
+// Orders in these states can still be cancelled
+const CANCELLABLE_STATUSES: OrderStatus[] = [
+  OrderStatus.PENDING,
+  OrderStatus.PROCESSING,
+];
 
 function InfoRow({
   icon,
@@ -71,7 +80,9 @@ function InfoRow({
 }
 
 function OrderDetail({ orderNumber }: Props) {
-  const { data, isLoading, error } = useSWR<ApiResponse<OrderDetails>>(
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  const { data, isLoading, error, mutate } = useSWR<ApiResponse<OrderDetails>>(
     `${ApiEndpoint.ORDER}/${orderNumber}`,
     fetcher,
   );
@@ -99,9 +110,8 @@ function OrderDetail({ orderNumber }: Props) {
   const payment = order.payment;
   const isPaid = payment?.paymentStatus == PaymentStatus.COMPLETED;
   const isFailed = payment?.paymentStatus == PaymentStatus.FAILED;
-
-  console.log(payment);
-  console.log(isPaid);
+  const isCancelled = order.orderStatus === OrderStatus.CANCELLED;
+  const canCancel = CANCELLABLE_STATUSES.includes(order.orderStatus);
 
   const formattedDate = (iso: string) =>
     new Date(iso).toLocaleDateString("en-US", {
@@ -111,6 +121,16 @@ function OrderDetail({ orderNumber }: Props) {
       hour: "2-digit",
       minute: "2-digit",
     });
+
+  async function handleCancel() {
+    setIsCancelling(true);
+    try {
+      await updateOrder(order.id, { orderStatus: OrderStatus.CANCELLED });
+      mutate();
+    } finally {
+      setIsCancelling(false);
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -131,9 +151,26 @@ function OrderDetail({ orderNumber }: Props) {
                 </span>
               </CardDescription>
             </div>
-            <Badge variant={statusVariant[order.orderStatus]} className="h-fit">
-              {order.orderStatus}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge
+                variant={statusVariant[order.orderStatus]}
+                className="h-fit"
+              >
+                {order.orderStatus}
+              </Badge>
+              {canCancel && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  onClick={handleCancel}
+                  disabled={isCancelling}
+                >
+                  <Ban className="w-4 h-4 mr-1" />
+                  {isCancelling ? "Cancelling..." : "Cancel order"}
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
 
@@ -247,7 +284,20 @@ function OrderDetail({ orderNumber }: Props) {
 
         <Separator />
 
-        <CardContent className="pt-4">
+        <CardContent
+          className={`pt-4 transition-opacity ${
+            isCancelled ? "opacity-50 pointer-events-none select-none" : ""
+          }`}
+        >
+          {isCancelled && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted px-3 py-2 rounded-md mb-4">
+              <Ban className="w-4 h-4 shrink-0" />
+              <span>
+                This order was cancelled. Payment is no longer available.
+              </span>
+            </div>
+          )}
+
           {isPaid ? (
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/40 px-3 py-2 rounded-md">
@@ -301,6 +351,7 @@ function OrderDetail({ orderNumber }: Props) {
                 </div>
                 <Button
                   variant="destructive"
+                  disabled={isCancelled}
                   onClick={() => {
                     pay(order.id);
                   }}
@@ -323,7 +374,9 @@ function OrderDetail({ orderNumber }: Props) {
                     ${order.totalPrice.toFixed(2)}
                   </p>
                 </div>
-                <Button onClick={() => pay(order.id)}>Complete payment</Button>
+                <Button disabled={isCancelled} onClick={() => pay(order.id)}>
+                  Complete payment
+                </Button>
               </div>
             </div>
           )}

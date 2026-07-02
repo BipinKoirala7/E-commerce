@@ -1,4 +1,10 @@
-import { CreateOrderResponse, DeleteOrderResponse, CreateOrder } from "@/types";
+import {
+  CreateOrderResponse,
+  DeleteOrderResponse,
+  CreateOrder,
+  UpdateOrderResponse,
+  UpdateOrder,
+} from "@/types";
 import { ApiEndpoint } from "../ApiEndpoint";
 import { api } from "@/lib/axios";
 import toast from "react-hot-toast";
@@ -15,6 +21,25 @@ export async function createOrder(order: CreateOrder): Promise<boolean> {
     return true;
   } else {
     toast.error("Failed to create order");
+    return false;
+  }
+}
+
+export async function updateOrder(
+  orderId: string,
+  updateOrder: UpdateOrder,
+): Promise<boolean> {
+  const response = await api.put<UpdateOrderResponse>(
+    orderUrl + "/" + orderId,
+    updateOrder,
+  );
+
+  if (response.data.success) {
+    toast.success("Order updated successfully");
+    mutate(orderUrl);
+    return true;
+  } else {
+    toast.error("Failed to update order");
     return false;
   }
 }
