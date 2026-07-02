@@ -20,7 +20,9 @@ export const ApiEndpoint = {
   EUREKA_SERVER_ACTUATOR_CHECK:
     process.env.NEXT_PUBLIC_BASE_EUREKA_SERVER_URL! + "/actuator/health",
   API_GATEWAY_ACTUATOR_CHECK:
-    process.env.NEXT_PUBLIC_BASE_API_GATEWAY_URL! + "/actuator/health",
+    process.env.NEXT_PUBLIC_BASE_API_GATEWAY_URL! +
+    "/api/v1" +
+    "/actuator/health",
   USER_SERVICE_ACTUATOR_CHECK:
     process.env.NEXT_PUBLIC_BASE_USER_SERVICE_URL! + "/actuator/health",
   PRODUCT_SERVICE_ACTUATOR_CHECK:
