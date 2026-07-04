@@ -43,7 +43,6 @@ This is a **microservices-based e-commerce platform** built with **Spring Boot**
 - OAuth2 integration (Google login)
 - User registration and authentication
 - Cookie management for token storage
-- Tracing with Brave/Zipkin
 
 **Dependencies:**
 - Spring Data JPA
@@ -68,7 +67,6 @@ This is a **microservices-based e-commerce platform** built with **Spring Boot**
 - Category management
 - Product specifications and attributes
 - Internal APIs for other services (via gateway secret)
-- OpenTelemetry tracing with OTLP metrics
 - Source authentication (service-to-service verification)
 
 **Dependencies:**
@@ -141,8 +139,6 @@ stripe:
 - Service registration and deregistration
 - Health check monitoring
 - Client-side service discovery
-- Prometheus metrics export
-- OpenTelemetry integration
 
 **Configuration:** `CloudConfig/eureka-server.yaml`
 
@@ -155,7 +151,6 @@ stripe:
 **Key Features:**
 - Centralized YAML configuration for all services
 - Dynamic configuration refresh
-- Prometheus metrics export
 
 **Configuration Files:**
 ```
