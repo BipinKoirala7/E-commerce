@@ -77,16 +77,10 @@ public class UserService {
 
   public UserResponseDTO getUser() {
     log.info("Fetching User...");
-
-    if (!userRepository.existsById(Objects.requireNonNull(SecurityUtils.getCurrentUserId()))) {
-      log.info("Fetching User Failed - User Not Found");
-      throw new UserNotFoundException("User Not Found");
-    }
-
     User user = userRepository.findById(SecurityUtils.getCurrentUserId())
         .orElseThrow(() -> {
           log.warn("Fetching User Failed- User Not Found");
-          return new IllegalArgumentException("User not found");
+          return new UserNotFoundException("User not found");
         });
     log.info("Fetching User Success");
     return userMapper.toResponseDTO(user);
@@ -98,13 +92,13 @@ public class UserService {
 
     if (Objects.isNull(userUpdateDTO)) {
       log.warn("User Update Failed - Updated User cannot be null");
-      throw new IllegalArgumentException("Updated User be null");
+      throw new IllegalArgumentException("Updated User cannot be null");
     }
 
     User user = userRepository.findById(Objects.requireNonNull(SecurityUtils.getCurrentUserId()))
         .orElseThrow(() -> {
           log.warn("User Update Failed - User doesn't exist");
-          return new IllegalArgumentException("User not found");
+          return new UserNotFoundException("User not found");
         });
 
     userMapper.fromUpdateDTOtoEntity(userUpdateDTO, user);
@@ -117,8 +111,8 @@ public class UserService {
     log.info("User Deletion...");
 
     if (!userRepository.existsById(Objects.requireNonNull(SecurityUtils.getCurrentUserId()))) {
-      log.info("User Deletion Failed - User does not exist");
-      throw new IllegalArgumentException("User does not exist");
+      log.info("User Deletion Failed - User does not exists");
+      throw new IllegalArgumentException("User does not exists");
     }
 
     userRepository.deleteById(SecurityUtils.getCurrentUserId());
