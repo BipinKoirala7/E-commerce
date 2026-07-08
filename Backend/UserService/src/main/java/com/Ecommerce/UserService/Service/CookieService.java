@@ -46,10 +46,12 @@ public class CookieService {
   private long refreshTokenExpiration;
 
   public Cookie createRefreshTokenCookie(@NonNull String token) {
+    Objects.requireNonNull(token, "token must not be null");
     return createCookie(REFRESH_TOKEN, token, REFRESH_TOKEN_PATH, (int) refreshTokenExpiration);
   }
 
   public Cookie createAccessTokenCookie(@NonNull String token) {
+    Objects.requireNonNull(token, "token must not be null");
     return createCookie(ACCESS_TOKEN, token, ACCESS_TOKEN_PATH, (int) accessTokenExpiration);
   }
 
