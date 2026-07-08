@@ -21,8 +21,8 @@ import java.util.Objects;
 @Getter
 public class CookieService {
 
-  private final String ACCESS_TOKEN = "ACCESS_TOKEN";
   private final String REFRESH_TOKEN = "REFRESH_TOKEN";
+  private final String ACCESS_TOKEN = "ACCESS_TOKEN";
 
   @Value("${app.cookie.refreshToken.path:/api}")
   private String REFRESH_TOKEN_PATH;

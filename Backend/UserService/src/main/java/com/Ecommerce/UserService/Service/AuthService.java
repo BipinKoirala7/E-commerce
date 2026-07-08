@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -38,6 +39,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Validated
 public class AuthService {
 
   private final JwtService jwtService;
@@ -136,7 +138,7 @@ public class AuthService {
 
   //  This is used by API Gateway for refreshing tokens.
   @Transactional
-  public String refreshTokens(String refreshToken) {
+  public String refreshTokens(@NonNull @NotNull(message = "Refresh Token cannot be null") String refreshToken) {
     log.debug("Refreshing tokens...");
 
     jwtService.validateRefreshToken(refreshToken);

@@ -127,13 +127,13 @@ public class JwtService {
       log.debug("Refresh Token Validation Failed - Token is null");
       throw new IllegalArgumentException("Token must be provided");
     }
-    if (!isRefreshTokenActive(token)) {
-      log.debug("Refresh Token Validation Failed - Token is not active");
-      throw new InValidTokenException("Given Token is not active");
-    }
     if (!isRefreshToken(token)) {
       log.debug("Refresh Token Validation Failed - Given token is not a refresh token");
       throw new InValidTokenException("Given token is not a refresh token");
+    }
+    if (!isRefreshTokenActive(token)) {
+      log.debug("Refresh Token Validation Failed - Token is not active");
+      throw new InValidTokenException("Given Token is not active");
     }
 
     log.debug("Refresh Token Validation Success");
