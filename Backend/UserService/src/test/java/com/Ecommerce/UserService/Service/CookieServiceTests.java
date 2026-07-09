@@ -90,6 +90,12 @@ public class CookieServiceTests {
       assertThat(cookie.getAttribute("SameSite")).isEqualTo(SAME_SITE);
       assertThat(cookie.getMaxAge()).isEqualTo((int) ACCESS_TOKEN_EXPIRATION);
     }
+
+    @Test
+    void nullToken_throwsNullPointerException() {
+      assertThrows(NullPointerException.class,
+          () -> underTest.createAccessTokenCookie(null));
+    }
   }
 
   @Nested

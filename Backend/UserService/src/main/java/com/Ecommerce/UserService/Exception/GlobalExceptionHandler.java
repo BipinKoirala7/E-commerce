@@ -14,13 +14,19 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.transaction.TransactionSystemException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +43,7 @@ import java.util.stream.Collectors;
  **/
 @RestControllerAdvice
 @Slf4j
+@Validated
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(UserAlreadyExistsException.class)
@@ -50,13 +57,14 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(IncorrectEmailOrPasswordException.class)
-  public ResponseEntity<RestApiResponse<Void>> handleIncorrectEmailOrPasswordException(@NonNull IncorrectEmailOrPasswordException e) {
+  public ResponseEntity<RestApiResponse<Void>> handleIncorrectEmailOrPasswordException(
+      @NonNull IncorrectEmailOrPasswordException e) {
     log.warn("Incorrect Email Or Password Exception Exception Occurred: {}", e.getMessage());
     String message = "Email or Password is incorrect";
 
     return ResponseEntity
-        .status(HttpStatus.CONFLICT)
-        .body(RestApiResponse.error(HttpStatus.CONFLICT.value(), message));
+        .status(HttpStatus.UNAUTHORIZED)
+        .body(RestApiResponse.error(HttpStatus.UNAUTHORIZED.value(), message));
   }
 
   @ExceptionHandler(InValidTokenException.class)
@@ -80,7 +88,8 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(UserAuthenticationFailedException.class)
-  public ResponseEntity<RestApiResponse<Void>> handleUserAuthenticationFailedException(@NonNull UserAuthenticationFailedException e) {
+  public ResponseEntity<RestApiResponse<Void>> handleUserAuthenticationFailedException(
+      @NonNull UserAuthenticationFailedException e) {
     log.warn("User Authentication Failed Exception Occurred: {}", e.getMessage());
     String message = "Authentication Failed. Please Try Again!";
 
@@ -150,7 +159,8 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(AuthenticationException.class)
-  public ResponseEntity<RestApiResponse<Void>> handleAuthenticationException(@NotNull @NonNull AuthenticationException e) {
+  public ResponseEntity<RestApiResponse<Void>> handleAuthenticationException(
+      @NotNull @NonNull AuthenticationException e) {
     log.error("Authentication Exception Occurred: {}", e.getMessage());
     String message = "Authentication Failed. Please log in again!";
 
@@ -170,7 +180,8 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<RestApiResponse<Void>> handleConstraintViolationException(@NonNull ConstraintViolationException e) {
+  public ResponseEntity<RestApiResponse<Void>> handleConstraintViolationException(
+      @NonNull ConstraintViolationException e) {
     log.error("Constraint Violation Exception Occurred: {}", e.getMessage());
 
     String validationErrors = e.getConstraintViolations()
@@ -188,7 +199,8 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)
-  public ResponseEntity<RestApiResponse<Void>> handleDataIntegrityViolationException(@NonNull DataIntegrityViolationException e) {
+  public ResponseEntity<RestApiResponse<Void>> handleDataIntegrityViolationException(
+      @NonNull DataIntegrityViolationException e) {
     log.error("Data Integrity Violation Exception Occurred: {}", e.getMessage());
     String message = "Something went wrong Please try again";
 
@@ -226,6 +238,54 @@ public class GlobalExceptionHandler {
     return ResponseEntity
         .status(HttpStatus.SERVICE_UNAVAILABLE)
         .body(RestApiResponse.error(HttpStatus.SERVICE_UNAVAILABLE.value(), message));
+  }
+
+  @ExceptionHandler(HandlerMethodValidationException.class)
+  public ResponseEntity<RestApiResponse<Void>> handleHandlerMethodValidationException(
+      HandlerMethodValidationException e) {
+    log.warn("Method Validation Failed");
+
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(RestApiResponse.error(
+            HttpStatus.BAD_REQUEST.value(),
+            "Validation failed"));
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<RestApiResponse<Void>> handleMethodArgumentNotValidException(
+      MethodArgumentNotValidException e) {
+
+    log.warn("Request Validation Failed");
+
+    Map<String, String> errors = e.getBindingResult()
+        .getFieldErrors()
+        .stream()
+        .collect(Collectors.toMap(
+            FieldError::getField,
+            FieldError::getDefaultMessage,
+            (first, second) -> first));
+
+    log.error("Errors: {}", errors.toString());
+
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(RestApiResponse.error(
+            HttpStatus.BAD_REQUEST.value(),
+            "Validation failed"));
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<RestApiResponse<Void>> handleHttpMessageNotReadableException(
+      HttpMessageNotReadableException e) {
+
+    log.warn("Request body missing or malformed: {}", e.getMessage());
+
+    String message = "Request body is required.";
+
+    return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body(RestApiResponse.error(HttpStatus.BAD_REQUEST.value(), message));
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
