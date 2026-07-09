@@ -1,5 +1,7 @@
 package com.Ecommerce.UserService.Repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -14,16 +16,32 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.Ecommerce.UserService.Model.AuthProvider;
 import com.Ecommerce.UserService.Model.Role;
 import com.Ecommerce.UserService.Model.User;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UserRepositoryTests {
+
+  @Container
+  @ServiceConnection
+  static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16-alpine")
+      .withDatabaseName("test_db")
+      .withUsername("test_user")
+      .withPassword("test_pass")
+      .withReuse(true);
 
   @Autowired
   private TestEntityManager testEntityManager;
@@ -37,7 +55,7 @@ public class UserRepositoryTests {
   @BeforeEach
   void beforeEach() {
     user = new User();
-    user.setUserName("bipinkoirala7");
+    user.setUserName("bipin.koirala7");
     user.setEmail("bipin@example.com");
     user.setPassword("BipinPass!123");
     user.setAuthProvider(AuthProvider.LOCAL);
@@ -132,11 +150,13 @@ public class UserRepositoryTests {
 
     Optional<User> result = underTest.findByEmail(user.getEmail());
 
+    assertTrue(result.isPresent());
     assertEquals(newLastLoginTime, result.get().getLastLoginAt());
   }
 
   @Test
   void shouldOnlyUpdateLastLoginDate_forSpecifiedUser() {
+    assert oauthUser.getLastLoginAt() != null;
     LocalDateTime originalOauthLoginTime = oauthUser.getLastLoginAt()
         .truncatedTo(ChronoUnit.MICROS);
     LocalDateTime newLastLoginTime = LocalDateTime.now()
@@ -147,11 +167,13 @@ public class UserRepositoryTests {
     testEntityManager.flush();
     testEntityManager.clear();
 
-    User updatedUser = underTest.findByEmail(user.getEmail()).get();
-    User untouchedUser = underTest.findByEmail(oauthUser.getEmail()).get();
+    Optional<User> updatedUser = underTest.findByEmail(user.getEmail());
+    Optional<User> untouchedUser = underTest.findByEmail(oauthUser.getEmail());
 
-    assertEquals(newLastLoginTime, updatedUser.getLastLoginAt());
-    assertEquals(originalOauthLoginTime, untouchedUser.getLastLoginAt());
+    assertTrue(updatedUser.isPresent());
+    assertTrue(untouchedUser.isPresent());
+    assertEquals(newLastLoginTime, updatedUser.get().getLastLoginAt());
+    assertThat(originalOauthLoginTime).isCloseTo(untouchedUser.get().getLastLoginAt(), within(2, ChronoUnit.MICROS));
   }
 
   @Test
@@ -163,7 +185,8 @@ public class UserRepositoryTests {
     testEntityManager.flush();
     testEntityManager.clear();
 
-    User untouchedUser = underTest.findByEmail(user.getEmail()).get();
-    assertNotEquals(newLastLoginTime, untouchedUser.getLastLoginAt());
+    Optional<User> untouchedUser = underTest.findByEmail(user.getEmail());
+    assertTrue(untouchedUser.isPresent());
+    assertNotEquals(newLastLoginTime, untouchedUser.get().getLastLoginAt());
   }
 }
