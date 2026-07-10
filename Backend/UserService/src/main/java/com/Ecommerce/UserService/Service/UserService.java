@@ -11,6 +11,7 @@ import com.Ecommerce.UserService.Model.User;
 import com.Ecommerce.UserService.Repository.UserRepository;
 import com.Ecommerce.UserService.Security.SecurityUtils;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -87,18 +88,25 @@ public class UserService {
   }
 
   @Transactional
-  public void updateUser(UserUpdateDTO userUpdateDTO) {
+  public void updateUser(@NotNull UserUpdateDTO userUpdateDTO) {
     log.info("User Update...");
+
+    log.info("User Update DTO: {}", userUpdateDTO);
 
     if (Objects.isNull(userUpdateDTO)) {
       log.warn("User Update Failed - Updated User cannot be null");
       throw new IllegalArgumentException("Updated User cannot be null");
     }
 
+    if(userRepository.existsByEmail(userUpdateDTO.getEmail()) && !userRepository.findById(Objects.requireNonNull(SecurityUtils.getCurrentUserId())).get().getEmail().equals(userUpdateDTO.getEmail())){
+      log.warn("User Update Failed - User with given email already exists");
+      throw new UserAlreadyExistsException("User Already Exists");
+    }
+
     // We must check if the CurrentuserId is populated or not because otherwise it might cause
     // unneccessary errors
 
-    User user = userRepository.findByIdAndEmail(Objects.requireNonNull(SecurityUtils.getCurrentUserId()), userUpdateDTO.getEmail())
+    User user = userRepository.findById(Objects.requireNonNull(SecurityUtils.getCurrentUserId()))
         .orElseThrow(() -> {
           log.warn("User Update Failed - User doesn't exist");
           return new UserNotFoundException("User not found");

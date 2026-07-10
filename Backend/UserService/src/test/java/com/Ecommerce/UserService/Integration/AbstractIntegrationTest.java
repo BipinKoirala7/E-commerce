@@ -80,7 +80,7 @@ abstract class AbstractIntegrationTest {
         "/auth/login",
         HttpMethod.POST,
         httpEntity,
-        new ParameterizedTypeReference<RestApiResponse<Void>>() {
+        new ParameterizedTypeReference<>() {
         });
 
     List<String> cookies = response.getHeaders().get(HttpHeaders.SET_COOKIE);
