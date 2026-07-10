@@ -136,7 +136,7 @@ public class AuthService {
     log.info("OAuth User Login Success");
   }
 
-  //  This is used by API Gateway for refreshing tokens.
+  // This is used by API Gateway for refreshing tokens.
   @Transactional
   public String refreshTokens(@NonNull @NotNull(message = "Refresh Token cannot be null") String refreshToken) {
     log.debug("Refreshing tokens...");
@@ -158,7 +158,8 @@ public class AuthService {
   @Transactional
   public void logout(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
     log.info("Logging out User...");
-    String refreshToken = Optional.ofNullable(cookieService.getCookie(request, cookieService.getREFRESH_TOKEN())).map(Cookie::getValue)
+    String refreshToken = Optional.ofNullable(cookieService.getCookie(request, cookieService.getREFRESH_TOKEN()))
+        .map(Cookie::getValue)
         .orElseThrow(() -> {
           log.debug("Logging out User Info - Refresh Token not found in cookie");
           return new EmptyTokenException("Refresh Token is empty");

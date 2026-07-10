@@ -15,6 +15,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
   Optional<User> findByEmail(String email);
 
+  Optional<User> findByIdAndEmail(UUID id, String email);
+
   @Modifying
   @Transactional
   @Query(value = "UPDATE users SET last_login_at = :lastLoginAt WHERE id = :id", nativeQuery = true)
@@ -23,4 +25,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
   boolean existsByEmail(String email);
 
   boolean existsByEmailAndProviderId(String email, String providerId);
+
+  void deleteByEmail(String email);
 }

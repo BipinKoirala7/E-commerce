@@ -77,7 +77,7 @@ public class UserService {
 
   public UserResponseDTO getUser() {
     log.info("Fetching User...");
-    User user = userRepository.findById(SecurityUtils.getCurrentUserId())
+    User user = userRepository.findById(Objects.requireNonNull(SecurityUtils.getCurrentUserId()))
         .orElseThrow(() -> {
           log.warn("Fetching User Failed- User Not Found");
           return new UserNotFoundException("User not found");
@@ -95,7 +95,10 @@ public class UserService {
       throw new IllegalArgumentException("Updated User cannot be null");
     }
 
-    User user = userRepository.findById(Objects.requireNonNull(SecurityUtils.getCurrentUserId()))
+    // We must check if the CurrentuserId is populated or not because otherwise it might cause
+    // unneccessary errors
+
+    User user = userRepository.findByIdAndEmail(Objects.requireNonNull(SecurityUtils.getCurrentUserId()), userUpdateDTO.getEmail())
         .orElseThrow(() -> {
           log.warn("User Update Failed - User doesn't exist");
           return new UserNotFoundException("User not found");

@@ -1,7 +1,69 @@
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
   cloud:
     config:
       enabled: false
+  application:
+    name: user-service
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-client-id
+            client-secret: test-client-secret
+            scope:
+              - profile
+              - email
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+
+app:
+  frontend:
+    url: http://localhost:3000
+  applicationSignatureKey: dGVzdC1zaWduYXR1cmUta2V5LXBsZWFzZS1jaGFuZ2UtMTIzNDU2Nzg5MA==
+  gateway:
+    secret: test-gateway-secret
+  service:
+    secret: test-service-secret
+  jwt:
+    issuer: api.obsidian.com
+    audience: obsidian.com
+    refreshTokenExpiration: 259200
+    accessTokenExpiration: 3600
+  cookie:
+    secure: false
+    sameSite: Lax
+    refreshToken:
+      path: /api
+      expiration: 259200
+    accessToken:
+      path: /
+      expiration: 3600
+  cors:
+    enabled: true
+    allowed-origins: http://localhost:3000
+    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+    allowed-headers: Authorization,Content-Type,Accept,X-Requested-With,Cache-Control
+    exposed-headers: Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Credentials
+    allow-credentials: true
+    max-age: 3600
