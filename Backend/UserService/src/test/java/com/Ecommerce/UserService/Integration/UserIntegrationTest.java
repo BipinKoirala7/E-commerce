@@ -25,7 +25,6 @@ import com.Ecommerce.UserService.DTOs.Response.UserResponseDTO;
 import com.Ecommerce.UserService.Model.Role;
 import com.Ecommerce.UserService.Model.User;
 import com.Ecommerce.UserService.Repository.UserRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 public class UserIntegrationTest extends AbstractIntegrationTest {
 
