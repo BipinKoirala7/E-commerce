@@ -27,7 +27,6 @@ public class CartItem {
   @Column(nullable = false)
   private UUID productId;
 
-  @NotNull
   @Min(value = 0)
   @Column(nullable = false)
   private Integer quantity;
