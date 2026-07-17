@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import io.sentry.Sentry;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -301,6 +302,7 @@ public class GlobalExceptionHandler {
   // It handles General Exception, which is not handled by other handlers
   @ExceptionHandler(Exception.class)
   public ResponseEntity<RestApiResponse<Void>> handleGeneralException(@NonNull Exception e) {
+    Sentry.captureException(e);
     log.warn("{} Exception Occurred: {}", e.getClass().getName(), e.getMessage());
     String message = "An unexpected error occurred. Please try again.";
 

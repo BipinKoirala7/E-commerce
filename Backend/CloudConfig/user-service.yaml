@@ -47,3 +47,6 @@ spring:
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
+sentry:
+  dsn: https://e8f5a511d7dbb4973f50ffbc594ff5a7@o4511749183045632.ingest.de.sentry.io/4511749185798224
+  send-default-pii: true
