@@ -23,9 +23,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.Ecommerce.UserService.DTOs.Request.UserLoginDTO;
 import com.Ecommerce.UserService.DTOs.Response.RestApiResponse;
 
-@AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
+@AutoConfigureTestRestTemplate
 @ActiveProfiles("test")
 abstract class AbstractIntegrationTest {
 
@@ -39,9 +39,6 @@ abstract class AbstractIntegrationTest {
 
   @Value("${app.gateway.secret}")
   String gatewaySecret;
-
-  @Value("${app.service.secret}")
-  String serviceSecret;
 
   final String userName = "bipin.koirala.7";
   final String email = "bipinkoirala2061@gmail.com";
