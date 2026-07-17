@@ -3,7 +3,7 @@ spring:
     config:
       enabled: false
   application:
-    name: user-service
+    name: order-service
 
   jpa:
     hibernate:
