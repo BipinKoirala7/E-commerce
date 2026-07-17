@@ -1,0 +1,59 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  application:
+    name: order-service
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format-sql: true
+        jdbc:
+          time_zone: UTC
+    show-sql: true
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+
+app:
+  frontend:
+    url: http://localhost:3000
+  applicationSignatureKey: application-signature-key
+  gateway:
+    secret: test-gateway-secret
+  service:
+    secret: test-service-secret
+  jwt:
+    secret: test-application-secret
+    issuer: api.obsidian.com
+    audience: obsidian.com
+    refreshTokenExpiration: 259200
+    accessTokenExpiration: 3600
+  cookie:
+    secure: false
+    sameSite: Lax
+    refreshToken:
+      path: /api
+      expiration: 259200
+    accessToken:
+      path: /
+      expiration: 3600
+  cors:
+    enabled: true
+    allowed-origins: http://localhost:3000
+    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+    allowed-headers: Authorization,Content-Type,Accept,X-Requested-With,Cache-Control
+    exposed-headers: Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Credentials
+    allow-credentials: true
+    max-age: 3600
+
+stripe:
+  secret-key: stripe-secret-key
+  publishable-key: stripe-publishable-key
+  webhook-secret: stripe-webhook-secret
