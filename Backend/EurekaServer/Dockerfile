@@ -10,7 +10,7 @@ COPY --link src ./src
 RUN --mount=type=cache,target=/root/.m2 \
     mvn package -Dmaven.test.skip=true -B
 
-RUN mv /app/target/*.jar /app/application.jar && \
+RUN mv /app/target/*.jar /app/app.jar && \
     java -Djarmode=tools -jar /app/app.jar extract --layers --destination /app/extracted 
 
 FROM eclipse-temurin:25-jre-alpine
