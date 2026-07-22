@@ -3,6 +3,9 @@
 target/
 .git/
 .gitignore
+.gitattributes
+Dockerfile
 *.md
 .idea/
+vscode/
 *.iml

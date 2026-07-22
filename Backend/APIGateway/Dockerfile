@@ -2,18 +2,26 @@ FROM maven:3.9.16-eclipse-temurin-25-alpine AS build
 LABEL authors="bipin-koirala"
 WORKDIR /app
 
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
+COPY --link pom.xml .
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn dependency:go-offline -B
 
-COPY src ./src
-RUN mvn clean package -DskipTests -B
+COPY --link src ./src
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn package -Dmaven.test.skip=true -B
+
+RUN mv /app/target/*.jar /app/application.jar && \
+    java -Djarmode=tools -jar /app/app.jar extract --layers --destination /app/extracted 
 
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
 RUN addgroup -S spring && adduser -S spring -G spring
 
-COPY --from=build --chown=spring:spring /app/target/*.jar app.jar
+COPY --from=build /app/extracted/dependencies/ ./
+COPY --from=build /app/extracted/snapshot-dependencies/ ./
+COPY --from=build /app/extracted/spring-boot-loader/ ./
+COPY --from=build /app/extracted/application/ ./
 
 USER spring:spring
 
