@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
  * {@code updateCartItem_whenItemMissing_...} and {@code deleteCartItem_whenItemMissing_...}
  * accordingly.
  */
-class CartItemIntegrationTest extends IntegrationTestSetup {
+class CartItemIntegrationTest extends SetupIntegrationTest {
 
   private static final ParameterizedTypeReference<Map<String, Object>> RESPONSE_TYPE =
       new ParameterizedTypeReference<>() {};

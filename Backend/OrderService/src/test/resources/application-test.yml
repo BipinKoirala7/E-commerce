@@ -24,13 +24,13 @@ eureka:
 app:
   frontend:
     url: http://localhost:3000
-  applicationSignatureKey: application-signature-key
+  applicationSignatureKey: c3VwZXItc2VjcmV0LXRlc3Qta2V5LXRoYXQtaXMtbG9uZy1lbm91Z2gtZm9yLWhtYWM=
   gateway:
     secret: test-gateway-secret
   service:
     secret: test-service-secret
   jwt:
-    secret: test-application-secret
+    secret: testApplicationSecret
     issuer: api.obsidian.com
     audience: obsidian.com
     refreshTokenExpiration: 259200

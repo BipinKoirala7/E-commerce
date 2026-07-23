@@ -23,7 +23,7 @@ import java.util.UUID;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureTestRestTemplate
 @ActiveProfiles("test")
-abstract class IntegrationTestSetup {
+public abstract class SetupIntegrationTest {
 
   @Autowired
   private JwtService jwtService;

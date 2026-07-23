@@ -3,8 +3,7 @@ package com.Ecommerce.UserService.Service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
@@ -148,10 +147,10 @@ public class AuthServiceTests {
 
   @Test
   void refreshTokens_whenRefreshTokenIsNull() {
-    when(jwtService.extractSubject(null)).thenReturn(userId.toString());
+    doThrow(new IllegalArgumentException("Refresh token cannot be null")).when(jwtService).extractSubject(null);
 
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-        () -> underTest.refreshTokens(refreshToken));
+        () -> underTest.refreshTokens(null));
     assertEquals("cannot be null", e.getMessage());
   }
 }

@@ -46,6 +46,7 @@ app:
   service:
     secret: test-service-secret
   jwt:
+    secret: testApplicationSecret
     issuer: api.obsidian.com
     audience: obsidian.com
     refreshTokenExpiration: 259200

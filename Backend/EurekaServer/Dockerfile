@@ -2,8 +2,8 @@ FROM eclipse-temurin:25-jdk-alpine AS build
 LABEL authors="bipin-koirala"
 WORKDIR /app
 
-COPY .mvn .
-COPY mvnw .
+COPY --link mvnw .
+COPY --link .mvn .mvn
 
 COPY --link pom.xml .
 RUN --mount=type=cache,target=/root/.m2 \

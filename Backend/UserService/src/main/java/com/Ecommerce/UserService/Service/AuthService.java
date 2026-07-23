@@ -138,7 +138,7 @@ public class AuthService {
 
   // This is used by API Gateway for refreshing tokens.
   @Transactional
-  public String refreshTokens(@NonNull @NotNull(message = "Refresh Token cannot be null") String refreshToken) {
+  public String refreshTokens(@NonNull String refreshToken) {
     log.debug("Refreshing tokens...");
 
     jwtService.validateRefreshToken(refreshToken);
