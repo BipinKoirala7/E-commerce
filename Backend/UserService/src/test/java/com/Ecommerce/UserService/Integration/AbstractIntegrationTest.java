@@ -27,7 +27,7 @@ import com.Ecommerce.UserService.DTOs.Response.RestApiResponse;
 @Testcontainers
 @AutoConfigureTestRestTemplate
 @ActiveProfiles("test")
-abstract class AbstractIntegrationTest {
+public abstract class AbstractIntegrationTest {
 
   @Container
   @ServiceConnection

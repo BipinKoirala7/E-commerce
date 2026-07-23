@@ -1,0 +1,75 @@
+services:
+  #  api-gateway:
+  #    container_name: api-gateway-test
+  #    build:
+  #      context: APIGateway
+  #      dockerfile: Dockerfile
+  #      target: test
+  #    environment:
+  #      SPRING_PROFILES_ACTIVE: test
+  #      SPRING_CONFIG_IMPORT: ""
+  #      EUREKA_CLIENT_ENABLED: "false"
+  #      MAVEN_OPTS: "-Dmaven.surefire.debug=transport=dt_socket,server=y,suspend=y,address=*:5005"
+  #    ports:
+  #      - "5005:5005"
+  #    volumes:
+  #      - /var/run/docker.sock:/var/run/docker.sock
+  #    networks:
+  #      - test-network
+
+  user-service:
+    container_name: user-service-test
+    build:
+      context: UserService
+      dockerfile: Dockerfile
+      target: test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_CONFIG_IMPORT: ""
+      EUREKA_CLIENT_ENABLED: "false"
+      MAVEN_OPTS: "-Dmaven.surefire.debug=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5006"
+    ports:
+      - "5006:5006"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - test-network
+
+  #  product-service:
+  #    container_name: product-service-test
+  #    build:
+  #      context: ProductService
+  #      dockerfile: Dockerfile
+  #      target: test
+  #    environment:
+  #      SPRING_PROFILES_ACTIVE: test
+  #      SPRING_CONFIG_IMPORT: ""
+  #      EUREKA_CLIENT_ENABLED: "false"
+  #      MAVEN_OPTS: "-Dmaven.surefire.debug=transport=dt_socket,server=y,suspend=y,address=*:5007"
+  #    ports:
+  #      - "5007:5007"
+  #    volumes:
+  #      - /var/run/docker.sock:/var/run/docker.sock
+  #    networks:
+  #      - test-network
+
+  order-service:
+    container_name: order-service-test
+    build:
+      context: OrderService
+      dockerfile: Dockerfile
+      target: test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_CONFIG_IMPORT: ""
+      EUREKA_CLIENT_ENABLED: "false"
+      MAVEN_OPTS: "-Dmaven.surefire.debug=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5006"
+    ports:
+      - "5008:5008"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - test-network
+
+networks:
+  test-network:

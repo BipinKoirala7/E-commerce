@@ -147,10 +147,10 @@ public class AuthServiceTests {
 
   @Test
   void refreshTokens_whenRefreshTokenIsNull() {
-    doThrow(new IllegalArgumentException("Refresh token cannot be null")).when(jwtService).extractSubject(null);
+    doThrow(new IllegalArgumentException("Refresh token cannot be null")).when(jwtService).validateRefreshToken(null);
 
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
         () -> underTest.refreshTokens(null));
-    assertEquals("cannot be null", e.getMessage());
+    assertEquals("Refresh token cannot be null", e.getMessage());
   }
 }

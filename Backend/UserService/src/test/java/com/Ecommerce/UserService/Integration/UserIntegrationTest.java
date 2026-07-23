@@ -429,13 +429,5 @@ class DeleteUser {
         assertNotNull(secondResponse.getBody());
         assertThat(secondResponse.getBody().getSuccess()).isFalse();
     }
-
-    @Test
-    void shouldFailDelete_whenAccessTokenIsExpiredOrInvalidSignature() {
-        // ASSUMPTION: JwtService exposes a way to mint a token with an already-past
-        // expiry (e.g. jwtService.generateAccessToken(user, Duration.ofSeconds(-1)))
-        // If it doesn't, this test isn't writable without a temporary test-only method
-        // — flagging as a gap rather than guessing at an API that may not exist.
-    }
 }
 }

@@ -1,18 +1,18 @@
 services:
-  api-gateway:
-    container_name: api-gateway-test
-    build:
-      context: APIGateway
-      dockerfile: Dockerfile
-      target: test
-    environment:
-      SPRING_PROFILES_ACTIVE: test
-      SPRING_CONFIG_IMPORT: ""
-      EUREKA_CLIENT_ENABLED: "false"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - test-network
+#  api-gateway:
+#    container_name: api-gateway-test
+#    build:
+#      context: APIGateway
+#      dockerfile: Dockerfile
+#      target: test
+#    environment:
+#      SPRING_PROFILES_ACTIVE: test
+#      SPRING_CONFIG_IMPORT: ""
+#      EUREKA_CLIENT_ENABLED: "false"
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    networks:
+#      - test-network
 
   user-service:
     container_name: user-service-test
@@ -29,20 +29,20 @@ services:
     networks:
       - test-network
 
-  product-service:
-    container_name: product-service-test
-    build:
-      context: ProductService
-      dockerfile: Dockerfile
-      target: test
-    environment:
-      SPRING_PROFILES_ACTIVE: test
-      SPRING_CONFIG_IMPORT: ""
-      EUREKA_CLIENT_ENABLED: "false"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - test-network
+#  product-service:
+#    container_name: product-service-test
+#    build:
+#      context: ProductService
+#      dockerfile: Dockerfile
+#      target: test
+#    environment:
+#      SPRING_PROFILES_ACTIVE: test
+#      SPRING_CONFIG_IMPORT: ""
+#      EUREKA_CLIENT_ENABLED: "false"
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    networks:
+#      - test-network
 
   order-service:
     container_name: order-service-test
