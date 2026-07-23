@@ -1,14 +1,17 @@
-FROM maven:3.9.16-eclipse-temurin-25-alpine AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 LABEL authors="bipin-koirala"
 WORKDIR /app
 
+COPY .mvn .
+COPY mvnw .
+
 COPY --link pom.xml .
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn dependency:go-offline -B
+    ./mvnw dependency:go-offline -B
 
 COPY --link src ./src
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn package -Dmaven.test.skip=true -B
+    ./mvnw package -Dmaven.test.skip=true -B
 
 RUN mv /app/target/*.jar /app/app.jar && \
     java -Djarmode=tools -jar /app/app.jar extract --layers --destination /app/extracted 

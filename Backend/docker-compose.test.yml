@@ -1,0 +1,33 @@
+services:
+  api-gateway:
+    restart: no
+    build:
+      target: test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  user-service:
+    restart: no
+    build:
+      target: test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  product-service:
+    restart: no
+    build:
+      target: test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  order-service:
+    restart: no
+    build:
+      target: test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
