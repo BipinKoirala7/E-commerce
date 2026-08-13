@@ -1,0 +1,40 @@
+name: Workflow to Deploy the Ecommerce Backend on every push commit to the docker hub.
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+# Before deploying the application, we should:
+# 1. Test the application
+# 2. Build the image with bipinkoirala/{image_name}:latest
+# 3. Log into docker hub with credentials
+# 4, Deploy the images to the docker hub.
+
+jobs:
+  deploy-to-docker-hub:
+    name: Deploy the latest images on Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: test the application
+        run: echo "Run test here"
+      - name: build the image
+        run: | 
+          docker build -t bipinkoirala/config-server:latest ./ConfigServer/ &&
+          docker build -t bipinkoirala/eureka-server:latest ./EurekaServer/ &&
+          docker build -t bipinkoiralka/api-gateway:latest ./APIGateway/ &&
+          docker build -t bipinkoiralka/user-service:latest ./UserService/ &&
+          docker build -t bipinkoiralka/product-service:latest ./ProductService/ &&
+          docker build -t bipinkoiralka/order-service:latest ./OrderService/
+      - name: log into the docker
+        run: echo {{ secrets.DOCKERHUB_USERNAME }}
+      - name: push the images to the docker
+        run: |
+          docker push bipinkoirala/config-server:latest &&
+          docker push bipinkoirala/eureka-server:latest &&
+          docker push bipinkoiralka/api-gateway:latest &&
+          docker push bipinkoiralka/user-service:latest &&
+          docker push bipinkoiralka/product-service:latest &&
+          docker push bipinkoiralka/order-service:latest
+
